@@ -361,3 +361,37 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Python/Flask/General
+venv/
+.env
+.env.*
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite
+*.sqlite3
+*.log
+logs/
+tmp/
+data/
+.DS_Store
+.vscode/
+
+# Ignore test/coverage outputs
+htmlcov/
+.coverage
+.cache/
+
+# Ignore documentation build
+site/
+docs/_build/
+
+# Ignore screenshots, demo images (optional)
+# screenshots/
+# demo/
+
+# Ignore OS generated files
+Thumbs.db

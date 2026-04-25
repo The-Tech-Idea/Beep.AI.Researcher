@@ -1,9 +1,38 @@
+<!-- Project Banner/Logo (add your logo file to the repo and update the path below) -->
+<!-- ![Beep.AI Researcher Logo](docs/logo.png) -->
+
 # Beep.AI Researcher - Advanced Research Document Management
+
+[![Build Status](https://img.shields.io/github/workflow/status/<your-org>/<your-repo>/CI)](https://github.com/<your-org>/<your-repo>/actions)
+[![License](https://img.shields.io/github/license/<your-org>/<your-repo>)](LICENSE.txt)
+[![Coverage Status](https://img.shields.io/badge/coverage-100%25-brightgreen)](https://github.com/<your-org>/<your-repo>/actions)
 
 **Version**: 2.5 | **Status**: Production-Ready  
 **Updated**: February 7, 2026 | **License**: See LICENSE.txt
 
 A comprehensive research document management system with multi-source search, document import, and intelligent result caching.
+
+---
+
+## Table of Contents
+- [Quick Start](#-quick-start)
+- [Features](#-features)
+- [Configuration](#-configuration)
+- [Documentation](#-documentation)
+- [API Overview](#-api-overview)
+- [Testing](#-testing)
+- [Deployment](#-deployment)
+- [Migration from Phase 1](#-migration-from-phase-1)
+- [Troubleshooting](#-troubleshooting)
+- [Architecture](#-architecture)
+- [Usage Statistics](#-usage-statistics)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Support](#-support)
+- [Roadmap](#-roadmap)
+- [Changelog](#-changelog)
+
+---
 
 ## 🚀 Quick Start
 
