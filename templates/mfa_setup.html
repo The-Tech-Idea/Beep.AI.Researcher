@@ -1,0 +1,77 @@
+{% extends base_template|default("base.html") %}
+{% block title %}Set Up Authenticator — Beep.AI.Researcher{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/mfa_setup.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mfa-setup-container">
+    <div class="card shadow-sm">
+        <div class="card-header d-flex align-items-center gap-2">
+            <i class="bi bi-phone-fill mfa-setup-header-icon"></i>
+            <strong>Set Up Authenticator App</strong>
+        </div>
+        <div class="card-body p-4">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}{% for cat, msg in messages %}
+                <div class="alert alert-{{ 'danger' if cat == 'error' else cat }} alert-dismissible fade show" role="alert">
+                  {{ msg }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              {% endfor %}{% endif %}
+            {% endwith %}
+
+            <p class="text-muted small mb-3">
+                Scan the QR code below with <strong>Google Authenticator</strong>, <strong>Authy</strong>, or any TOTP-compatible app.
+                Then enter the 6-digit code to confirm enrollment.
+            </p>
+
+            <!-- QR Code -->
+            <div class="text-center mb-3">
+                {% if qr_b64 %}
+                <img src="{{ qr_b64 }}" alt="TOTP QR Code" class="img-fluid border rounded p-2 mfa-setup-qr-image"
+                     aria-label="QR code for authenticator app">
+                {% else %}
+                <p class="text-warning small"><i class="bi bi-exclamation-triangle me-1"></i>QR code unavailable. Use the manual key below.</p>
+                {% endif %}
+            </div>
+
+            <!-- Manual key fallback -->
+            <div class="mb-3">
+                <label class="form-label small text-muted">Manual setup key (if you can't scan):</label>
+                <div class="input-group input-group-sm">
+                    <input type="text" class="form-control font-monospace" id="manualSecret"
+                           value="{{ secret }}" readonly aria-label="TOTP secret key">
+                    <button class="btn btn-outline-secondary" type="button" id="copyManualSecretBtn"
+                            aria-label="Copy secret key to clipboard">
+                        <i class="bi bi-clipboard"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Verification form -->
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="totp_verify_code" class="form-label fw-semibold">Enter the 6-digit code to confirm</label>
+                    <input type="text" class="form-control form-control-lg text-center font-monospace"
+                           id="totp_verify_code" name="code" maxlength="6" placeholder="000000"
+                           autocomplete="one-time-code" inputmode="numeric" required autofocus>
+                </div>
+                <button type="submit" class="btn btn-success w-100 fw-semibold">
+                    <i class="bi bi-check-circle me-1"></i>Confirm &amp; Activate
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+<script id="mfa-setup-config" type="application/json">
+{{ {
+    "copySuccessIcon": "<i class='bi bi-check'></i>",
+    "copyUnavailable": "Copy is not available in this browser."
+} | tojson | safe }}
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/mfa_setup.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,182 @@
+{% extends "project/_layout.html" %}
+
+{% set active_page = 'codes' %}
+{% set page_title = t('codes.title') %}
+{% set page_subtitle = t('codes.subtitle') %}
+{% set page_icon = 'tags' %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/library_setup_summary.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/codes.css') }}">
+{% endblock %}
+
+{% block header_actions %}
+<button class="btn btn-sm codes-export-button" id="exportCodesBtn">
+    <i class="bi bi-download me-1"></i>{{ t('codes.export') }}
+</button>
+{% endblock %}
+
+{% block workspace_content %}
+<div
+    data-library-setup-summary
+    data-project-api-base="/projects/{{ project.id }}"
+    data-collections-url="{{ url_for('projects.list_rag_collections_for_project') }}"
+    data-start-url="{{ url_for('project_start.project_start_page', project_id=project.id) }}"
+    data-settings-url="{{ url_for('researcher.project_settings', project_id=project.id) }}"
+    data-collection-id="{{ project.collection_id or '' }}"
+    data-quality-mode="{{ project.rag_quality_mode or 'balanced' }}"
+    data-quality-fast-label="{{ t('project_search.rag_mode.fast') }}"
+    data-quality-balanced-label="{{ t('project_search.rag_mode.balanced') }}"
+    data-quality-deep-label="{{ t('project_search.rag_mode.deep') }}"
+></div>
+
+<div id="codesIntroBanner" class="d-flex align-items-start gap-2 mb-3 codes-intro-banner" role="alert"
+     {% if code_count > 0 %}hidden{% endif %}>
+    <i class="bi bi-info-circle-fill flex-shrink-0 mt-1 codes-intro-icon"></i>
+    <div class="codes-intro-copy">
+        <strong>{{ t('codes.intro.title') }}</strong>
+        {{ t('codes.intro.desc') }}
+        <a href="{{ url_for('researcher.project_documents', project_id=project.id) }}" class="codes-intro-link">
+            {{ t('codes.intro.link_docs') }}
+        </a>
+    </div>
+    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+<div class="spa-split">
+    {# Sidebar: code list #}
+    <div class="spa-split-sidebar">
+        <div class="spa-split-sidebar-header">
+            <span><i class="bi bi-tags me-2"></i>{{ t('codes.sidebar.title') }}</span>
+            <button class="btn btn-sm codes-add-button" id="addCodeBtn" type="button"
+                aria-label="{{ t('codes.form.add') }}"><i class="bi bi-plus"></i></button>
+        </div>
+
+        <div id="addCodeFormContainer" class="codes-form-container" hidden>
+            <input type="text" class="form-control form-control-sm mb-2" id="newCodeName"
+                placeholder="{{ t('codes.form.placeholder') }}">
+            <div class="d-flex gap-1 flex-wrap mb-2" id="colorPicker">
+                <span class="spa-color-dot codes-color-swatch codes-color-swatch-indigo selected" data-color="#6366f1"></span>
+                <span class="spa-color-dot codes-color-swatch codes-color-swatch-green" data-color="#22c55e"></span>
+                <span class="spa-color-dot codes-color-swatch codes-color-swatch-amber" data-color="#f59e0b"></span>
+                <span class="spa-color-dot codes-color-swatch codes-color-swatch-red" data-color="#ef4444"></span>
+                <span class="spa-color-dot codes-color-swatch codes-color-swatch-pink" data-color="#ec4899"></span>
+                <span class="spa-color-dot codes-color-swatch codes-color-swatch-purple" data-color="#8b5cf6"></span>
+                <span class="spa-color-dot codes-color-swatch codes-color-swatch-cyan" data-color="#06b6d4"></span>
+                <span class="spa-color-dot codes-color-swatch codes-color-swatch-slate" data-color="#64748b"></span>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-sm flex-fill codes-form-cancel-button" id="cancelAddCodeBtn">{{ t('codes.form.cancel')
+                    }}</button>
+                <button class="btn btn-sm flex-fill codes-form-save-button" id="saveNewCodeBtn">{{ t('codes.form.add') }}</button>
+            </div>
+        </div>
+
+        <div class="spa-split-sidebar-body">
+            {% for code in codes %}
+            <div class="spa-list-item code-select-btn {{ 'active' if loop.first }}" data-code-id="{{ code.id }}">
+                <span class="spa-color-dot codes-accent-dot" data-bg="{{ code.color }}"></span>
+                <div class="spa-list-item-text">
+                    <span class="spa-list-item-title">{{ code.name }}</span>
+                    <span class="spa-list-item-sub">{{ code.excerpt_count }} {{ t('codes.excerpts_label') }}</span>
+                </div>
+                <div class="spa-list-item-actions">
+                    <button class="code-edit-btn" data-code-id="{{ code.id }}" title="{{ t('codes.action.edit') }}"><i
+                            class="bi bi-pencil"></i></button>
+                    <button class="code-delete-btn" data-code-id="{{ code.id }}"
+                        title="{{ t('codes.action.delete') }}"><i class="bi bi-trash"></i></button>
+                </div>
+            </div>
+            {% else %}
+            <div class="spa-empty codes-empty-sidebar">
+                <i class="bi bi-tags"></i>
+                <p>{{ t('codes.empty.title') }}</p>
+                <span>{{ t('codes.empty.desc') }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {# Main: code detail #}
+    <div class="spa-split-main">
+        {% if codes %}
+        <div class="spa-card codes-detail-card">
+            <div class="spa-card-header codes-detail-header">
+                <div class="spa-color-dot codes-detail-color codes-accent-dot" id="detailColor" data-bg="{{ codes[0].color if codes else '#6366f1' }}"></div>
+                <div class="codes-detail-meta">
+                    <div class="spa-card-title" id="detailName">{{ codes[0].name if codes else
+                        t('codes.detail.select_code') }}</div>
+                    <small class="codes-detail-description" id="detailDescription">{{ codes[0].description if codes and
+                        codes[0].description else t('codes.detail.no_description') }}</small>
+                </div>
+                <button class="btn btn-sm codes-detail-edit-button"><i class="bi bi-pencil me-1"></i>{{
+                    t('codes.detail.edit') }}</button>
+            </div>
+            <div class="spa-card-body flush codes-detail-excerpts" id="codeExcerpts">
+                {% if codes and codes[0].excerpts %}
+                {% for excerpt in codes[0].excerpts %}
+                <div class="excerpt-item">
+                    <blockquote class="excerpt-quote codes-excerpt-quote" data-border-color="{{ codes[0].color }}">
+                        "{{ excerpt.text }}"
+                    </blockquote>
+                    <div class="excerpt-meta">
+                        <a href="/researcher/projects/{{ project.id }}/documents/{{ excerpt.document_id }}/view?highlight={{ excerpt.id }}"
+                            class="codes-excerpt-document-link">
+                            <i class="bi bi-file-earmark-text me-1"></i>{{ excerpt.document_name }}
+                        </a>
+                        <button class="btn btn-sm excerpt-remove-btn codes-excerpt-remove-button"
+                            data-excerpt-id="{{ excerpt.id }}"><i class="bi bi-x"></i></button>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="spa-empty">
+                    <i class="bi bi-quote"></i>
+                    <p>{{ t('codes.excerpts.empty.title') }}</p>
+                    <span>{{ t('codes.excerpts.empty.desc') }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% else %}
+        <div class="spa-empty codes-empty-main">
+            <i class="bi bi-tags"></i>
+            <p>{{ t('codes.empty.title') }}</p>
+            <span>{{ t('codes.empty.create_first') }}</span>
+            <button class="btn btn-sm mt-3 codes-empty-create-button" id="createFirstCodeBtn">
+                <i class="bi bi-plus me-1"></i>{{ t('codes.empty.create_button') }}
+            </button>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{# ── Cross-feature navigation ── #}
+<div class="d-flex gap-2 mt-3 flex-wrap">
+    <a href="{{ url_for('researcher.matrix_page', project_id=project.id) }}"
+       class="btn btn-sm codes-crosslink-button">
+        <i class="bi bi-grid-3x3 me-1"></i>{{ t('codes.crosslink.matrix') }}
+    </a>
+    <a href="{{ url_for('researcher.document_map', project_id=project.id) }}"
+       class="btn btn-sm codes-crosslink-button">
+        <i class="bi bi-diagram-3 me-1"></i>{{ t('codes.crosslink.document_map') }}
+    </a>
+    <a href="{{ url_for('researcher.contradictions_page', project_id=project.id) }}"
+       class="btn btn-sm codes-crosslink-button">
+        <i class="bi bi-exclamation-triangle me-1"></i>{{ t('codes.crosslink.contradictions') }}
+    </a>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script id="codes-i18n-data" type="application/json">
+{{ {
+    "projectId": project.id,
+    "no_description": t("codes.detail.no_description"),
+    "confirm_delete": t("codes.confirm.delete"),
+    "excerpts_empty_title": t("codes.excerpts.empty.title"),
+    "excerpts_empty_desc": t("codes.excerpts.empty.desc")
+} | tojson | safe }}
+</script>
+<script src="{{ url_for('static', filename='js/project/library_setup_summary.js') }}"></script>
+<script src="{{ url_for('static', filename='js/project-codes.js') }}"></script>
+{% endblock %}

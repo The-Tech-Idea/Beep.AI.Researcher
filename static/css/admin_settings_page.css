@@ -1,0 +1,127 @@
+.admin-settings-subtitle,
+.admin-settings-helper-text,
+.admin-settings-section-heading,
+.admin-settings-service-status {
+    color: var(--text-muted);
+}
+
+.admin-settings-helper-block {
+    display: block;
+}
+
+.admin-settings-message {
+    margin-bottom: var(--space-md);
+    padding: var(--space-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.admin-settings-message--success {
+    border-color: color-mix(in srgb, var(--color-success) 35%, var(--bg-secondary));
+    background: color-mix(in srgb, var(--color-success) 10%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-success) 74%, var(--text-primary));
+}
+
+.admin-settings-message--warning {
+    border-color: color-mix(in srgb, var(--color-warning) 45%, var(--bg-secondary));
+    background: color-mix(in srgb, var(--color-warning) 14%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-warning) 76%, var(--text-primary));
+}
+
+.admin-settings-message--danger,
+.admin-settings-message--error {
+    border-color: color-mix(in srgb, var(--color-error) 40%, var(--bg-secondary));
+    background: color-mix(in srgb, var(--color-error) 10%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-error) 76%, var(--text-primary));
+}
+
+.admin-settings-secondary-button,
+.admin-settings-toggle-button,
+.admin-settings-inline-action-button {
+    border-width: 1px;
+    border-style: solid;
+}
+
+.admin-settings-secondary-button,
+.admin-settings-toggle-button {
+    border-color: color-mix(in srgb, var(--border-color) 88%, var(--surface-primary));
+    color: var(--text-secondary);
+    background: transparent;
+}
+
+.admin-settings-secondary-button:hover,
+.admin-settings-secondary-button:focus-visible,
+.admin-settings-toggle-button:hover,
+.admin-settings-toggle-button:focus-visible {
+    background: color-mix(in srgb, var(--text-muted) 10%, var(--surface-primary));
+    border-color: color-mix(in srgb, var(--text-muted) 28%, var(--surface-primary));
+    color: var(--text-primary);
+}
+
+.btn-check:checked + .admin-settings-toggle-button,
+.btn-check:checked + .admin-settings-toggle-button:hover,
+.btn-check:checked + .admin-settings-toggle-button:focus-visible {
+    background: color-mix(in srgb, var(--accent-primary) 14%, var(--surface-primary));
+    border-color: color-mix(in srgb, var(--accent-primary) 36%, var(--surface-primary));
+    color: var(--accent-primary-strong);
+}
+
+.admin-settings-toggle-button--small {
+    font-size: var(--font-size-note);
+}
+
+.admin-settings-inline-action-button {
+    border-color: color-mix(in srgb, var(--accent-primary) 40%, var(--surface-primary));
+    color: var(--accent-primary-strong);
+    background: color-mix(in srgb, var(--accent-primary) 10%, var(--surface-primary));
+}
+
+.admin-settings-inline-action-button:hover,
+.admin-settings-inline-action-button:focus-visible {
+    background: color-mix(in srgb, var(--accent-primary) 18%, var(--surface-primary));
+    border-color: color-mix(in srgb, var(--accent-primary) 48%, var(--surface-primary));
+}
+
+.admin-settings-info-note {
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid color-mix(in srgb, var(--accent-info) 32%, var(--surface-primary));
+    border-radius: var(--border-radius-soft);
+    background: color-mix(in srgb, var(--accent-info) 10%, var(--surface-primary));
+    color: var(--text-primary);
+}
+
+.admin-settings-inline-result {
+    color: var(--text-muted);
+}
+
+.admin-settings-inline-result--success {
+    color: var(--color-success-strong);
+}
+
+.admin-settings-inline-result--error {
+    color: var(--color-danger-strong);
+}
+
+.admin-settings-request-result {
+    margin-top: var(--space-3);
+    padding: var(--space-3);
+    border: 1px solid color-mix(in srgb, var(--text-muted) 18%, var(--surface-primary));
+    border-radius: var(--border-radius-soft);
+    background: color-mix(in srgb, var(--surface-primary) 88%, var(--text-muted) 12%);
+    color: var(--text-primary);
+}
+
+.admin-settings-request-result--success {
+    border-color: color-mix(in srgb, var(--color-success-strong) 35%, var(--surface-primary));
+    background: color-mix(in srgb, var(--color-success-strong) 10%, var(--surface-primary));
+    color: var(--color-success-strong);
+}
+
+.admin-settings-request-result--error {
+    border-color: color-mix(in srgb, var(--color-danger-strong) 35%, var(--surface-primary));
+    background: color-mix(in srgb, var(--color-danger-strong) 10%, var(--surface-primary));
+    color: var(--color-danger-strong);
+}

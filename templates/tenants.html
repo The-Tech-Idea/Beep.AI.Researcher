@@ -1,0 +1,111 @@
+{% extends base_template or "base.html" %}
+
+{% block title %}{{ t('tenants.title') }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+    <div>
+        <h1 class="mb-1">{{ t('tenants.title') }}</h1>
+        <p class="mb-2">{{ t('tenants.subtitle') }}</p>
+    </div>
+    <a href="{{ url_for('researcher.index') }}" class="btn btn-outline-secondary btn-sm">{{ t('tenants.actions.back') }}</a>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">{{ t('tenants.console.title') }}</h5>
+            </div>
+            <div class="card-body">
+                {% if tenants %}
+                <ul class="list-group list-group-flush">
+                    {% for tenant in tenants %}
+                    <li class="list-group-item d-flex flex-column gap-2">
+                        <div class="d-flex justify-content-between align-items-start gap-2">
+                            <div>
+                                <strong>{{ tenant.name }}</strong>
+                                <div class="small">{{ tenant.slug }}</div>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <a href="/researcher?tenant_id={{ tenant.id }}" class="btn btn-sm btn-outline-primary">{{ t('tenants.actions.view_projects') }}</a>
+                                <button type="button" class="btn btn-sm btn-outline-secondary">{{ t('tenants.actions.configure') }}</button>
+                            </div>
+                        </div>
+                        <p class="small mb-0">{{ t('tenants.console.hint') }}</p>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-center py-4 mb-0">{{ t('tenants.empty') }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="helper-card p-3 h-100">
+            <h6 class="text-uppercase small mb-2">{{ t('tenants.console.subtitle') }}</h6>
+            <p class="small mb-3">{{ t('tenants.console.body') }}</p>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="toggleLDAP" checked>
+                <label class="form-check-label small" for="toggleLDAP">{{ t('tenants.console.ldapsso') }}</label>
+            </div>
+            <div class="form-check form-switch mt-2">
+                <input class="form-check-input" type="checkbox" id="toggleCollection">
+                <label class="form-check-label small" for="toggleCollection">{{ t('tenants.console.collection') }}</label>
+            </div>
+            <div class="d-flex flex-column gap-1 mt-3">
+                <span class="small">{{ t('tenants.console.step1') }}</span>
+                <span class="small">{{ t('tenants.console.step2') }}</span>
+                <span class="small">{{ t('tenants.console.step3') }}</span>
+            </div>
+            <div class="mt-3">
+                <button type="button" class="btn btn-sm btn-outline-light w-100">{{ t('tenants.console.action') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h5 class="mb-1">{{ t('workspace_templates.title') }}</h5>
+                <p class="small mb-0">{{ t('workspace_templates.subtitle') }}</p>
+            </div>
+            <span class="badge">{{ t('workspace_templates.tag.overview') }}</span>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            {% for template in workspace_templates %}
+            <div class="col-md-4">
+                <div class="card template-card h-100">
+                    <div class="card-body d-flex flex-column gap-3">
+                        <div>
+                            <h6 class="mb-1">{{ t(template.name_key) }}</h6>
+                            <p class="small mb-2">{{ t(template.description_key) }}</p>
+                        </div>
+                        <div class="d-flex flex-wrap gap-1">
+                            {% for tag_key in template.tags %}
+                            <span class="badge border text-white small">{{ t(tag_key) }}</span>
+                            {% endfor %}
+                        </div>
+                        <ul class="list-unstyled small mb-0">
+                            {% for detail_key in template.details %}
+                            <li>• {{ t(detail_key) }}</li>
+                            {% endfor %}
+                        </ul>
+                        <div class="mt-auto">
+                            <button type="button" class="btn btn-sm btn-outline-light w-100">{{ t('workspace_templates.action.start') }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <p class="small">{{ t('workspace_templates.empty') }}</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

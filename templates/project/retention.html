@@ -1,0 +1,104 @@
+{# Retention — extends project layout #}
+{% extends "project/_layout.html" %}
+{% set page_title = t('retention.title') %}
+{% set page_subtitle = t('retention.subtitle') %}
+{% set page_icon = 'clock-history' %}
+{% set active_page = 'retention' %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/retention.css') }}">
+{% endblock %}
+
+{% block workspace_content %}
+<div class="row g-3">
+    <!-- Left: Policy Settings -->
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-header d-flex align-items-center gap-2">
+                <i class="bi bi-shield-check"></i>
+                <span class="fw-medium">{{ t('retention.title') }}</span>
+            </div>
+            <div class="card-body">
+                <p class="small mb-3 retention-policy-copy">{{ t('retention.policy_desc') }}</p>
+                <div class="mb-3">
+                    <label for="retentionDays" class="form-label small fw-medium">{{ t('retention.days_label') }}</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="retentionDays" min="0" max="3650"
+                            placeholder="{{ t('retention.placeholder') }}">
+                        <span class="input-group-text">{{ t('retention.days_unit') }}</span>
+                    </div>
+                    <small class="retention-days-hint">{{ t('retention.days_hint') }}</small>
+                </div>
+                <div class="mb-3">
+                    <label for="retentionAction" class="form-label small fw-medium">{{ t('retention.action_label') }}</label>
+                    <select class="form-select form-select-sm" id="retentionAction">
+                        <option value="flag">{{ t('retention.action.flag') }}</option>
+                        <option value="archive">{{ t('retention.action.archive') }}</option>
+                        <option value="delete">{{ t('retention.action.delete') }}</option>
+                    </select>
+                    {# 17b: Delete warning banner — shown by JS when "delete" selected #}
+                    <div class="retention-delete-warning mt-2 small py-2" id="deleteWarning" hidden>
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i>{{ t('retention.delete_warning') }}
+                    </div>
+                </div>
+                <button type="button" class="btn w-100 retention-save-button" id="btnSave">
+                    <i class="bi bi-check-lg me-1"></i>{{ t('retention.save') }}
+                </button>
+
+                <!-- Summary -->
+                <div class="mt-3 p-3 retention-policy-summary" id="policySummary">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-info-circle retention-summary-icon"></i>
+                        <small class="fw-medium">{{ t('retention.current_policy') }}</small>
+                    </div>
+                    <div class="small retention-policy-summary-text" id="policySummaryText">{{ t('base.loading') }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right: Affected Documents -->
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-file-earmark-x"></i>
+                    <span class="fw-medium">{{ t('retention.affected_docs') }}</span>
+                </div>
+                <span class="retention-affected-count" id="affectedCount">—</span>
+            </div>
+            <div class="card-body p-0">
+                <div id="affectedList" class="list-group list-group-flush">
+                    <div class="text-center py-4 retention-empty-state">
+                        {{ t('retention.affected_hint') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script id="retention-config" type="application/json">
+{{ {
+    "projectId": project.id,
+    "retentionUrl": url_for('compliance.get_retention_compat', project_id=project.id),
+    "documentsUrl": url_for('researcher.project_documents', project_id=project.id),
+    "strings": {
+        "noPolicyConfigured": "No policy configured.",
+        "noRetentionLimit": "No retention limit — all documents are kept indefinitely.",
+        "actionDeleted": "deleted",
+        "actionArchived": "archived",
+        "actionFlagged": "flagged for review",
+        "affectedNoneWithNoLimit": "No retention limit set — no documents affected.",
+        "affectedNoneWithinPolicy": "No documents exceed the retention period.",
+        "affectedLoadFailed": "Failed to load documents.",
+        "policySaved": "Retention policy saved.",
+        "policySaveFailed": "Failed to save retention policy.",
+        "daysOldSuffix": "d old"
+    }
+} | tojson | safe }}
+</script>
+<script src="{{ url_for('static', filename='js/retention.js') }}"></script>
+{% endblock %}

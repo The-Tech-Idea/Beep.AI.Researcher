@@ -1,0 +1,273 @@
+﻿{% extends base_template or "base.html" %}
+
+{% block title %}{{ doc.filename }} - {{ project.name }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/library_setup_summary.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/supporting_sources_summary.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/document_viewer.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <a href="/researcher/projects/{{ project.id }}" class="text-decoration-none me-2">{{ t('document.back') }}</a>
+        <h4 class="d-inline mb-0">{{ doc.filename }}</h4>
+    </div>
+    <button type="button" class="btn btn-outline-secondary btn-sm" id="relatedLink">Find related files</button>
+</div>
+
+<div
+    data-library-setup-summary
+    data-project-api-base="/projects/{{ project.id }}"
+    data-collections-url="{{ url_for('projects.list_rag_collections_for_project') }}"
+    data-start-url="{{ url_for('project_start.project_start_page', project_id=project.id) }}"
+    data-settings-url="{{ url_for('researcher.project_settings', project_id=project.id) }}"
+    data-collection-id="{{ project.collection_id or '' }}"
+    data-quality-mode="{{ project.rag_quality_mode or 'balanced' }}"
+    data-quality-fast-label="{{ t('project_search.rag_mode.fast') }}"
+    data-quality-balanced-label="{{ t('project_search.rag_mode.balanced') }}"
+    data-quality-deep-label="{{ t('project_search.rag_mode.deep') }}"
+></div>
+
+<div class="viewer-context-card">
+    <h5>Review this file in context</h5>
+    <p>This page shows the full text of one project file. If you opened it from an answer, start with the highlighted passage when available, then read the lines around it for context.</p>
+    <ul>
+        <li>Use this page to confirm wording before quoting or reporting it.</li>
+        <li>Highlighted passages are reading aids only. Your original file is not changed.</li>
+    </ul>
+    {% if active_document_reference %}
+    <div class="viewer-reference-context">
+        <p class="viewer-reference-context__eyebrow">{{ t('document.reference_context.title') }}</p>
+        <h6 class="viewer-reference-context__title">{{ active_document_reference.title }}</h6>
+        {% if active_document_reference.authors_text or active_document_reference.year or active_document_reference.source_label %}
+        <p class="viewer-reference-context__meta">
+            {% if active_document_reference.authors_text %}{{ active_document_reference.authors_text }}{% endif %}
+            {% if active_document_reference.year %}<span>{{ active_document_reference.year }}</span>{% endif %}
+            {% if active_document_reference.source_label %}<span>{{ active_document_reference.source_label }}</span>{% endif %}
+        </p>
+        {% endif %}
+        <p class="viewer-reference-context__body">{{ t('document.reference_context.body') }}</p>
+        <div class="viewer-reference-context__actions">
+            <a href="{{ active_document_reference.detail_url }}" class="viewer-reference-action">
+                {{ t('document.reference_context.back_to_source') }}
+            </a>
+            <a href="{{ active_document_reference.report_url }}" class="viewer-reference-action">
+                {{ t('document.references.add_to_report') }}
+            </a>
+            {% if active_document_reference.open_doi_url %}
+            <a href="{{ active_document_reference.open_doi_url }}" target="_blank" rel="noopener" class="viewer-reference-action">
+                {{ t('references.detail.open_doi') }}
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<div id="viewerStatus" class="viewer-status" role="status" aria-live="polite">
+    <i class="bi bi-search"></i>
+    <span id="viewerStatusText"></span>
+</div>
+
+<div id="relatedFilesPanel" class="related-files-panel" role="region" aria-live="polite">
+    <h5 class="mb-1">{{ t('document.related') }}</h5>
+    <p class="small mb-0" id="relatedFilesSummary">Use this list to review nearby sources without leaving your project context.</p>
+    <div id="relatedFilesBody"></div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-file-text me-2"></i>File text</h5>
+            </div>
+            <div class="card-body">
+                {% if doc.text_content %}
+                <div id="docContent" class="viewer-reading-surface p-3 rounded border"
+                     data-doc-id="{{ doc.id }}" data-project-id="{{ project.id }}">{{ doc.text_content }}</div>
+                {% else %}
+                <p class="viewer-plain-empty mb-0">{{ t('document.no_text') }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-tags me-2"></i>{{ t('document.apply_code') }}</h5>
+            </div>
+            <div class="card-body">
+                <p class="viewer-side-note mb-2"><strong>Highlight a passage</strong> and choose a label to organize notes or themes for this file.</p>
+                <select id="codeSelect" class="form-select form-select-sm mb-2">
+                    <option value="">{{ t('document.choose_code') }}</option>
+                    {% for c in codes %}
+                    <option value="{{ c.id }}" data-color="{{ c.color }}">{{ c.name }}</option>
+                    {% endfor %}
+                </select>
+                <button type="button" class="btn btn-primary btn-sm" id="btnApplyCode">{{ t('document.apply_button') }}</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm ms-1" id="btnSuggest">{{ t('document.suggest_button') }}</button>
+            </div>
+        </div>
+        <div id="codingSuggestionSources" data-supporting-sources-panel class="mb-3" hidden></div>
+        <div class="helper-card mt-3 p-3">
+            <div class="d-flex align-items-start gap-2">
+                <i class="bi bi-lightbulb fs-4 text-primary"></i>
+                <div>
+                    <p class="mb-1 fw-semibold">{{ t('document.helper.title') }}</p>
+                    <p class="small mb-1">{{ t('document.helper.body') }}</p>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="badge">{{ t('document.helper.tip') }}</span>
+                        <a href="{{ url_for('researcher.project_detail', project_id=project.id) }}#assistantPanel" class="text-decoration-none text-primary small">{{ t('document.helper.action') }}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-3 viewer-reference-links-card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-journal-bookmark me-2"></i>{{ t('document.references.title') }}</h5>
+            </div>
+            <div class="card-body">
+                <p class="viewer-side-note mb-2">{{ t('document.references.body') }}</p>
+                {% if linked_document_references %}
+                <div class="viewer-reference-link-list">
+                    {% for linked_reference in linked_document_references %}
+                    <article class="viewer-reference-link-card{% if linked_reference.is_active %} is-active{% endif %}">
+                        <div class="viewer-reference-link-card__header">
+                            <div>
+                                <h6 class="viewer-reference-link-card__title">{{ linked_reference.title }}</h6>
+                                {% if linked_reference.authors_text or linked_reference.year or linked_reference.source_label %}
+                                <p class="viewer-reference-link-card__meta">
+                                    {% if linked_reference.authors_text %}{{ linked_reference.authors_text }}{% endif %}
+                                    {% if linked_reference.year %}<span>{{ linked_reference.year }}</span>{% endif %}
+                                    {% if linked_reference.source_label %}<span>{{ linked_reference.source_label }}</span>{% endif %}
+                                </p>
+                                {% endif %}
+                            </div>
+                            <div class="viewer-reference-link-card__badges">
+                                {% if linked_reference.is_primary %}
+                                <span class="viewer-reference-link-badge">{{ t('document.references.primary_badge') }}</span>
+                                {% endif %}
+                                {% if linked_reference.is_active %}
+                                <span class="viewer-reference-link-badge is-active">{{ t('document.references.active_badge') }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if linked_reference.citation_context %}
+                        <p class="viewer-reference-link-card__context">{{ linked_reference.citation_context }}</p>
+                        {% endif %}
+                        <div class="viewer-reference-link-actions">
+                            <a href="{{ linked_reference.detail_url }}" class="viewer-reference-action">{{ t('document.references.open_source') }}</a>
+                            <a href="{{ linked_reference.report_url }}" class="viewer-reference-action">{{ t('document.references.add_to_report') }}</a>
+                            {% if linked_reference.open_doi_url %}
+                            <a href="{{ linked_reference.open_doi_url }}" target="_blank" rel="noopener" class="viewer-reference-action">{{ t('references.detail.open_doi') }}</a>
+                            {% endif %}
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="viewer-side-note mb-0">{{ t('document.references.empty') }}</p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-highlighter me-2"></i>{{ t('document.annotations_panel_title') }}</h5>
+            </div>
+            <div class="card-body">
+                {% if doc.text_content %}
+                <div class="annotation-composer">
+                    <p class="viewer-side-note mb-2">{{ t('document.annotation.helper') }}</p>
+                    <div class="annotation-selection-block">
+                        <label class="annotation-field-label" for="annotationSelectionPreview">{{ t('document.annotation.selection_label') }}</label>
+                        <div
+                            id="annotationSelectionPreview"
+                            class="annotation-selection-preview is-empty"
+                            data-empty-text="{{ t('document.annotation.selection_empty') }}"
+                        >{{ t('document.annotation.selection_empty') }}</div>
+                    </div>
+                    <div class="annotation-field-block">
+                        <label class="annotation-field-label" for="annotationNoteInput">{{ t('document.annotation.note_label') }}</label>
+                        <textarea
+                            id="annotationNoteInput"
+                            class="form-control annotation-note-input"
+                            rows="3"
+                            maxlength="2000"
+                            placeholder="{{ t('document.annotation.note_placeholder') }}"
+                        ></textarea>
+                    </div>
+                    <div class="annotation-composer-toolbar">
+                        <div class="annotation-color-field">
+                            <label class="annotation-field-label" for="annotationColorInput">{{ t('document.annotation.color_label') }}</label>
+                            <input type="color" id="annotationColorInput" class="form-control form-control-color annotation-color-input" value="#fef08a">
+                        </div>
+                        <button type="button" class="btn btn-primary annotation-save-button" id="btnSaveAnnotation">{{ t('document.annotation.save_button') }}</button>
+                    </div>
+                </div>
+                {% else %}
+                <p class="viewer-side-note mb-3">{{ t('document.annotation.no_text_help') }}</p>
+                {% endif %}
+                <div class="annotation-list-block">
+                    <p class="viewer-side-note mb-2">{{ t('document.annotation.saved_help') }}</p>
+                    <div id="annotationsList" class="annotation-list" aria-live="polite"></div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-bookmark me-2"></i>Saved passages</h5>
+            </div>
+            <div class="card-body" id="codedList">
+                {% for r in refs %}
+                <div class="mb-2 p-2 rounded border small" data-ref-id="{{ r.id }}">
+                    <span class="badge me-1" style="background-color: {{ r.code.color }};">{{ r.code.name }}</span>
+                    {% if doc.text_content %}
+                    <span>"{{ doc.text_content[r.start_offset:r.end_offset][:50] }}{% if r.end_offset - r.start_offset > 50 %}...{% endif %}"</span>
+                    {% endif %}
+                    <button type="button" class="btn btn-link btn-sm text-danger p-0 ms-1 removeRef" data-ref-id="{{ r.id }}">&#215;</button>
+                </div>
+                {% else %}
+                <p class="small mb-0">{{ t('document.no_coded_passages') }}</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="document-viewer-config" type="application/json">
+{
+    "projectId": {{ project.id }},
+    "docId": {{ doc.id }},
+    "selectCodeAlert": {{ t('document.select_code_alert') | tojson }},
+    "selectTextFirst": {{ t('document.select_text_first') | tojson }},
+    "codeApplyFailed": {{ t('document.code_apply_failed') | tojson }},
+    "suggestFailed": {{ t('document.suggest_failed') | tojson }},
+    "codedPassageDeleteFailed": {{ t('document.coded_passage_delete_failed') | tojson }},
+    "noRelated": {{ t('document.no_related_docs') | tojson }},
+    "relatedSummaryDefault": {{ t('document.related_summary') | tojson }},
+    "relatedOpenFile": {{ t('document.related_open_file') | tojson }},
+    "annotationSelectionRequired": {{ t('document.annotation.selection_required') | tojson }},
+    "annotationSaveLoading": {{ t('document.annotation.save_loading') | tojson }},
+    "annotationSaveSuccess": {{ t('document.annotation.save_success') | tojson }},
+    "annotationSaveFailed": {{ t('document.annotation.save_failed') | tojson }},
+    "annotationDeleteFailed": {{ t('document.annotation.delete_failed') | tojson }},
+    "annotationEmpty": {{ t('document.annotation.empty') | tojson }},
+    "annotationDefaultTitle": {{ t('document.annotation.default_title') | tojson }},
+    "annotationDeleteLabel": {{ t('document.annotation.delete_button') | tojson }},
+    "annotationRangeLabel": {{ t('document.annotation.range_label') | tojson }},
+    "answerContextMessage": "This file was opened from an answer so you can review the supporting passage in context.",
+    "referenceContextMessage": {{ t('document.reference_context.status') | tojson }},
+    "highlightContextMessage": "A saved relevant passage has been highlighted below to help you review the supporting text quickly.",
+    "codedRefRanges": {
+{% for r in refs %}
+        "{{ r.id }}": { "start": {{ r.start_offset }}, "end": {{ r.end_offset }} }{% if not loop.last %},{% endif %}
+{% endfor %}
+    }
+}
+</script>
+<script src="{{ url_for('static', filename='js/project/library_setup_summary.js') }}"></script>
+<script src="{{ url_for('static', filename='js/project/supporting_sources_summary.js') }}"></script>
+<script src="{{ url_for('static', filename='js/project/document_viewer.js') }}"></script>
+{% endblock %}

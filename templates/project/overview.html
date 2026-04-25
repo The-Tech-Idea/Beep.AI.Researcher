@@ -1,0 +1,310 @@
+{% extends "project/_layout.html" %}
+
+{% set active_page = 'overview' %}
+{% set page_title = t('overview.title') %}
+{% set page_subtitle = t('overview.subtitle') %}
+{% set page_icon = 'house' %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/library_setup_summary.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/overview.css') }}">
+{% endblock %}
+
+{% block header_actions %}
+<div class="dropdown overview-export-dropdown">
+    <button class="btn btn-sm dropdown-toggle overview-export-button" type="button" data-bs-toggle="dropdown">
+        <i class="bi bi-download me-1"></i>{{ t('overview.export') }}
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end overview-export-menu">
+        <li><a class="dropdown-item overview-export-item" href="/projects/{{ project.id }}/export?format=json">JSON</a></li>
+        <li><a class="dropdown-item overview-export-item" href="/projects/{{ project.id }}/export?format=csv">CSV</a></li>
+        <li><a class="dropdown-item overview-export-item" href="/projects/{{ project.id }}/export?format=excel">Excel</a></li>
+    </ul>
+</div>
+{% endblock %}
+
+{% block workspace_content %}
+<div
+    data-library-setup-summary
+    data-project-api-base="/projects/{{ project.id }}"
+    data-collections-url="{{ url_for('projects.list_rag_collections_for_project') }}"
+    data-start-url="{{ url_for('project_start.project_start_page', project_id=project.id) }}"
+    data-settings-url="{{ url_for('researcher.project_settings', project_id=project.id) }}"
+    data-collection-id="{{ project.collection_id or '' }}"
+    data-quality-mode="{{ project.rag_quality_mode or 'balanced' }}"
+    data-quality-fast-label="{{ t('project_search.rag_mode.fast') }}"
+    data-quality-balanced-label="{{ t('project_search.rag_mode.balanced') }}"
+    data-quality-deep-label="{{ t('project_search.rag_mode.deep') }}"
+></div>
+
+{# ═══ Stats Row ═══ #}
+<div class="spa-stats-row">
+    <div class="spa-stat-chip">
+        <div class="spa-stat-icon"><i class="bi bi-file-earmark-text"></i></div>
+        <div>
+            <div class="spa-stat-value">{{ document_count|default(0) }}</div>
+            <div class="spa-stat-label">{{ t('overview.stat.documents') }}</div>
+        </div>
+    </div>
+    <div class="spa-stat-chip">
+        <div class="spa-stat-icon success"><i class="bi bi-tags"></i></div>
+        <div>
+            <div class="spa-stat-value">{{ code_count|default(0) }}</div>
+            <div class="spa-stat-label">{{ t('overview.stat.codes') }}</div>
+        </div>
+    </div>
+    <div class="spa-stat-chip">
+        <div class="spa-stat-icon warning"><i class="bi bi-kanban"></i></div>
+        <div>
+            <div class="spa-stat-value">{{ task_count|default(0) }}</div>
+            <div class="spa-stat-label">{{ t('overview.stat.tasks') }}</div>
+        </div>
+    </div>
+    <div class="spa-stat-chip">
+        <div class="spa-stat-icon accent"><i class="bi bi-chat-left-text"></i></div>
+        <div>
+            <div class="spa-stat-value">{{ chat_count|default(0) }}</div>
+            <div class="spa-stat-label">{{ t('overview.stat.conversations') }}</div>
+        </div>
+    </div>
+    <div class="spa-stat-chip">
+        <div class="spa-stat-icon overview-stat-icon-info"><i class="bi bi-table"></i></div>
+        <div>
+            <div class="spa-stat-value">{{ extraction_count|default(0) }}</div>
+            <div class="spa-stat-label">{{ t('overview.stat.extractions') }}</div>
+        </div>
+    </div>
+    <div class="spa-stat-chip">
+        <div class="spa-stat-icon overview-stat-icon-study"><i class="bi bi-card-text"></i></div>
+        <div>
+            <div class="spa-stat-value">{{ flashcard_count|default(0) }}</div>
+            <div class="spa-stat-label">{{ t('overview.stat.flashcards') }}</div>
+        </div>
+    </div>
+</div>
+
+{# ═══ Research Workflow Pipeline ═══ #}
+<div class="spa-card mb-3">
+    <div class="spa-card-header">
+        <h3 class="spa-card-title"><i class="bi bi-arrow-right-circle me-2"></i>{{ t('overview.pipeline.title') }}</h3>
+        <small class="overview-pipeline-subtitle">{{ t('overview.pipeline.subtitle') }}</small>
+    </div>
+    <div class="spa-card-body py-2">
+        <div class="d-flex align-items-center gap-1 flex-wrap" id="pipelineSteps">
+            {%
+              set steps = [
+                ('upload',      'bi-upload',           document_count > 0,  url_for('researcher.project_documents', project_id=project.id),  t('overview.pipeline.step.upload')),
+                ('indexed',     'bi-database-check',   document_count > 0,  url_for('researcher.project_documents', project_id=project.id),  t('overview.pipeline.step.indexed')),
+                ('ask',         'bi-chat-left-text',   chat_count > 0,      url_for('researcher.project_search', project_id=project.id),     t('overview.pipeline.step.ask')),
+                ('code',        'bi-tags',             code_count > 0,      url_for('researcher.project_codes', project_id=project.id),      t('overview.pipeline.step.code')),
+                ('extract',     'bi-table',            extraction_count > 0,url_for('researcher.extraction_page', project_id=project.id), t('overview.pipeline.step.extract')),
+                ('flashcards',  'bi-card-text',        flashcard_count > 0, url_for('researcher.flashcards_page', project_id=project.id),    t('overview.pipeline.step.flashcards')),
+                ('quizzes',     'bi-question-circle',  quiz_count > 0,      url_for('researcher.quizzes_page', project_id=project.id),       t('overview.pipeline.step.quizzes')),
+                ('report',      'bi-file-earmark-richtext', false,          url_for('researcher.project_report', project_id=project.id),     t('overview.pipeline.step.report')),
+              ]
+            %}
+            {% for key, icon, done, href, label in steps %}
+            {% if not loop.first %}
+            <i class="bi bi-chevron-right small overview-pipeline-separator"></i>
+            {% endif %}
+            <a href="{{ href }}"
+               class="text-decoration-none px-2 py-1 d-flex align-items-center gap-1 overview-pipeline-step {% if done %}overview-pipeline-step--done{% else %}overview-pipeline-step--pending{% endif %}"
+               title="{{ label }}">
+                <i class="bi {{ icon }}"></i>
+                <span class="d-none d-md-inline">{{ label }}</span>
+                {% if done %}<i class="bi bi-check2 ms-1"></i>{% endif %}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{# ═══ Quick Actions (Rich Cards) ═══ #}
+<div class="row g-3 mb-3">
+    <div class="col-12">
+        <h6 class="fw-semibold mb-2 small text-uppercase letter-spacing-1 overview-actions-title">{{ t('overview.actions.title') }}</h6>
+    </div>
+
+    {# Upload Documents #}
+    <div class="col-6 col-md-4 col-lg-2">
+        <a href="{{ url_for('researcher.project_documents', project_id=project.id) }}"
+           class="card h-100 text-decoration-none overview-action-card overview-action-card-shell">
+            <div class="card-body text-center p-3">
+                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-2 overview-action-icon overview-action-icon--primary">
+                    <i class="bi bi-upload"></i>
+                </div>
+                <div class="fw-medium small">{{ t('overview.action.upload') }}</div>
+                <div class="overview-action-hint">{{ document_count }} {{ t('overview.stat.documents') }}</div>
+            </div>
+        </a>
+    </div>
+
+    {# Ask AI #}
+    <div class="col-6 col-md-4 col-lg-2">
+        <a href="{{ url_for('researcher.project_search', project_id=project.id) }}"
+           class="card h-100 text-decoration-none overview-action-card overview-action-card-shell">
+            <div class="card-body text-center p-3">
+                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-2 overview-action-icon overview-action-icon--info">
+                    <i class="bi bi-chat-left-text"></i>
+                </div>
+                <div class="fw-medium small">{{ t('overview.action.ask_ai') }}</div>
+                <div class="overview-action-hint">{{ t('overview.action.ask_ai_hint') }}</div>
+            </div>
+        </a>
+    </div>
+
+    {# Code Data #}
+    <div class="col-6 col-md-4 col-lg-2">
+        <a href="{{ url_for('researcher.project_codes', project_id=project.id) }}"
+           class="card h-100 text-decoration-none overview-action-card overview-action-card-shell">
+            <div class="card-body text-center p-3">
+                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-2 overview-action-icon overview-action-icon--success">
+                    <i class="bi bi-tags"></i>
+                </div>
+                <div class="fw-medium small">{{ t('overview.action.code_data') }}</div>
+                <div class="overview-action-hint">{{ code_count }} {{ t('overview.stat.codes') }}</div>
+            </div>
+        </a>
+    </div>
+
+    {# Flashcards #}
+    <div class="col-6 col-md-4 col-lg-2">
+        <a href="{{ url_for('researcher.flashcards_page', project_id=project.id) }}"
+           class="card h-100 text-decoration-none overview-action-card overview-action-card-shell">
+            <div class="card-body text-center p-3">
+                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-2 overview-action-icon overview-action-icon--study">
+                    <i class="bi bi-card-text"></i>
+                </div>
+                <div class="fw-medium small">{{ t('overview.action.flashcards') }}</div>
+                <div class="overview-action-hint">{{ flashcard_count }} {{ t('overview.stat.flashcards') }}</div>
+            </div>
+        </a>
+    </div>
+
+    {# Tasks #}
+    <div class="col-6 col-md-4 col-lg-2">
+        <a href="{{ url_for('researcher.project_tasks', project_id=project.id) }}"
+           class="card h-100 text-decoration-none overview-action-card overview-action-card-shell">
+            <div class="card-body text-center p-3">
+                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-2 overview-action-icon overview-action-icon--warning">
+                    <i class="bi bi-kanban"></i>
+                </div>
+                <div class="fw-medium small">{{ t('overview.action.new_task') }}</div>
+                <div class="overview-action-hint">{{ task_count }} {{ t('overview.stat.tasks') }}</div>
+            </div>
+        </a>
+    </div>
+
+    {# Write Report #}
+    <div class="col-6 col-md-4 col-lg-2">
+        <a href="{{ url_for('researcher.project_report', project_id=project.id) }}"
+           class="card h-100 text-decoration-none overview-action-card overview-action-card-shell">
+            <div class="card-body text-center p-3">
+                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-2 overview-action-icon overview-action-icon--secondary">
+                    <i class="bi bi-pencil-square"></i>
+                </div>
+                <div class="fw-medium small">{{ t('overview.action.write_report') }}</div>
+                <div class="overview-action-hint">{{ t('overview.action.write_report_hint') }}</div>
+            </div>
+        </a>
+    </div>
+</div>
+
+{# ═══ Two-column lower area: Activity + To-Do ═══ #}
+<div class="row g-3">
+
+    {# Recent Activity #}
+    <div class="col-md-7">
+        <div class="spa-card h-100">
+            <div class="spa-card-header">
+                <h3 class="spa-card-title"><i class="bi bi-clock-history"></i> {{ t('overview.activity.title') }}</h3>
+            </div>
+            <div class="spa-card-body">
+                {% if activities %}
+                <ul class="spa-timeline">
+                    {% for activity in activities[:10] %}
+                    <li class="spa-timeline-item">
+                        <div class="spa-timeline-dot"></div>
+                        <div class="spa-timeline-content">
+                            <p class="spa-timeline-text">{{ activity.text }}</p>
+                            <span class="spa-timeline-time">{{ activity.time_ago }}</span>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <div class="spa-empty">
+                    <i class="bi bi-clock"></i>
+                    <h4>{{ t('overview.activity.empty.title') }}</h4>
+                    <p>{{ t('overview.activity.empty.desc') }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {# Things To-Do checklist #}
+    <div class="col-md-5">
+        <div class="spa-card h-100">
+            <div class="spa-card-header">
+                <h3 class="spa-card-title"><i class="bi bi-check2-circle"></i> {{ t('overview.todo.title') }}</h3>
+            </div>
+            <div class="spa-card-body p-0">
+                <ul class="list-group list-group-flush" id="overviewTodoList">
+                    <li class="list-group-item d-flex align-items-center gap-2 px-3 py-2 overview-todo-item {% if document_count > 0 %}overview-todo-item--done{% else %}overview-todo-item--pending{% endif %}">
+                        <i class="bi {% if document_count > 0 %}bi-check-circle-fill overview-todo-status overview-todo-status--done{% else %}bi-circle overview-todo-status overview-todo-status--pending{% endif %}"></i>
+                        <span class="overview-todo-text {% if document_count > 0 %}overview-todo-text--done{% endif %}">
+                            {{ t('overview.todo.upload_docs') }}
+                        </span>
+                        {% if document_count == 0 %}
+                        <a href="{{ url_for('researcher.project_documents', project_id=project.id) }}" class="ms-auto btn btn-sm py-0 px-2 overview-todo-link">{{ t('overview.todo.go') }}</a>
+                        {% endif %}
+                    </li>
+                    <li class="list-group-item d-flex align-items-center gap-2 px-3 py-2 overview-todo-item {% if code_count > 0 %}overview-todo-item--done{% else %}overview-todo-item--pending{% endif %}">
+                        <i class="bi {% if code_count > 0 %}bi-check-circle-fill overview-todo-status overview-todo-status--done{% else %}bi-circle overview-todo-status overview-todo-status--pending{% endif %}"></i>
+                        <span class="overview-todo-text {% if code_count > 0 %}overview-todo-text--done{% endif %}">
+                            {{ t('overview.todo.create_codes') }}
+                        </span>
+                        {% if code_count == 0 %}
+                        <a href="{{ url_for('researcher.project_codes', project_id=project.id) }}" class="ms-auto btn btn-sm py-0 px-2 overview-todo-link">{{ t('overview.todo.go') }}</a>
+                        {% endif %}
+                    </li>
+                    <li class="list-group-item d-flex align-items-center gap-2 px-3 py-2 overview-todo-item {% if chat_count > 0 %}overview-todo-item--done{% else %}overview-todo-item--pending{% endif %}">
+                        <i class="bi {% if chat_count > 0 %}bi-check-circle-fill overview-todo-status overview-todo-status--done{% else %}bi-circle overview-todo-status overview-todo-status--pending{% endif %}"></i>
+                        <span class="overview-todo-text {% if chat_count > 0 %}overview-todo-text--done{% endif %}">
+                            {{ t('overview.todo.ask_ai') }}
+                        </span>
+                        {% if chat_count == 0 %}
+                        <a href="{{ url_for('researcher.project_search', project_id=project.id) }}" class="ms-auto btn btn-sm py-0 px-2 overview-todo-link">{{ t('overview.todo.go') }}</a>
+                        {% endif %}
+                    </li>
+                    <li class="list-group-item d-flex align-items-center gap-2 px-3 py-2 overview-todo-item {% if extraction_count > 0 %}overview-todo-item--done{% else %}overview-todo-item--pending{% endif %}">
+                        <i class="bi {% if extraction_count > 0 %}bi-check-circle-fill overview-todo-status overview-todo-status--done{% else %}bi-circle overview-todo-status overview-todo-status--pending{% endif %}"></i>
+                        <span class="overview-todo-text {% if extraction_count > 0 %}overview-todo-text--done{% endif %}">
+                            {{ t('overview.todo.extract_data') }}
+                        </span>
+                        {% if extraction_count == 0 %}
+                        <a href="{{ url_for('researcher.extraction_page', project_id=project.id) }}" class="ms-auto btn btn-sm py-0 px-2 overview-todo-link">{{ t('overview.todo.go') }}</a>
+                        {% endif %}
+                    </li>
+                    <li class="list-group-item d-flex align-items-center gap-2 px-3 py-2 overview-todo-item {% if flashcard_count > 0 %}overview-todo-item--done{% else %}overview-todo-item--pending{% endif %}">
+                        <i class="bi {% if flashcard_count > 0 %}bi-check-circle-fill overview-todo-status overview-todo-status--done{% else %}bi-circle overview-todo-status overview-todo-status--pending{% endif %}"></i>
+                        <span class="overview-todo-text {% if flashcard_count > 0 %}overview-todo-text--done{% endif %}">
+                            {{ t('overview.todo.make_flashcards') }}
+                        </span>
+                        {% if flashcard_count == 0 %}
+                        <a href="{{ url_for('researcher.flashcards_page', project_id=project.id) }}" class="ms-auto btn btn-sm py-0 px-2 overview-todo-link">{{ t('overview.todo.go') }}</a>
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block page_js %}
+<script src="{{ url_for('static', filename='js/project/library_setup_summary.js') }}"></script>
+{% endblock %}

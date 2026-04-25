@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}My Integrations{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4 d-flex justify-content-between align-items-center">
+    <div>
+        <h1><i class="bi bi-plug me-2"></i>My Integrations</h1>
+        <p class="mb-0 text-muted">Connect your personal accounts to extend Beep Researcher.</p>
+    </div>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}{% for cat, msg in messages %}
+<div class="alert alert-{{ 'danger' if cat == 'error' else cat }} alert-dismissible" role="alert">
+    {{ msg }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}{% endif %}
+{% endwith %}
+
+{% if services %}
+<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+    {% for svc in services %}
+    {% set cred = cred_map.get(svc.id) %}
+    <div class="col">
+        <div class="card h-100 {% if cred %}border-success{% endif %}">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span class="fw-semibold">
+                    <i class="bi bi-puzzle me-1"></i>{{ svc.name }}
+                </span>
+                {% if cred %}
+                    <span class="badge bg-success">Connected</span>
+                {% else %}
+                    <span class="badge bg-secondary">Not connected</span>
+                {% endif %}
+            </div>
+
+            <div class="card-body">
+                {% if svc.description %}
+                <p class="text-muted small mb-3">{{ svc.description }}</p>
+                {% endif %}
+
+                {% if cred %}
+                {# ── Connected state ─────────────────────────────────────── #}
+                <dl class="row small mb-3">
+                    {% if cred.display_name %}
+                    <dt class="col-5">Account</dt>
+                    <dd class="col-7">{{ cred.display_name }}</dd>
+                    {% endif %}
+                    <dt class="col-5">Connected</dt>
+                    <dd class="col-7">{{ cred.connected_at.strftime('%Y-%m-%d') if cred.connected_at else '—' }}</dd>
+                    <dt class="col-5">Last used</dt>
+                    <dd class="col-7">{{ cred.last_used_at.strftime('%Y-%m-%d') if cred.last_used_at else 'Never' }}</dd>
+                </dl>
+                <form method="post"
+                    action="{{ url_for('user_integrations.disconnect_service_route', service_id=svc.id) }}">
+                    <button type="submit" class="btn btn-sm btn-outline-danger w-100"
+                        onclick="return confirm('Disconnect {{ svc.name }}?')" aria-label="Disconnect {{ svc.name }}">
+                        <i class="bi bi-x-circle me-1" aria-hidden="true"></i>Disconnect
+                    </button>
+                </form>
+
+                {% elif not svc.allow_user_override %}
+                {# ── Admin-managed only ──────────────────────────────────── #}
+                <p class="text-muted small">
+                    <i class="bi bi-info-circle me-1"></i>
+                    This service is managed by your administrator. No personal account required.
+                </p>
+
+                {% elif svc.oauth2_auth_url and svc.oauth2_client_id %}
+                {# ── OAuth2 connect ──────────────────────────────────────── #}
+                <p class="small text-muted mb-3">Sign in with {{ svc.name }} to grant access.</p>
+                <a href="{{ url_for('user_integrations.oauth2_start', service_id=svc.id) }}"
+                    class="btn btn-sm btn-primary w-100">
+                    <i class="bi bi-box-arrow-in-right me-1" aria-hidden="true"></i>Connect with {{ svc.name }}
+                </a>
+
+                {% else %}
+                {# ── API key connect ─────────────────────────────────────── #}
+                <form method="post"
+                    action="{{ url_for('user_integrations.connect_service', service_id=svc.id) }}">
+                    {% if svc.service_type == 'zotero' %}
+                    <div class="mb-2">
+                        <label for="zotero_user_id_{{ svc.id }}" class="form-label small fw-semibold">{{ t('integrations.zotero.user_id_label') }}</label>
+                        <input type="text" class="form-control form-control-sm"
+                            id="zotero_user_id_{{ svc.id }}" name="zotero_user_id"
+                            placeholder="{{ t('integrations.zotero.user_id_placeholder') }}" required autocomplete="off">
+                    </div>
+                    <div class="mb-2">
+                        <label for="zotero_library_type_{{ svc.id }}" class="form-label small fw-semibold">{{ t('integrations.zotero.library_type_label') }}</label>
+                        <select class="form-select form-select-sm" id="zotero_library_type_{{ svc.id }}" name="zotero_library_type">
+                            <option value="user">{{ t('integrations.zotero.library_type_user') }}</option>
+                            <option value="group">{{ t('integrations.zotero.library_type_group') }}</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label for="zotero_group_id_{{ svc.id }}" class="form-label small fw-semibold">
+                            {{ t('integrations.zotero.group_id_label') }}
+                            <span class="text-muted fw-normal">{{ t('integrations.zotero.group_id_optional') }}</span>
+                        </label>
+                        <input type="text" class="form-control form-control-sm"
+                            id="zotero_group_id_{{ svc.id }}" name="zotero_group_id"
+                            placeholder="{{ t('integrations.zotero.group_id_placeholder') }}" autocomplete="off">
+                    </div>
+                    {% endif %}
+                    <div class="mb-2">
+                        <label for="api_key_{{ svc.id }}" class="form-label small fw-semibold">API Key</label>
+                        <input type="password" class="form-control form-control-sm"
+                            id="api_key_{{ svc.id }}" name="api_key"
+                            placeholder="Paste your API key…" required autocomplete="off">
+                    </div>
+                    <div class="mb-3">
+                        <label for="display_{{ svc.id }}" class="form-label small fw-semibold">
+                            Account label <span class="text-muted fw-normal">(optional)</span>
+                        </label>
+                        <input type="text" class="form-control form-control-sm"
+                            id="display_{{ svc.id }}" name="display_name"
+                            placeholder="e.g. Work account">
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-success w-100"
+                        aria-label="Connect {{ svc.name }}">
+                        <i class="bi bi-check-circle me-1" aria-hidden="true"></i>Connect
+                    </button>
+                </form>
+                {% endif %}
+            </div>{# /card-body #}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% else %}
+<div class="alert alert-info">
+    <i class="bi bi-info-circle me-2"></i>
+    No integrations are currently enabled for your account. Contact your administrator to enable them.
+</div>
+{% endif %}
+{% endblock %}

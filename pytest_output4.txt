@@ -1,0 +1,211 @@
+........................................................................ [  6%]
+........................................................................ [ 12%]
+........................................................................ [ 19%]
+........................................................................ [ 25%]
+........................................................................ [ 32%]
+........................................................................ [ 38%]
+........................................................................ [ 45%]
+........................................................................ [ 51%]
+........................................................................ [ 58%]
+........................................................................ [ 64%]
+........................................................................ [ 71%]
+........................................................................ [ 77%]
+........................................................................ [ 84%]
+........................................................................ [ 90%]
+........................................................................ [ 97%]
+...............................                                          [100%]
+============================== warnings summary ===============================
+tests/test_batch_operations.py: 60 warnings
+tests/test_debug_routes.py: 358 warnings
+tests/test_extraction_server_route.py: 6 warnings
+tests/test_extraction_validation.py: 121 warnings
+tests/test_monitoring.py: 17 warnings
+tests/test_phase_c.py: 12 warnings
+tests/test_plugin_permissions.py: 84 warnings
+tests/test_plugin_system.py: 41 warnings
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\.venv\Lib\site-packages\sqlalchemy\sql\schema.py:3624: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    return util.wrap_callable(lambda ctx: fn(), fn)  # type: ignore
+
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_status_transitions
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_pause
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_failure
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_estimated_time
+tests/test_batch_operations.py::TestBatchOperationService::test_start_batch_job
+tests/test_batch_operations.py::TestBatchOperationService::test_pause_batch_job
+tests/test_batch_operations.py::TestBatchOperationService::test_cancel_batch_job
+tests/test_batch_operations.py::TestBatchOperationService::test_get_batch_status
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\models\researcher\batch_operations.py:149: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    self.started_at = datetime.utcnow()
+
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_status_transitions
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\models\researcher\batch_operations.py:155: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    self.completed_at = datetime.utcnow()
+
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_pause
+tests/test_batch_operations.py::TestBatchOperationService::test_pause_batch_job
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\models\researcher\batch_operations.py:178: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    self.paused_at = datetime.utcnow()
+
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_failure
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\models\researcher\batch_operations.py:166: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    self.completed_at = datetime.utcnow()
+
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_estimated_time
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_batch_operations.py:93: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    job.started_at = datetime.utcnow() - timedelta(seconds=10)
+
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_estimated_time
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\models\researcher\batch_operations.py:134: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    elapsed = max((datetime.utcnow() - self.started_at).total_seconds(), 1)
+
+tests/test_batch_operations.py::TestBatchOperationService::test_cancel_batch_job
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\models\researcher\batch_operations.py:184: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    self.completed_at = datetime.utcnow()
+
+tests/test_batch_operations.py::TestBatchOperationService::test_cleanup_old_jobs
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_batch_operations.py:516: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    old_job.created_at = datetime.utcnow() - timedelta(days=40)
+
+tests/test_contradiction_detection.py: 10 warnings
+tests/test_extraction_server_route.py: 3 warnings
+tests/test_phase_c.py: 11 warnings
+tests/test_related_docs.py: 15 warnings
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\.venv\Lib\site-packages\flask_sqlalchemy\query.py:30: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    rv = self.get(ident)
+
+tests/test_debug_routes.py: 14 warnings
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_debug_routes.py:74: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = datetime.utcnow()
+
+tests/test_debug_routes.py::TestDebugValidationAnalytics::test_get_validation_history
+tests/test_debug_routes.py::TestDebugValidationAnalytics::test_get_validation_history_with_filters
+tests/test_debug_routes.py::TestDebugValidationAnalytics::test_get_validation_summary
+tests/test_debug_routes.py::TestDebugValidationAnalytics::test_get_validation_summary_custom_period
+tests/test_debug_routes.py::TestDebugHealth::test_get_debug_health
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_debug_routes.py:101: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = datetime.utcnow()
+
+tests/test_debug_routes.py::TestDebugDataStructures::test_execution_log_model_creation
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_debug_routes.py:266: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    retrieved = db.session.query(PluginExecutionLog).get(log.id)
+
+tests/test_debug_routes.py::TestDebugDataStructures::test_execution_log_error_tracking
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_debug_routes.py:286: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    retrieved = db.session.query(PluginExecutionLog).get(log.id)
+
+tests/test_debug_routes.py::TestDebugDataStructures::test_validation_result_suggestions
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_debug_routes.py:314: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    retrieved = db.session.query(ExtractionValidationResult).get(result.id)
+
+tests/test_debug_routes.py::TestDebugTimeSeriesData::test_execution_logs_with_dates
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_debug_routes.py:326: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    base_time = datetime.utcnow()
+
+tests/test_debug_routes.py::TestDebugTimeSeriesData::test_validation_results_with_dates
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_debug_routes.py:353: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    base_time = datetime.utcnow()
+
+tests/test_event_bus_integration.py: 8 warnings
+tests/test_search_caching.py: 20 warnings
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\.venv\Lib\site-packages\flask_sqlalchemy\extension.py:881: SAWarning: Can't sort tables for DROP; an unresolvable foreign key dependency exists between tables: user_invites, users; and backend does not support ALTER.  To restore at least a partial sort, apply use_alter=True to ForeignKey and ForeignKeyConstraint objects involved in the cycle to mark these as known cycles that will be ignored.
+    getattr(metadata, op_name)(bind=engine)
+
+tests/test_extraction_validation.py::TestExtractionValidationService::test_extracted_field_value_status_tracking
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_extraction_validation.py:303: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    retrieved = db.session.query(ExtractedFieldValue).get(field_value.id)
+
+tests/test_extraction_validation.py::TestExtractionValidationService::test_extraction_validation_result_model
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_extraction_validation.py:436: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    retrieved = db.session.query(ExtractionValidationResult).get(val_result.id)
+
+tests/test_extraction_validation.py::TestExtractionValidationService::test_schema_field_relationship
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_extraction_validation.py:453: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    retrieved_schema = db.session.query(ExtractionSchema).get(test_schema.id)
+
+tests/test_job_queue.py::TestJobExecution::test_execute_job_success
+tests/test_job_queue.py::TestJobExecution::test_execute_job_no_handler
+tests/test_job_queue.py::TestJobExecution::test_execute_job_handler_error
+tests/test_job_queue.py::TestJobExecution::test_execute_job_retry_on_failure
+tests/test_job_queue.py::TestJobExecution::test_execute_job_permanent_failure
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_event_bus_integration.py:171: SAWarning: fully NULL primary key identity cannot load any object.  This condition may raise an error in a future release.
+    task = db.session.get(Task, task_id)
+
+tests/test_permission_service.py::TestPermissionServiceExpiry::test_expired_permission_not_granted
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_permission_service.py:202: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    past = datetime.utcnow() - timedelta(days=1)
+
+tests/test_permission_service.py::TestPermissionServiceExpiry::test_future_expiry_permission_granted
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_permission_service.py:229: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    future = datetime.utcnow() + timedelta(days=7)
+
+tests/test_permission_service.py::TestGetUserRoles::test_get_user_roles_includes_non_expired_only
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_permission_service.py:415: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    expires_at=datetime.utcnow() - timedelta(days=1)
+
+tests/test_phase_c.py::TestPhiRoutes::test_redact_document_removes_phi
+tests/test_phase_c.py::TestPhiRoutes::test_redact_document_prevents_double_redaction
+tests/test_phase_c.py::TestPhiRoutes::test_restore_after_redaction
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\routes\phi_routes.py:68: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    'redacted_at': datetime.utcnow().isoformat(),
+
+tests/test_plugin_permissions.py::TestPluginRoleAssignment::test_assignment_expiry
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_plugin_permissions.py:153: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    past_date = datetime.utcnow() - timedelta(days=1)
+
+tests/test_plugin_permissions.py::TestPluginRoleAssignment::test_assignment_expiry
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_plugin_permissions.py:154: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    future_date = datetime.utcnow() + timedelta(days=30)
+
+tests/test_plugin_permissions.py::TestPluginPermissionService::test_assign_user_access_with_expiry
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_plugin_permissions.py:497: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    future_date = datetime.utcnow() + timedelta(days=30)
+
+tests/test_plugin_permissions.py::TestPluginPermissionService::test_cleanup_expired_assignments
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_plugin_permissions.py:592: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    past = datetime.utcnow() - timedelta(days=1)
+
+tests/test_plugin_permissions.py::TestPluginPermissionService::test_cleanup_expired_assignments
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_plugin_permissions.py:593: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    future = datetime.utcnow() + timedelta(days=30)
+
+tests/test_plugin_system.py::TestHookContext::test_context_creation
+tests/test_plugin_system.py::TestHookContext::test_context_to_dict
+tests/test_plugin_system.py::TestPluginBase::test_plugin_hook_execution
+tests/test_plugin_system.py::TestPluginManager::test_execute_hook_no_plugins
+tests/test_plugin_system.py::TestPluginIntegration::test_hook_context_flow
+  <string>:8: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+
+tests/test_rbac_e2e.py::TestCompleteWorkflows::test_workflow_temporary_access_expires_revoked
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_e2e.py:163: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    future = datetime.utcnow() + timedelta(days=7)
+
+tests/test_rbac_e2e.py::TestCompleteWorkflows::test_workflow_temporary_access_expires_revoked
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_e2e.py:179: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    user_role.expires_at = datetime.utcnow() - timedelta(seconds=1)
+
+tests/test_rbac_models.py::TestUserRoleModel::test_user_role_with_expiry
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_models.py:154: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    future = datetime.utcnow() + timedelta(days=7)
+
+tests/test_rbac_models.py::TestUserRoleModel::test_user_role_is_expired
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_models.py:179: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    past = datetime.utcnow() - timedelta(days=1)
+
+tests/test_search_caching.py::TestCacheTTL::test_cache_expired_after_ttl
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_search_caching.py:198: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    cache_entry.expires_at = datetime.utcnow() - timedelta(hours=1)
+
+tests/test_search_caching.py::TestCacheTTL::test_clear_expired_cache
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_search_caching.py:223: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    expired_cache.expires_at = datetime.utcnow() - timedelta(hours=1)
+
+tests/test_search_system.py::TestSearchManagerSearching::test_search_clear_cache
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_search_system.py:451: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    manager.result_cache['test_key'] = {'time': datetime.utcnow(), 'results': []}
+
+tests/test_search_system.py::TestSearchManagerSearching::test_search_cache_ttl
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_search_system.py:472: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    'time': datetime.utcnow() - timedelta(seconds=10),
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1111 passed, 838 warnings in 548.99s (0:09:08)

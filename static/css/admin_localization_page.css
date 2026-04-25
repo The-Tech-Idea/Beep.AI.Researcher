@@ -1,0 +1,40 @@
+.admin-localization-subtitle,
+.admin-localization-hint {
+    color: var(--text-muted);
+}
+
+.admin-localization-table-head {
+    background: color-mix(in srgb, var(--text-primary) 90%, var(--bg-secondary));
+    color: var(--text-inverse);
+}
+
+.admin-localization-primary-button,
+.admin-localization-secondary-button {
+    border-width: 1px;
+    border-style: solid;
+    font-weight: 600;
+}
+
+.admin-localization-primary-button {
+    border-color: color-mix(in srgb, var(--accent-primary) 40%, var(--surface-primary));
+    color: var(--text-inverse);
+    background: color-mix(in srgb, var(--accent-primary) 86%, var(--surface-primary));
+}
+
+.admin-localization-primary-button:hover,
+.admin-localization-primary-button:focus-visible {
+    background: color-mix(in srgb, var(--accent-primary) 74%, var(--surface-primary));
+    border-color: color-mix(in srgb, var(--accent-primary) 50%, var(--surface-primary));
+}
+
+.admin-localization-secondary-button {
+    border-color: color-mix(in srgb, var(--accent-primary) 40%, var(--surface-primary));
+    color: var(--accent-primary-strong);
+    background: color-mix(in srgb, var(--accent-primary) 10%, var(--surface-primary));
+}
+
+.admin-localization-secondary-button:hover,
+.admin-localization-secondary-button:focus-visible {
+    background: color-mix(in srgb, var(--accent-primary) 18%, var(--surface-primary));
+    border-color: color-mix(in srgb, var(--accent-primary) 50%, var(--surface-primary));
+}

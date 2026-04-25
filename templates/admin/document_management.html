@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+
+{% block title %}Document Management - Admin - Beep.AI.Researcher{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_document_management_page.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page-header mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div>
+        <h1><i class="bi bi-file-earmark-text me-2"></i>Document Management</h1>
+        <p class="mb-0">Browse and manage uploaded documents across all users and projects.</p>
+    </div>
+    <a href="{{ url_for('admin.index') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i>Back to Admin
+    </a>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}{% for cat, msg in messages %}
+    <div class="admin-document-management-message admin-document-management-message--{{ 'error' if cat == 'error' else cat }}" role="alert">
+      {{ msg }}
+    </div>
+  {% endfor %}{% endif %}
+{% endwith %}
+
+<!-- ── Summary bar ────────────────────────────────────────────────────────── -->
+<div class="row g-3 mb-3">
+    <div class="col-md-3">
+        <div class="card admin-document-management-summary-card admin-document-management-summary-card--primary h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <i class="bi bi-files fs-2"></i>
+                <div>
+                    <div class="h4 mb-0 fw-bold">{{ total_count }}</div>
+                    <small>Total Documents</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card admin-document-management-summary-card admin-document-management-summary-card--secondary h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <i class="bi bi-hdd fs-2"></i>
+                <div>
+                    <div class="h4 mb-0 fw-bold" id="totalStorageDisplay">{{ (total_storage / 1048576) | round(1) }} MB</div>
+                    <small>Total Storage Used</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card admin-document-management-summary-card h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <i class="bi bi-people fs-2 admin-document-management-summary-icon"></i>
+                <div>
+                    <div class="h4 mb-0 fw-bold">{{ all_users | length }}</div>
+                    <small class="admin-document-management-summary-copy">Users with Documents</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card admin-document-management-summary-card h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <i class="bi bi-folder fs-2 admin-document-management-summary-icon"></i>
+                <div>
+                    <div class="h4 mb-0 fw-bold">{{ all_projects | length }}</div>
+                    <small class="admin-document-management-summary-copy">Projects</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── Filter bar ─────────────────────────────────────────────────────────── -->
+<form method="get" class="card mb-3">
+    <div class="card-body">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label small mb-1">Search filename</label>
+                <input type="text" name="q" class="form-control form-control-sm"
+                       value="{{ search }}" placeholder="filename…">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small mb-1" for="filter_user_id">User</label>
+                <select name="user_id" id="filter_user_id" class="form-select form-select-sm">
+                    <option value="">All users</option>
+                    {% for u in all_users %}
+                    <option value="{{ u.id }}" {% if user_filter == u.id %}selected{% endif %}>
+                        {{ u.username }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small mb-1" for="filter_project_id">Project</label>
+                <select name="project_id" id="filter_project_id" class="form-select form-select-sm">
+                    <option value="">All projects</option>
+                    {% for p in all_projects %}
+                    <option value="{{ p.id }}" {% if project_filter == p.id %}selected{% endif %}>
+                        {{ p.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+                <a href="{{ url_for('admin.document_management') }}" class="btn btn-outline-secondary btn-sm">Clear</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- ── Documents table ───────────────────────────────────────────────────── -->
+<div class="card">
+    <div class="card-body p-0">
+        {% if docs %}
+        <div class="table-responsive">
+            <table class="table table-hover table-sm mb-0">
+                <thead class="admin-document-management-table-head">
+                    <tr>
+                        <th>Filename</th>
+                        <th>Uploader</th>
+                        <th>Project</th>
+                        <th class="text-end">Size</th>
+                        <th>Type</th>
+                        <th>Uploaded</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for doc in docs %}
+                    <tr>
+                        <td>
+                            <i class="bi bi-file-earmark me-1 admin-document-management-file-icon"></i>
+                            {{ doc.filename }}
+                        </td>
+                        <td>
+                            {% set owner = doc.project.user if doc.project and doc.project.user else None %}
+                            {% if owner %}
+                                <span class="admin-document-management-muted">{{ owner.username }}</span>
+                            {% else %}
+                                <span class="admin-document-management-muted">—</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if doc.project %}
+                                <span class="admin-document-management-badge admin-document-management-badge--project">{{ doc.project.name }}</span>
+                            {% else %}
+                                <span class="admin-document-management-muted">—</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end admin-document-management-size">
+                            {% if doc.file_size %}
+                                {% if doc.file_size >= 1048576 %}
+                                    {{ (doc.file_size / 1048576) | round(1) }} MB
+                                {% elif doc.file_size >= 1024 %}
+                                    {{ (doc.file_size / 1024) | round(1) }} KB
+                                {% else %}
+                                    {{ doc.file_size }} B
+                                {% endif %}
+                            {% else %}—{% endif %}
+                        </td>
+                        <td>
+                            <span class="admin-document-management-badge admin-document-management-badge--file-type">
+                                {{ doc.file_type or doc.filename.rsplit('.', 1)[-1] | upper if '.' in (doc.filename or '') else '?' }}
+                            </span>
+                        </td>
+                        <td class="admin-document-management-muted">
+                            {{ doc.created_at.strftime('%Y-%m-%d %H:%M') if doc.created_at else '—' }}
+                        </td>
+                        <td class="text-center">
+                            <form method="post"
+                                  action="{{ url_for('admin.admin_document_delete', doc_id=doc.id) }}"
+                                  data-admin-confirm="Delete this document? This cannot be undone.">
+                                <button type="submit" class="btn btn-sm admin-document-management-delete-button"
+                                        aria-label="Delete document {{ doc.filename }}">
+                                    <i class="bi bi-trash" aria-hidden="true"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if pagination.pages > 1 %}
+        <div class="d-flex justify-content-between align-items-center px-3 py-2 border-top">
+            <small class="admin-document-management-muted">
+                Showing {{ (pagination.page - 1) * 50 + 1 }}–{{ [pagination.page * 50, pagination.total] | min }}
+                of {{ pagination.total }}
+            </small>
+            <nav>
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                        <a class="page-link" href="{{ url_for('admin.document_management', page=pagination.prev_num, q=search, user_id=user_filter or '', project_id=project_filter or '') }}">‹</a>
+                    </li>
+                    {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                        {% if p %}
+                        <li class="page-item {% if p == pagination.page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('admin.document_management', page=p, q=search, user_id=user_filter or '', project_id=project_filter or '') }}">{{ p }}</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled"><span class="page-link">…</span></li>
+                        {% endif %}
+                    {% endfor %}
+                    <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                        <a class="page-link" href="{{ url_for('admin.document_management', page=pagination.next_num, q=search, user_id=user_filter or '', project_id=project_filter or '') }}">›</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="admin-document-management-empty-state">
+            <i class="bi bi-inbox fs-1 d-block mb-2 admin-document-management-empty-icon"></i>
+            No documents found.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/admin_document_management_page.js') }}"></script>
+{% endblock %}

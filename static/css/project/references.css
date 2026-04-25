@@ -1,0 +1,688 @@
+.references-library-controls {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--spa-border);
+    border-radius: var(--spa-radius-lg);
+    background: linear-gradient(160deg, var(--spa-surface), color-mix(in srgb, var(--spa-surface-2) 88%, var(--spa-primary-light) 12%));
+    box-shadow: var(--spa-shadow-sm);
+}
+
+.references-library-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.references-library-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--spa-text-primary);
+}
+
+.references-library-copy {
+    margin: 0.35rem 0 0;
+    color: var(--spa-text-secondary);
+    font-size: 0.92rem;
+}
+
+.references-results-summary {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.35rem;
+    padding: 0.55rem 0.8rem;
+    border-radius: var(--spa-radius-md);
+    background: color-mix(in srgb, var(--spa-primary-light) 18%, var(--spa-surface) 82%);
+    border: 1px solid color-mix(in srgb, var(--spa-primary) 18%, var(--spa-border) 82%);
+    color: var(--spa-text-primary);
+}
+
+.references-results-count {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.references-results-label {
+    font-size: 0.82rem;
+    color: var(--spa-text-secondary);
+}
+
+.references-collection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem;
+}
+
+.references-collection-card {
+    display: grid;
+    gap: 0.35rem;
+    padding: 0.85rem 0.95rem;
+    border: 1px solid var(--spa-border);
+    border-radius: var(--spa-radius-md);
+    background: var(--spa-surface);
+    color: var(--spa-text-primary);
+    text-decoration: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.references-collection-card:hover,
+.references-collection-card:focus-visible {
+    border-color: color-mix(in srgb, var(--spa-primary) 45%, var(--spa-border) 55%);
+    box-shadow: var(--spa-shadow-sm);
+    transform: translateY(-1px);
+}
+
+.references-collection-card.is-active {
+    border-color: var(--spa-primary);
+    background: color-mix(in srgb, var(--spa-primary-light) 18%, var(--spa-surface) 82%);
+}
+
+.references-collection-label {
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.references-collection-count {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--spa-primary);
+}
+
+.references-search-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.references-search-input {
+    flex: 1 1 260px;
+    min-width: 0;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid var(--spa-border);
+    border-radius: var(--spa-radius-md);
+    background: var(--spa-surface);
+    color: var(--spa-text-primary);
+}
+
+.references-search-submit,
+.references-clear-link,
+.reference-row-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.68rem 0.9rem;
+    border-radius: var(--spa-radius-md);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.references-search-submit {
+    border: 0;
+    background: var(--spa-primary);
+    color: var(--spa-primary-contrast, #fff);
+}
+
+.references-clear-link {
+    border: 1px solid var(--spa-border);
+    background: var(--spa-surface);
+    color: var(--spa-text-primary);
+}
+
+.references-tag-panel {
+    display: grid;
+    gap: 0.6rem;
+}
+
+.references-tag-panel-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--spa-text-secondary);
+}
+
+.references-tag-list,
+.reference-row-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.reference-tag-chip,
+.reference-row-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 0.72rem;
+    border: 1px solid color-mix(in srgb, var(--spa-primary) 16%, var(--spa-border) 84%);
+    border-radius: 999px;
+    background: var(--spa-surface);
+    color: var(--spa-text-primary);
+    text-decoration: none;
+    font-size: 0.82rem;
+}
+
+.reference-tag-chip.is-active,
+.reference-row-tag:hover,
+.reference-row-tag:focus-visible {
+    background: color-mix(in srgb, var(--spa-primary-light) 18%, var(--spa-surface) 82%);
+    border-color: color-mix(in srgb, var(--spa-primary) 42%, var(--spa-border) 58%);
+}
+
+.reference-tag-chip-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.35rem;
+    padding: 0.05rem 0.35rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--spa-primary-light) 24%, var(--spa-surface) 76%);
+    color: var(--spa-primary);
+    font-weight: 700;
+}
+
+.references-tag-empty {
+    margin: 0;
+    color: var(--spa-text-secondary);
+    font-size: 0.88rem;
+}
+
+.reference-banner {
+    border: 1px solid var(--spa-border);
+    border-radius: var(--spa-radius-lg);
+    background:
+        radial-gradient(circle at top right, color-mix(in srgb, var(--spa-primary) 14%, transparent), transparent 42%),
+        linear-gradient(145deg, var(--spa-surface), color-mix(in srgb, var(--spa-surface-2) 92%, var(--spa-primary-light) 8%));
+    padding: 0.95rem 1rem;
+    box-shadow: var(--spa-shadow-sm);
+    color: var(--spa-text-secondary);
+}
+
+.reference-banner a {
+    color: var(--spa-primary);
+    font-weight: 600;
+}
+
+.reference-table-card {
+    border: 1px solid var(--spa-border);
+    border-radius: var(--spa-radius-lg);
+    background: var(--spa-surface);
+    box-shadow: var(--spa-shadow-sm);
+    overflow: hidden;
+}
+
+.references-empty-icon {
+    font-size: 3rem;
+    opacity: 0.4;
+}
+
+.references-year-column {
+    width: 70px;
+}
+
+.references-actions-column {
+    width: 240px;
+}
+
+.reference-row-tags {
+    margin-top: 0.55rem;
+}
+
+.reference-row-title-link {
+    color: var(--spa-primary);
+    font-size: 0.92rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.reference-row-title-link:hover,
+.reference-row-title-link:focus-visible {
+    color: var(--spa-primary);
+    text-decoration: underline;
+}
+
+.reference-row-title-meta {
+    margin-top: 0.2rem;
+    color: var(--spa-text-secondary);
+    font-size: 0.84rem;
+    line-height: 1.45;
+}
+
+.references-actions-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.reference-row-action-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.15rem;
+    padding: 0.45rem 0.8rem;
+    border-radius: 999px;
+    background: var(--spa-primary);
+    color: var(--spa-on-primary, #fff);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.reference-row-action-link.is-secondary {
+    border: 1px solid var(--spa-border);
+    background: var(--spa-surface);
+    color: var(--spa-text-primary);
+}
+
+.reference-row-action-link:hover,
+.reference-row-action-link:focus-visible {
+    color: var(--spa-on-primary, #fff);
+    filter: brightness(0.97);
+    text-decoration: none;
+}
+
+.reference-row-action-link.is-secondary:hover,
+.reference-row-action-link.is-secondary:focus-visible {
+    color: var(--spa-text-primary);
+    border-color: color-mix(in srgb, var(--spa-primary) 38%, var(--spa-border) 62%);
+}
+
+.reference-row-tag {
+    padding: 0.28rem 0.58rem;
+    font-size: 0.76rem;
+}
+
+.references-bibliography-panel {
+    display: grid;
+    gap: 0.9rem;
+    margin-bottom: 1rem;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--spa-border);
+    border-radius: var(--spa-radius-lg);
+    background: linear-gradient(160deg, var(--spa-surface), color-mix(in srgb, var(--spa-surface-2) 90%, var(--spa-primary-light) 10%));
+    box-shadow: var(--spa-shadow-sm);
+}
+
+.references-bibliography-panel__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.references-bibliography-panel__title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--spa-text-primary);
+}
+
+.references-bibliography-panel__copy,
+.references-bibliography-panel__status,
+.references-bibliography-panel__truncated {
+    margin: 0.35rem 0 0;
+    color: var(--spa-text-secondary);
+    font-size: 0.92rem;
+}
+
+.references-bibliography-panel__controls {
+    display: grid;
+    gap: 0.55rem;
+}
+
+.references-bibliography-panel__label {
+    color: var(--spa-text-primary);
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.references-bibliography-panel__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.references-bibliography-panel__select {
+    min-width: 12rem;
+    max-width: 18rem;
+    min-height: 2.5rem;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid var(--spa-border);
+    border-radius: var(--spa-radius-sm);
+    background: var(--spa-surface);
+    color: var(--spa-text-primary);
+}
+
+.references-bibliography-panel__button,
+.references-bibliography-panel__download {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.5rem;
+    padding: 0.6rem 1rem;
+    border-radius: 999px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.references-bibliography-panel__button {
+    border: 0;
+    background: var(--spa-primary);
+    color: var(--spa-on-primary, #fff);
+}
+
+.references-bibliography-panel__button.is-secondary,
+.references-bibliography-panel__download {
+    border: 1px solid var(--spa-border);
+    background: var(--spa-surface);
+    color: var(--spa-text-primary);
+}
+
+.references-bibliography-panel__button:hover,
+.references-bibliography-panel__button:focus-visible {
+    filter: brightness(0.96);
+}
+
+.references-bibliography-panel__download:hover,
+.references-bibliography-panel__download:focus-visible {
+    color: var(--spa-text-primary);
+    text-decoration: none;
+    border-color: color-mix(in srgb, var(--spa-primary) 40%, var(--spa-border) 60%);
+}
+
+.references-bibliography-panel__empty {
+    padding: 1rem;
+    border: 1px dashed color-mix(in srgb, var(--spa-primary) 20%, var(--spa-border) 80%);
+    border-radius: var(--spa-radius-md);
+    background: color-mix(in srgb, var(--spa-primary-light) 14%, var(--spa-surface) 86%);
+    color: var(--spa-text-secondary);
+    font-size: 0.92rem;
+}
+
+.references-bibliography-panel__list,
+.references-bibliography-panel__raw {
+    margin: 0;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--spa-border);
+    border-radius: var(--spa-radius-md);
+    background: var(--spa-surface);
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--spa-border) 50%, transparent);
+}
+
+.references-bibliography-panel__list {
+    display: grid;
+    gap: 0.95rem;
+    padding-left: 2.5rem;
+}
+
+.references-bibliography-panel__list li {
+    color: var(--spa-text-primary);
+    line-height: 1.55;
+}
+
+.references-bibliography-panel__raw {
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: var(--spa-text-primary);
+    font-size: 0.86rem;
+    line-height: 1.45;
+}
+
+.references-import-panel {
+    display: grid;
+    gap: 0.9rem;
+    margin-bottom: 1rem;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--spa-border);
+    border-radius: var(--spa-radius-lg);
+    background: var(--spa-surface);
+    box-shadow: var(--spa-shadow-sm);
+}
+
+.references-import-panel__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.references-import-panel__title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--spa-text-primary);
+}
+
+.references-import-panel__copy {
+    margin: 0.35rem 0 0;
+    color: var(--spa-text-secondary);
+    font-size: 0.92rem;
+}
+
+.references-import-panel__grid {
+    display: grid;
+    gap: 0.85rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.references-import-panel__field {
+    display: grid;
+    gap: 0.45rem;
+}
+
+.references-import-panel__label {
+    color: var(--spa-text-primary);
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.references-import-panel__select,
+.references-import-panel__file,
+.references-import-panel__textarea {
+    width: 100%;
+    border: 1px solid var(--spa-border);
+    border-radius: var(--spa-radius-sm);
+    background: var(--spa-surface);
+    color: var(--spa-text-primary);
+}
+
+.references-import-panel__select,
+.references-import-panel__file {
+    min-height: 2.5rem;
+    padding: 0.55rem 0.75rem;
+}
+
+.references-import-panel__textarea {
+    min-height: 11rem;
+    padding: 0.75rem 0.9rem;
+    resize: vertical;
+    line-height: 1.45;
+    font-family: var(--spa-font-mono, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace);
+    font-size: 0.84rem;
+}
+
+.references-import-panel__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.references-import-panel__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.5rem;
+    padding: 0.6rem 1rem;
+    border: 0;
+    border-radius: 999px;
+    background: var(--spa-primary);
+    color: var(--spa-on-primary, #fff);
+    font-weight: 600;
+}
+
+.references-import-panel__button.is-secondary {
+    border: 1px solid var(--spa-border);
+    background: var(--spa-surface);
+    color: var(--spa-text-primary);
+}
+
+.references-import-panel__button:hover,
+.references-import-panel__button:focus-visible {
+    filter: brightness(0.96);
+}
+
+.references-import-panel__summary {
+    padding: 0.85rem 0.95rem;
+    border: 1px solid color-mix(in srgb, var(--spa-primary) 18%, var(--spa-border) 82%);
+    border-radius: var(--spa-radius-md);
+    background: color-mix(in srgb, var(--spa-primary-light) 16%, var(--spa-surface) 84%);
+    color: var(--spa-text-primary);
+    line-height: 1.45;
+}
+
+.references-zotero-panel {
+    display: grid;
+    gap: 0.9rem;
+    margin-bottom: 1rem;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--spa-border);
+    border-radius: var(--spa-radius-lg);
+    background: var(--spa-surface);
+    box-shadow: var(--spa-shadow-sm);
+}
+
+.references-zotero-panel__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.references-zotero-panel__title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--spa-text-primary);
+}
+
+.references-zotero-panel__copy {
+    margin: 0.35rem 0 0;
+    color: var(--spa-text-secondary);
+    font-size: 0.92rem;
+}
+
+.references-zotero-panel__manage-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.25rem;
+    padding: 0.5rem 0.85rem;
+    border-radius: 999px;
+    border: 1px solid var(--spa-border);
+    color: var(--spa-text-primary);
+    text-decoration: none;
+    background: color-mix(in srgb, var(--spa-surface) 82%, var(--spa-primary-light) 18%);
+}
+
+.references-zotero-panel__manage-link:hover,
+.references-zotero-panel__manage-link:focus-visible {
+    color: var(--spa-text-primary);
+    text-decoration: none;
+    border-color: color-mix(in srgb, var(--spa-primary) 40%, var(--spa-border) 60%);
+}
+
+.references-zotero-panel__status {
+    margin: 0;
+    color: var(--spa-text-secondary);
+    font-size: 0.92rem;
+}
+
+.references-zotero-panel__controls {
+    display: grid;
+    gap: 0.55rem;
+}
+
+.references-zotero-panel__label {
+    color: var(--spa-text-primary);
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.references-zotero-panel__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.references-zotero-panel__select {
+    min-width: 16rem;
+    max-width: 26rem;
+    min-height: 2.5rem;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid var(--spa-border);
+    border-radius: var(--spa-radius-sm);
+    background: var(--spa-surface);
+    color: var(--spa-text-primary);
+}
+
+.references-zotero-panel__sync-button {
+    min-height: 2.5rem;
+    padding: 0.6rem 1rem;
+    border: 0;
+    border-radius: 999px;
+    background: var(--spa-primary);
+    color: var(--spa-on-primary, #fff);
+    font-weight: 600;
+}
+
+.references-zotero-panel__sync-button:hover,
+.references-zotero-panel__sync-button:focus-visible {
+    filter: brightness(0.96);
+}
+
+@media (max-width: 768px) {
+    .references-library-head {
+        flex-direction: column;
+    }
+
+    .references-results-summary {
+        align-self: stretch;
+        justify-content: center;
+    }
+
+    .references-zotero-panel__head {
+        flex-direction: column;
+    }
+
+    .references-bibliography-panel__head,
+    .references-bibliography-panel__actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .references-import-panel__actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .references-actions-group,
+    .references-zotero-panel__actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .references-zotero-panel__select,
+    .references-zotero-panel__sync-button {
+        width: 100%;
+        max-width: none;
+    }
+}

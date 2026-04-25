@@ -1,0 +1,114 @@
+{# Scheduled reports — extends project layout #}
+{% extends "project/_layout.html" %}
+{% set page_title = t('scheduled_reports.title') %}
+{% set page_subtitle = t('scheduled_reports.subtitle') %}
+{% set page_icon = 'calendar-check' %}
+{% set active_page = 'reports' %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/scheduled_reports.css') }}">
+{% endblock %}
+
+{% block header_actions %}
+<button type="button" class="btn btn-sm scheduled-report-primary-action" data-bs-toggle="modal" data-bs-target="#addReportModal">
+    <i class="bi bi-plus-lg me-1"></i>{{ t('extraction.new') }}
+</button>
+{% endblock %}
+
+{% block workspace_content %}
+<div class="spa-card">
+    <div class="spa-card-header">
+        <div class="spa-card-title">{{ t('scheduled_reports.title') }}</div>
+    </div>
+    <div class="spa-card-body flush">
+        {% if reports %}
+        <table class="spa-table">
+            <thead>
+                <tr>
+                    <th>{{ t('scheduled_reports.col.name') }}</th>
+                    <th>{{ t('scheduled_reports.col.schedule') }}</th>
+                    <th>{{ t('scheduled_reports.col.last_sent') }}</th>
+                    <th>{{ t('scheduled_reports.col.status') }}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in reports %}
+                <tr>
+                    <td><strong>{{ r.name }}</strong></td>
+                    <td class="small scheduled-report-meta">{{ r.schedule_cron }}</td>
+                    <td class="small scheduled-report-meta">{{ r.last_sent_at[:10] if r.last_sent_at else '\u2014' }}</td>
+                    <td>
+                        <span class="spa-badge {{ 'active' if r.is_active else 'draft' }}">{{ t('scheduled_reports.active') if r.is_active else t('scheduled_reports.inactive') }}</span>
+                    </td>
+                    <td>
+                        {# 18a: Preview link #}
+                        <a href="{{ url_for('researcher.project_report', project_id=project.id) }}"
+                            class="btn btn-sm py-0 px-2 scheduled-report-preview-btn">
+                            {{ t('scheduled_reports.preview') }}
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="spa-empty">
+            <i class="bi bi-calendar-check"></i>
+            <h4>{{ t('scheduled_reports.empty_title') }}</h4>
+            <p>{{ t('scheduled_reports.empty') }}</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="modal fade" id="addReportModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ t('scheduled_reports.title') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-2">
+                    <label class="form-label small fw-medium">{{ t('scheduled_reports.modal.name_label') }}</label>
+                    <input type="text" id="reportName" class="form-control form-control-sm"
+                        placeholder="{{ t('scheduled_reports.modal.name_placeholder') }}">
+                </div>
+                {# 18b: Plain frequency dropdown instead of raw cron #}
+                <div class="mb-2">
+                    <label class="form-label small fw-medium">{{ t('scheduled_reports.modal.frequency_label') }}</label>
+                    <select class="form-select form-select-sm" id="reportFrequency">
+                        <option value="0 9 * * *">{{ t('scheduled_reports.freq.daily') }}</option>
+                        <option value="0 9 * * 1" selected>{{ t('scheduled_reports.freq.weekly') }}</option>
+                        <option value="0 9 1 * *">{{ t('scheduled_reports.freq.monthly') }}</option>
+                        <option value="on_upload">{{ t('scheduled_reports.freq.on_upload') }}</option>
+                    </select>
+                    <input type="hidden" id="reportCron" value="0 9 * * 1">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small fw-medium">{{ t('scheduled_reports.modal.recipients_label') }}</label>
+                    <input type="text" id="reportRecipients" class="form-control form-control-sm"
+                        placeholder="{{ t('scheduled_reports.modal.recipients_placeholder') }}">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn scheduled-report-secondary-action" data-bs-dismiss="modal">{{ t('extraction.modal.cancel')
+                    }}</button>
+                <button type="button" class="btn scheduled-report-primary-action" id="btnCreateReport">{{ t('extraction.modal.create')
+                    }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script id="scheduled-reports-config" type="application/json">
+{{ {
+    "projectId": project.id,
+    "scheduleUrl": url_for('scheduled_reports.create_scheduled_report', project_id=project.id)
+} | tojson | safe }}
+</script>
+<script src="{{ url_for('static', filename='js/scheduled-reports.js') }}"></script>
+{% endblock %}

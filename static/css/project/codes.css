@@ -1,0 +1,169 @@
+.codes-export-button,
+.codes-add-button,
+.codes-form-cancel-button,
+.codes-form-save-button,
+.codes-detail-edit-button,
+.codes-excerpt-remove-button,
+.codes-empty-create-button,
+.codes-crosslink-button {
+    border-radius: var(--border-radius-pill);
+}
+
+.codes-export-button,
+.codes-detail-edit-button,
+.codes-crosslink-button,
+.codes-form-cancel-button {
+    background: color-mix(in srgb, var(--color-surface-secondary) 90%, var(--color-accent-primary) 10%);
+    border: 1px solid color-mix(in srgb, var(--color-accent-primary) 18%, var(--color-border-muted));
+    color: var(--color-text);
+}
+
+.codes-export-button:hover,
+.codes-export-button:focus-visible,
+.codes-detail-edit-button:hover,
+.codes-detail-edit-button:focus-visible,
+.codes-crosslink-button:hover,
+.codes-crosslink-button:focus-visible,
+.codes-form-cancel-button:hover,
+.codes-form-cancel-button:focus-visible {
+    background: color-mix(in srgb, var(--color-surface-secondary) 78%, var(--color-accent-primary) 22%);
+    border-color: color-mix(in srgb, var(--color-accent-primary) 28%, var(--color-border-muted));
+    color: var(--color-text);
+}
+
+.codes-add-button,
+.codes-form-save-button,
+.codes-empty-create-button {
+    background: color-mix(in srgb, var(--color-accent-primary) 18%, var(--color-surface));
+    border: 1px solid color-mix(in srgb, var(--color-accent-primary) 26%, var(--color-border-muted));
+    color: var(--color-text);
+}
+
+.codes-add-button:hover,
+.codes-add-button:focus-visible,
+.codes-form-save-button:hover,
+.codes-form-save-button:focus-visible,
+.codes-empty-create-button:hover,
+.codes-empty-create-button:focus-visible {
+    background: color-mix(in srgb, var(--color-accent-primary) 26%, var(--color-surface));
+    border-color: color-mix(in srgb, var(--color-accent-primary) 34%, var(--color-border-muted));
+    color: var(--color-text);
+}
+
+.codes-intro-banner {
+    border: 1px solid color-mix(in srgb, var(--color-accent-primary) 16%, var(--color-border-muted));
+    border-radius: var(--border-radius-soft);
+    background: color-mix(in srgb, var(--color-surface) 88%, var(--color-accent-primary) 12%);
+    padding: var(--space-3);
+}
+
+.codes-intro-icon {
+    color: var(--color-accent-primary);
+}
+
+.codes-intro-copy,
+.codes-detail-description {
+    color: var(--color-text-muted);
+}
+
+.codes-intro-link,
+.codes-excerpt-document-link {
+    color: var(--color-accent-primary);
+    text-decoration: none;
+}
+
+.codes-intro-link:hover,
+.codes-intro-link:focus-visible,
+.codes-excerpt-document-link:hover,
+.codes-excerpt-document-link:focus-visible {
+    color: color-mix(in srgb, var(--color-accent-primary) 82%, var(--color-text));
+}
+
+.codes-form-container {
+    padding: var(--space-3);
+}
+
+.codes-accent-dot {
+    background: var(--code-accent-color, var(--color-accent-primary));
+}
+
+.codes-color-swatch-indigo {
+    background: #6366f1;
+}
+
+.codes-color-swatch-green {
+    background: #22c55e;
+}
+
+.codes-color-swatch-amber {
+    background: #f59e0b;
+}
+
+.codes-color-swatch-red {
+    background: #ef4444;
+}
+
+.codes-color-swatch-pink {
+    background: #ec4899;
+}
+
+.codes-color-swatch-purple {
+    background: #8b5cf6;
+}
+
+.codes-color-swatch-cyan {
+    background: #06b6d4;
+}
+
+.codes-color-swatch-slate {
+    background: #64748b;
+}
+
+.codes-empty-sidebar {
+    padding: 2rem;
+}
+
+.codes-detail-card {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+.codes-detail-header {
+    gap: var(--space-4);
+}
+
+.codes-detail-color {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.codes-detail-meta {
+    flex: 1;
+}
+
+.codes-detail-excerpts {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.codes-empty-main {
+    min-height: 25rem;
+}
+
+.codes-excerpt-quote {
+    border-inline-start: 3px solid var(--code-accent-color, var(--color-accent-primary));
+}
+
+.codes-excerpt-remove-button {
+    background: color-mix(in srgb, var(--color-danger-strong) 10%, var(--color-surface));
+    border: 1px solid color-mix(in srgb, var(--color-danger-strong) 20%, var(--color-border-muted));
+    color: var(--color-danger-strong);
+}
+
+.codes-excerpt-remove-button:hover,
+.codes-excerpt-remove-button:focus-visible {
+    background: color-mix(in srgb, var(--color-danger-strong) 18%, var(--color-surface));
+    border-color: color-mix(in srgb, var(--color-danger-strong) 28%, var(--color-border-muted));
+    color: var(--color-danger-strong);
+}

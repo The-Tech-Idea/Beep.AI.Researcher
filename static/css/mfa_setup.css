@@ -1,0 +1,12 @@
+.mfa-setup-container {
+    max-width: 520px;
+}
+
+.mfa-setup-header-icon {
+    color: var(--color-success-strong);
+    font-size: 1.25rem;
+}
+
+.mfa-setup-qr-image {
+    max-width: 220px;
+}

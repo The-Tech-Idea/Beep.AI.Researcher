@@ -1,0 +1,87 @@
+.references-page-split {
+    gap: 1.5rem;
+}
+
+.references-page-sidebar {
+    flex: 0 0 17.5rem;
+}
+
+.references-page-sidebar-item {
+    padding: 0.5rem 0.75rem;
+}
+
+.references-page-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.references-inline-select {
+    width: auto;
+}
+
+.references-page-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+.references-page-status--muted {
+    color: var(--spa-text-secondary);
+}
+
+.references-page-status--success {
+    color: color-mix(in srgb, var(--spa-success) 88%, var(--spa-text) 12%);
+}
+
+.references-page-status--danger {
+    color: var(--spa-danger);
+}
+
+.references-page-status__icon {
+    font-size: 0.9rem;
+}
+
+.references-page-validation-result,
+.references-page-batch-result {
+    margin-top: 0.6rem;
+    min-height: 1.4rem;
+}
+
+.references-page-batch-result {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+}
+
+.references-page-batch-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.26rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid var(--spa-border);
+    background: var(--spa-surface-2);
+    color: var(--spa-text-secondary);
+}
+
+.references-page-batch-chip--total {
+    color: var(--spa-text);
+}
+
+.references-page-batch-chip--valid {
+    background: color-mix(in srgb, var(--spa-success) 12%, var(--spa-surface));
+    color: color-mix(in srgb, var(--spa-success) 88%, var(--spa-text) 12%);
+}
+
+.references-page-batch-chip--invalid {
+    background: color-mix(in srgb, var(--spa-danger) 12%, var(--spa-surface));
+    color: var(--spa-danger);
+}
+
+.references-page-batch-chip--skipped {
+    background: color-mix(in srgb, var(--spa-warning) 16%, var(--spa-surface));
+    color: color-mix(in srgb, var(--spa-warning) 92%, var(--spa-text) 8%);
+}

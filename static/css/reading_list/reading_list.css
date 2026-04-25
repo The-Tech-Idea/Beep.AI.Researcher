@@ -1,0 +1,50 @@
+/* reading_list/reading_list.css */
+.reading-list-empty-icon {
+    font-size: 2.5rem;
+    color: var(--bs-secondary-color, #6c757d);
+}
+
+.reading-list-filter {
+    max-width: 140px;
+}
+
+.reading-list-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.rl-item-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: var(--bs-border-radius);
+    background: var(--card-bg, var(--bs-body-bg));
+    border: 1px solid var(--card-border-color, var(--bs-border-color));
+}
+
+.rl-item-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.rl-item-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rl-item-meta {
+    font-size: 0.78rem;
+    color: var(--bs-secondary-color, #6c757d);
+}
+
+.rl-item-actions {
+    display: flex;
+    gap: 0.4rem;
+    flex-shrink: 0;
+    align-items: center;
+}

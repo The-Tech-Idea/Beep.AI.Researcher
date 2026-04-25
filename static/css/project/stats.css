@@ -1,0 +1,83 @@
+.stats-summary-card {
+    border: 1px solid var(--color-border-muted);
+    box-shadow: var(--spa-shadow-sm);
+    height: 100%;
+}
+
+.stats-summary-icon {
+    font-size: 1.5rem;
+}
+
+.stats-summary-icon--documents {
+    color: var(--color-accent-primary);
+}
+
+.stats-summary-icon--flashcards {
+    color: var(--spa-info, #0891b2);
+}
+
+.stats-summary-icon--quizzes {
+    color: var(--spa-warning);
+}
+
+.stats-summary-icon--codes {
+    color: var(--spa-success);
+}
+
+.stats-summary-label,
+.stats-empty-copy {
+    color: var(--color-text-muted);
+}
+
+.stats-chart-body {
+    height: 18.75rem;
+}
+
+.stats-empty-icon {
+    color: var(--color-text-muted);
+    font-size: 2.5rem;
+    opacity: 0.5;
+}
+
+.stats-empty-action,
+.stats-primary-action,
+.stats-secondary-action {
+    border-radius: var(--border-radius-pill);
+}
+
+.stats-empty-action,
+.stats-secondary-action {
+    background: color-mix(in srgb, var(--color-surface-secondary) 90%, var(--color-accent-primary) 10%);
+    border: 1px solid color-mix(in srgb, var(--color-accent-primary) 18%, var(--color-border-muted));
+    color: var(--color-text);
+}
+
+.stats-empty-action:hover,
+.stats-empty-action:focus-visible,
+.stats-secondary-action:hover,
+.stats-secondary-action:focus-visible {
+    background: color-mix(in srgb, var(--color-surface-secondary) 78%, var(--color-accent-primary) 22%);
+    border-color: color-mix(in srgb, var(--color-accent-primary) 28%, var(--color-border-muted));
+    color: var(--color-text);
+}
+
+.stats-primary-action {
+    background: color-mix(in srgb, var(--color-accent-primary) 18%, var(--color-surface));
+    border: 1px solid color-mix(in srgb, var(--color-accent-primary) 26%, var(--color-border-muted));
+    color: var(--color-text);
+}
+
+.stats-primary-action:hover,
+.stats-primary-action:focus-visible {
+    background: color-mix(in srgb, var(--color-accent-primary) 26%, var(--color-surface));
+    border-color: color-mix(in srgb, var(--color-accent-primary) 34%, var(--color-border-muted));
+    color: var(--color-text);
+}
+
+.stats-output {
+    background: color-mix(in srgb, var(--color-surface) 70%, black 30%);
+    border: 1px solid var(--color-border-muted);
+    color: var(--color-text-inverse, #f8fafc);
+    max-height: 18.75rem;
+    overflow: auto;
+}

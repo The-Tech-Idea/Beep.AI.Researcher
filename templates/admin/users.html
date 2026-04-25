@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('admin.users.title') }} - {{ t('admin.title') }} - Beep.AI.Researcher{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_users_page.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div>
+        <h1><i class="bi bi-people me-2"></i>{{ t('admin.users.title') }}</h1>
+        <p class="mb-0">{{ t('admin.users.subtitle') }}</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        <a href="{{ url_for('admin.invites_list') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-envelope-plus me-1"></i>Invites
+        </a>
+        <a href="{{ url_for('admin.user_import') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-upload me-1"></i>Import CSV
+        </a>
+        <a href="{{ url_for('admin.user_create') }}" class="btn btn-primary">
+            <i class="bi bi-person-plus me-1"></i>Create user
+        </a>
+        <a href="{{ url_for('admin.index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>{{ t('admin.users.back') }}
+        </a>
+    </div>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for cat, msg in messages %}
+<div class="admin-users-message admin-users-message--{{ 'error' if cat == 'error' else cat }}">{{ msg }}</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<form method="get" class="mb-3 row g-2 align-items-end">
+    <div class="col-auto">
+        <label for="filter_q" class="form-label mb-0 small">Search</label>
+        <input type="text" class="form-control form-control-sm admin-users-filter-input" id="filter_q" name="q"
+            value="{{ search or '' }}" placeholder="Username or email…">
+    </div>
+    <div class="col-auto">
+        <label for="filter_role" class="form-label mb-0 small">{{ t('admin.users.filter.role') }}</label>
+        <select name="role" id="filter_role" class="form-select form-select-sm">
+            <option value="">{{ t('admin.users.filter.all') }}</option>
+            {% for r in roles %}
+            <option value="{{ r.id }}" {% if selected_role == r.id %}selected{% endif %}>{{ r.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-auto">
+        <label for="filter_status" class="form-label mb-0 small">{{ t('admin.users.filter.status') }}</label>
+        <select name="status" id="filter_status" class="form-select form-select-sm">
+            <option value="">{{ t('admin.users.filter.all') }}</option>
+            <option value="active" {% if selected_status == 'active' %}selected{% endif %}>{{ t('admin.users.filter.active') }}</option>
+            <option value="suspended" {% if selected_status == 'suspended' %}selected{% endif %}>{{ t('admin.users.filter.suspended') }}</option>
+        </select>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary btn-sm">{{ t('admin.users.filter.button') }}</button>
+        {% if search or selected_role or selected_status %}
+        <a href="{{ url_for('admin.users_list') }}" class="btn btn-outline-secondary btn-sm ms-1">Clear</a>
+        {% endif %}
+    </div>
+</form>
+
+<div class="card">
+    <div class="card-body p-0">
+        {% if users %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>{{ t('admin.users.table.username') }}</th>
+                        <th>{{ t('admin.users.table.email') }}</th>
+                        <th>{{ t('admin.users.table.role') }}</th>
+                        <th>{{ t('admin.users.table.status') }}</th>
+                        <th>{{ t('admin.users.table.email_verified') }}</th>
+                        <th>MFA</th>
+                        <th>{{ t('admin.users.table.created') }}</th>
+                        <th>{{ t('admin.users.table.actions') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in users %}
+                    <tr>
+                        <td>
+                            <a href="{{ url_for('admin.user_detail', user_id=u.id) }}"
+                               class="fw-semibold text-decoration-none admin-users-name-link">{{ u.username }}</a>
+                            {% if u.must_change_password %}
+                            <span class="admin-users-inline-badge admin-users-inline-badge--warning ms-1" title="Must change password">
+                                <i class="bi bi-key"></i>
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td>{{ u.email or '-' }}</td>
+                        <td>
+                            {% if u.role %}{{ u.role.name }}{% else %}-{% endif %}
+                            {% if u.id != current_user.id %}
+                            <form method="post" action="{{ url_for('admin.user_change_role', user_id=u.id) }}" class="d-inline ms-1">
+                                <select name="role_id" class="form-select form-select-sm d-inline-block admin-users-role-select"
+                                    data-admin-auto-submit-select
+                                    aria-label="Change role for {{ u.username }}">
+                                    {% for r in roles %}
+                                    <option value="{{ r.id }}" {% if u.role_id == r.id %}selected{% endif %}>{{ r.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </form>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if u.is_active %}
+                            <span class="admin-users-status-badge admin-users-status-badge--active">{{ t('admin.users.status.active') }}</span>
+                            {% else %}
+                            <span class="admin-users-status-badge admin-users-status-badge--suspended">{{ t('admin.users.status.suspended') }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if u.email_verified %}
+                            <span class="admin-users-status-badge admin-users-status-badge--verified">{{ t('admin.users.email_verified.yes') }}</span>
+                            {% else %}
+                            <span class="admin-users-status-badge admin-users-status-badge--unverified">{{ t('admin.users.email_verified.no') }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if u.mfa_enabled %}
+                            <span class="admin-users-status-badge admin-users-status-badge--mfa"><i class="bi bi-shield-check"></i></span>
+                            {% else %}
+                            <span class="admin-users-muted-dash">—</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ u.created_at.strftime('%Y-%m-%d') if u.created_at else '-' }}</td>
+                        <td>
+                            <a href="{{ url_for('admin.user_detail', user_id=u.id) }}"
+                               class="btn btn-sm admin-users-action-button admin-users-action-button--edit me-1"
+                               title="Edit {{ u.username }}">
+                                <i class="bi bi-pencil" aria-hidden="true"></i>
+                            </a>
+                            {% if u.id != current_user.id %}
+                            {% if u.is_active %}
+                            <form method="post" action="{{ url_for('admin.user_suspend', user_id=u.id) }}" class="d-inline">
+                                <button type="submit" class="btn btn-sm admin-users-action-button admin-users-action-button--suspend"
+                                    aria-label="Suspend {{ u.username }}">
+                                    {{ t('admin.users.actions.suspend') }}
+                                </button>
+                            </form>
+                            {% else %}
+                            <form method="post" action="{{ url_for('admin.user_activate', user_id=u.id) }}" class="d-inline">
+                                <button type="submit" class="btn btn-sm admin-users-action-button admin-users-action-button--activate"
+                                    aria-label="Activate {{ u.username }}">
+                                    {{ t('admin.users.actions.activate') }}
+                                </button>
+                            </form>
+                            {% endif %}
+                            {% else %}
+                            <span class="small admin-users-self-label">{{ t('admin.users.actions.you') }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="p-4 mb-0">{{ t('admin.users.empty') }}</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/admin_user_management_page.js') }}"></script>
+{% endblock %}

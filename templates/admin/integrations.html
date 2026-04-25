@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+
+{% block title %}Integrations — Admin — Beep.AI.Researcher{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_integrations_page.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div>
+        <h1><i class="bi bi-plug me-2"></i>External Integrations</h1>
+        <p class="mb-0 admin-integrations-subtitle">
+            Enable services for users to connect, set global API keys, and configure OAuth2 apps.
+        </p>
+    </div>
+    <a href="{{ url_for('admin.index') }}" class="btn admin-integrations-back-link">
+        <i class="bi bi-arrow-left me-1"></i>Admin
+    </a>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}{% for cat, msg in messages %}
+<div class="admin-integrations-message admin-integrations-message--{{ 'error' if cat == 'error' else cat }}" role="alert">
+    {{ msg }}
+</div>
+{% endfor %}{% endif %}
+{% endwith %}
+
+{% set scope_labels = {'admin_only': 'Admin-Global', 'user_personal': 'User-Personal', 'dual': 'Dual-Mode'} %}
+
+{% for svc in services %}
+<div class="card mb-3" id="svc-{{ svc.id }}">
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-2">
+            {% if svc.is_enabled %}
+            <span class="admin-integrations-status-badge admin-integrations-status-badge-enabled">Enabled</span>
+            {% else %}
+            <span class="admin-integrations-status-badge admin-integrations-status-badge-disabled">Disabled</span>
+            {% endif %}
+            <strong>{{ svc.name }}</strong>
+            <span class="admin-integrations-scope-badge admin-integrations-scope-badge-{{ svc.scope|default('admin_only') }}">
+                {{ scope_labels.get(svc.scope, svc.scope) }}
+            </span>
+        </div>
+        <div class="d-flex gap-2">
+            {% if svc.is_enabled %}
+            <a href="{{ url_for('admin_integrations.integration_users', service_id=svc.id) }}"
+               class="btn btn-sm admin-integrations-connected-button">
+                <i class="bi bi-people me-1"></i>{{ svc.connected_user_count or 0 }} connected
+            </a>
+            <button class="btn btn-sm admin-integrations-test-toggle-button" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#test-{{ svc.id }}">
+                <i class="bi bi-wifi me-1"></i>Test
+            </button>
+            {% endif %}
+            <button class="btn btn-sm admin-integrations-configure-button" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#edit-{{ svc.id }}"
+                aria-expanded="false">
+                <i class="bi bi-gear me-1"></i>Configure
+            </button>
+        </div>
+    </div>
+
+    {% if svc.description %}
+    <div class="card-body py-2 border-bottom admin-integrations-description">{{ svc.description }}</div>
+    {% endif %}
+
+    <!-- Test result collapse -->
+    <div id="test-{{ svc.id }}" class="collapse">
+        <div class="card-body border-bottom">
+            <button class="btn btn-sm admin-integrations-test-button" type="button"
+                data-service-id="{{ svc.id }}">
+                <i class="bi bi-play-fill me-1"></i>Run test
+            </button>
+            <span class="ms-3 small admin-integrations-test-result" id="test-result-{{ svc.id }}" aria-live="polite"></span>
+            {% if svc.last_tested_at %}
+            <div class="admin-integrations-history">
+                Last tested {{ svc.last_tested_at.strftime('%Y-%m-%d %H:%M') }}:
+                {% if svc.last_test_ok %}
+                <span class="admin-integrations-history-status admin-integrations-history-status--success">✓ {{ svc.last_test_error or 'OK' }}</span>
+                {% else %}
+                <span class="admin-integrations-history-status admin-integrations-history-status--error">✗ {{ svc.last_test_error }}</span>
+                {% endif %}
+                {% if svc.last_test_latency_ms %}({{ svc.last_test_latency_ms }} ms){% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Configure collapse -->
+    <div id="edit-{{ svc.id }}" class="collapse">
+        <div class="card-body">
+            <form method="post"
+                action="{{ url_for('admin_integrations.integration_update', service_id=svc.id) }}">
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label for="name_{{ svc.id }}" class="form-label">Display name</label>
+                        <input type="text" class="form-control form-control-sm" id="name_{{ svc.id }}"
+                            name="name" value="{{ svc.name }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="scope_{{ svc.id }}" class="form-label">Scope</label>
+                        <select class="form-select form-select-sm" id="scope_{{ svc.id }}" name="scope">
+                            <option value="admin_only" {% if svc.scope == 'admin_only' %}selected{% endif %}>Admin-Global (no user access)</option>
+                            <option value="user_personal" {% if svc.scope == 'user_personal' %}selected{% endif %}>User-Personal (users manage own)</option>
+                            <option value="dual" {% if svc.scope == 'dual' %}selected{% endif %}>Dual-Mode (global fallback + user override)</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label for="desc_{{ svc.id }}" class="form-label">Description</label>
+                        <input type="text" class="form-control form-control-sm" id="desc_{{ svc.id }}"
+                            name="description" value="{{ svc.description or '' }}">
+                    </div>
+                    <div class="col-auto d-flex gap-3 align-items-center">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="enabled_{{ svc.id }}"
+                                name="is_enabled" {% if svc.is_enabled %}checked{% endif %}>
+                            <label class="form-check-label" for="enabled_{{ svc.id }}">Enabled</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="override_{{ svc.id }}"
+                                name="allow_user_override" {% if svc.allow_user_override %}checked{% endif %}>
+                            <label class="form-check-label" for="override_{{ svc.id }}">Allow user personal connection</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OAuth2 App settings -->
+                <details class="mb-3">
+                    <summary class="fw-semibold small admin-integrations-details-summary mb-2">
+                        <i class="bi bi-key me-1"></i>OAuth2 App Registration
+                        {% if svc.oauth2_client_id %}<span class="admin-integrations-mini-badge admin-integrations-mini-badge-ready ms-1">Configured</span>{% endif %}
+                    </summary>
+                    <div class="row g-2 mt-1">
+                        <div class="col-md-6">
+                            <label for="client_id_{{ svc.id }}" class="form-label small">Client ID</label>
+                            <input type="text" class="form-control form-control-sm"
+                                id="client_id_{{ svc.id }}" name="oauth2_client_id"
+                                value="{{ svc.oauth2_client_id or '' }}" autocomplete="off">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="client_secret_{{ svc.id }}" class="form-label small">
+                                Client Secret <span class="admin-integrations-details-helper">(leave blank to keep current)</span>
+                            </label>
+                            <input type="password" class="form-control form-control-sm"
+                                id="client_secret_{{ svc.id }}" name="oauth2_client_secret"
+                                placeholder="{{ '●●●●●●●● (set)' if svc.has_oauth2_secret else '' }}"
+                                autocomplete="new-password">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="auth_url_{{ svc.id }}" class="form-label small">Auth URL</label>
+                            <input type="url" class="form-control form-control-sm"
+                                id="auth_url_{{ svc.id }}" name="oauth2_auth_url"
+                                value="{{ svc.oauth2_auth_url or '' }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="token_url_{{ svc.id }}" class="form-label small">Token URL</label>
+                            <input type="url" class="form-control form-control-sm"
+                                id="token_url_{{ svc.id }}" name="oauth2_token_url"
+                                value="{{ svc.oauth2_token_url or '' }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="scopes_{{ svc.id }}" class="form-label small">Scopes</label>
+                            <input type="text" class="form-control form-control-sm"
+                                id="scopes_{{ svc.id }}" name="oauth2_scopes"
+                                value="{{ svc.oauth2_scopes or '' }}"
+                                placeholder="space-separated">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="redirect_uri_{{ svc.id }}" class="form-label small">Redirect URI</label>
+                            <input type="url" class="form-control form-control-sm"
+                                id="redirect_uri_{{ svc.id }}" name="oauth2_redirect_uri"
+                                value="{{ svc.oauth2_redirect_uri or '' }}">
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Global / shared API key -->
+                <details class="mb-3">
+                    <summary class="fw-semibold small admin-integrations-details-summary mb-2">
+                        <i class="bi bi-shield-lock me-1"></i>Global / Institutional API Key
+                        {% if svc.has_global_api_key %}<span class="admin-integrations-mini-badge admin-integrations-mini-badge-ready ms-1">Set</span>{% endif %}
+                    </summary>
+                    <div class="row g-2 mt-1">
+                        <div class="col-md-8">
+                            <label for="global_key_{{ svc.id }}" class="form-label small">
+                                API Key <span class="admin-integrations-details-helper">(leave blank to keep current)</span>
+                            </label>
+                            <input type="password" class="form-control form-control-sm"
+                                id="global_key_{{ svc.id }}" name="global_api_key"
+                                placeholder="{{ '●●●●●●●● (set)' if svc.has_global_api_key else 'Paste key here' }}"
+                                autocomplete="new-password">
+                        </div>
+                    </div>
+                </details>
+
+                <button type="submit" class="btn btn-primary btn-sm">
+                    <i class="bi bi-check-lg me-1"></i>Save
+                </button>
+                {% if svc.is_enabled %}
+                <button type="button" class="btn btn-sm ms-2 admin-integrations-disable-button"
+                    data-service-id="{{ svc.id }}">
+                    <i class="bi bi-pause-circle me-1"></i>Quick disable
+                </button>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="admin-integrations-empty-state">
+    No integration services found. They are seeded automatically on app startup.
+</div>
+{% endfor %}
+
+<script id="admin-integrations-config" type="application/json">
+{{ {
+    "testPathRoot": "/admin/integrations",
+    "testingLabel": "Testing…",
+    "successPrefix": "✓ ",
+    "errorPrefix": "✗ ",
+    "requestFailedPrefix": "Request failed: ",
+    "disableConfirm": "Disable this integration?"
+} | tojson | safe }}
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/admin_integrations_page.js') }}"></script>
+{% endblock %}

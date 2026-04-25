@@ -1,0 +1,98 @@
+{% extends base_template|default('base.html') %}
+{% block title %}{{ t('members.title') }} - {{ project.name }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/members_page.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="spa-page-header">
+    <div class="spa-page-header-left">
+        <div class="spa-page-icon"><i class="bi bi-people"></i></div>
+        <div>
+            {% if not embed %}
+            <a href="/researcher/projects/{{ project.id }}" class="members-page-back-link">
+                &larr; {{ t('extraction.back') }}
+            </a>
+            {% endif %}
+            <div class="spa-page-title">{{ t('members.title') }}</div>
+            <div class="spa-page-subtitle">{{ project.name }}</div>
+        </div>
+    </div>
+</div>
+
+<div id="membersPageStatus" class="members-page-status" hidden role="status" aria-live="polite"></div>
+
+<div class="spa-card members-page-card">
+    <div class="spa-card-header members-page-card-header">
+        <div class="spa-card-title">{{ t('members.project_members') }}</div>
+        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addMemberModal">
+            {{ t('members.add') }}
+        </button>
+    </div>
+    <div class="list-group list-group-flush">
+        {% if owner %}
+        <div class="list-group-item d-flex justify-content-between align-items-center members-page-list-item">
+            <span class="members-page-member-label">
+                {{ owner.username }}
+                <span class="members-page-role-badge members-page-role-owner">{{ t('members.owner') }}</span>
+            </span>
+        </div>
+        {% endif %}
+        {% for m in members %}
+        <div class="list-group-item d-flex justify-content-between align-items-center members-page-list-item"
+            data-member-id="{{ m.id }}">
+            <span class="members-page-member-label">
+                {{ m.user.username if m.user else '?' }}
+                <span class="members-page-role-badge members-page-role-{{ m.role|lower }}">{{ m.role }}</span>
+            </span>
+            <button type="button" class="btn btn-outline-danger btn-sm remove-member-btn" data-member-id="{{ m.id }}">
+                {{ t('members.remove') }}
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<div class="modal fade" id="addMemberModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ t('members.modal.title') }}</h5>
+                <button type="button" class="btn-close btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <select id="addUserId" class="form-select mb-2">
+                    <option value="">{{ t('members.modal.select_user') }}</option>
+                    {% for u in users %}
+                    <option value="{{ u.id }}">{{ u.username }}</option>
+                    {% endfor %}
+                </select>
+                <select id="addRole" class="form-select">
+                    <option value="viewer">{{ t('members.modal.role.viewer') }}</option>
+                    <option value="contributor">{{ t('members.modal.role.contributor') }}</option>
+                    <option value="admin">{{ t('members.modal.role.admin') }}</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ t('members.modal.cancel')
+                    }}</button>
+                <button type="button" class="btn btn-primary" id="btnAddMember">{{ t('members.modal.add') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script id="members-config" type="application/json">
+{{ {
+    "projectId": project.id,
+    "membersUrl": "/projects/" ~ project.id ~ "/members",
+    "confirmRemove": t("members.confirm_remove"),
+    "selectUserMessage": "Choose a person before adding them.",
+    "saveFailedMessage": "Unable to save member changes.",
+    "removeFailedMessage": "Unable to remove this member."
+} | tojson | safe }}
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/members_page.js') }}"></script>
+{% endblock %}

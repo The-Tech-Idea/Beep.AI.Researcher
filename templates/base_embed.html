@@ -1,0 +1,45 @@
+{#
+base_embed.html / base_partial.html
+Used for:
+1. SPA partial loading (?partial=1) — returns ONLY the content block, no <html> wrapper
+2. Iframe embeds (?embed=1) — returns a minimal standalone page
+
+Templates use: {% extends base_template or "base.html" %}
+Routes set: base_template = 'base_partial.html' when ?partial=1 or ?embed=1
+#}
+{% if request.args.get('partial') %}
+{# ── SPA Partial: raw HTML fragment, no wrapper ── #}
+{% block content %}{% endblock %}
+{% block extra_js %}{% endblock %}
+{% else %}
+{# ── Embed: minimal standalone page ── #}
+<!DOCTYPE html>
+<html lang="{{ g.locale or 'en' }}" dir="{{ 'rtl' if g.locale == 'ar' else 'ltr' }}">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Beep.AI.Researcher{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link href="{{ url_for('static', filename='vendor/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/design-system.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard-theme.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/jenni-theme.css') }}">
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body class="embed-body">
+  <div class="embed-content p-3">
+    {{ self.content() }}
+  </div>
+  <script src="{{ url_for('static', filename='vendor/bootstrap.bundle.min.js') }}"></script>
+  {{ self.extra_js() }}
+</body>
+
+</html>
+{% endif %}

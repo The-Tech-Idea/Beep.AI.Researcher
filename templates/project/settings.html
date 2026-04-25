@@ -1,0 +1,423 @@
+{% extends "project/_layout.html" %}
+
+{% set active_page = 'settings' %}
+{% set page_title = t('project_settings.title') %}
+{% set page_subtitle = t('project_settings.subtitle') %}
+{% set page_icon = 'gear' %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/settings.css') }}">
+{% endblock %}
+
+{% block workspace_content %}
+<div
+    id="projectSettingsPage"
+    data-project-id="{{ project.id }}"
+    data-project-api-base="/projects/{{ project.id }}"
+    data-initial-collection-id="{{ project.collection_id or '' }}"
+    data-initial-template-slug="{{ project.chunk_template_slug or '' }}"
+    data-initial-quality-mode="{{ project.rag_quality_mode or 'balanced' }}"
+    data-initial-quality-mode-source="{{ 'saved_project_choice' if project.rag_quality_mode else 'project_default' }}"
+    data-saved-message="{{ t('project_settings.alerts.saved') }}"
+    data-archive-confirm="{{ t('project_settings.alerts.archive_confirm') }}"
+    data-delete-confirm="{{ t('project_settings.alerts.delete_confirm') }}"
+>
+<div class="row g-3">
+    <div class="col-lg-8">
+        {# General Settings #}
+        <div class="spa-card mb-3">
+            <div class="spa-card-header">
+                <div class="spa-card-title"><i class="bi bi-gear project-settings__title-icon" aria-hidden="true"></i>{{ t('project_settings.general') }}</div>
+            </div>
+            <div class="spa-card-body">
+                <form id="projectSettingsForm">
+                    <div class="mb-3">
+                        <label class="form-label" for="projectName">{{ t('project_settings.project_name') }}</label>
+                        <input type="text" class="form-control" id="projectName" value="{{ project.name }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="projectDescription">{{ t('project_settings.description') }}</label>
+                        <textarea class="form-control" id="projectDescription"
+                            rows="3">{{ project.description }}</textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="projectCategory">{{ t('project_settings.category') }}</label>
+                            <select class="form-select" id="projectCategory">
+                                <option value="">{{ t('project_settings.category.select') }}</option>
+                                <option value="research" {{ 'selected' if project.category=='research' }}>{{
+                                    t('project_settings.category.research') }}</option>
+                                <option value="thesis" {{ 'selected' if project.category=='thesis' }}>{{
+                                    t('project_settings.category.thesis') }}</option>
+                                <option value="paper" {{ 'selected' if project.category=='paper' }}>{{
+                                    t('project_settings.category.paper') }}</option>
+                                <option value="review" {{ 'selected' if project.category=='review' }}>{{
+                                    t('project_settings.category.review') }}</option>
+                                <option value="other" {{ 'selected' if project.category=='other' }}>{{
+                                    t('project_settings.category.other') }}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="projectStatus">{{ t('project_settings.status') }}</label>
+                            <select class="form-select" id="projectStatus">
+                                <option value="active" {{ 'selected' if project.status=='active' }}>{{
+                                    t('project_settings.status.active') }}</option>
+                                <option value="paused" {{ 'selected' if project.status=='paused' }}>{{
+                                    t('project_settings.status.paused') }}</option>
+                                <option value="completed" {{ 'selected' if project.status=='completed' }}>{{
+                                    t('project_settings.status.completed') }}</option>
+                                <option value="archived" {{ 'selected' if project.status=='archived' }}>{{
+                                    t('project_settings.status.archived') }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="projectTags">{{ t('project_settings.tags') }}</label>
+                        <input type="text" class="form-control" id="projectTags"
+                            value="{{ project.tags|join(', ') if project.tags else '' }}"
+                            placeholder="{{ t('project_settings.tags.placeholder') }}">
+                    </div>
+                    <button type="submit" class="project-settings__button project-settings__button--primary"><i class="bi bi-check project-settings__button-icon" aria-hidden="true"></i>{{
+                        t('project_settings.save') }}</button>
+                </form>
+            </div>
+        </div>
+
+        {# AI Settings #}
+        <div class="spa-card mb-3">
+            <div class="spa-card-header">
+                <div class="spa-card-title"><i class="bi bi-robot project-settings__title-icon" aria-hidden="true"></i>{{ t('project_settings.ai.title') }}</div>
+            </div>
+            <div class="spa-card-body">
+                <div class="mb-3">
+                    <label class="form-label" for="aiInstructions">{{ t('project_settings.ai.custom_instructions')|default('Custom
+                        Instructions') }}</label>
+                    <textarea class="form-control" id="aiInstructions" rows="3"
+                        placeholder="{{ t('project_settings.ai.instructions_placeholder')|default('e.g., Act as a legal researcher. Always explain technical terms simply.') }}">{{ project.custom_instructions|default('') }}</textarea>
+                    <div class="form-text">{{ t('project_settings.ai.instructions_help')|default('These instructions
+                        will be prepended to all your chat queries in this project.') }}</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" for="aiCitationFormat">{{ t('project_settings.ai.citation_format')|default('Citation Format')
+                            }}</label>
+                        <select class="form-select" id="aiCitationFormat">
+                            <option value="apa" {{ 'selected' if project.citation_format=='apa' }}>APA</option>
+                            <option value="ieee" {{ 'selected' if project.citation_format=='ieee' }}>IEEE</option>
+                            <option value="mla" {{ 'selected' if project.citation_format=='mla' }}>MLA</option>
+                            <option value="chicago" {{ 'selected' if project.citation_format=='chicago' }}>Chicago
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" for="aiLanguage">{{ t('project_settings.ai.language')|default('Response Language')
+                            }}</label>
+                        <select class="form-select" id="aiLanguage">
+                            <option value="en" {{ 'selected' if project.ai_language=='en' }}>English</option>
+                            <option value="ar" {{ 'selected' if project.ai_language=='ar' }}>Arabic</option>
+                            <option value="fr" {{ 'selected' if project.ai_language=='fr' }}>French</option>
+                            <option value="es" {{ 'selected' if project.ai_language=='es' }}>Spanish</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="aiTemperature">{{ t('project_settings.ai.temperature') }}</label>
+                    <input type="range" class="form-range" id="aiTemperature" min="0" max="1" step="0.1"
+                        value="{{ project.ai_temperature|default(0.7) }}">
+                    <div class="project-settings__slider-scale">
+                        <span>{{ t('project_settings.ai.precise') }}</span>
+                        <span id="tempValue">{{ project.ai_temperature|default(0.7) }}</span>
+                        <span>{{ t('project_settings.ai.creative') }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="spa-card mb-3">
+            <div class="spa-card-header">
+                <div class="spa-card-title"><i class="bi bi-search-heart project-settings__title-icon" aria-hidden="true"></i>How The Assistant Uses Your Project Files</div>
+            </div>
+            <div class="spa-card-body">
+                <div class="research-setup-intro mb-3">
+                    <h4>Keep answers easier to trust</h4>
+                    <p class="project-settings__intro-copy">These settings help the assistant read the right parts of your project files and answer in a way that fits your work.</p>
+                    <ul class="research-setup-list">
+                        <li>Choose the document library this project should use.</li>
+                        <li>Choose how careful the assistant should be when reading your material.</li>
+                        <li>Tell it what kind of files are most common in this project.</li>
+                        <li>Leave the expert options alone unless an administrator is tuning search quality.</li>
+                    </ul>
+                </div>
+                <div class="library-connection-panel">
+                    <h4>Document Library Connection</h4>
+                    <p>Choose the shared file library this project should use when the assistant answers questions from your materials.</p>
+                    <div class="mb-3">
+                        <label class="form-label" for="ragCollectionSelect">Choose document library</label>
+                        <select class="form-select" id="ragCollectionSelect">
+                            <option value="">Loading document libraries...</option>
+                        </select>
+                        <div class="form-text">You can change this later if the project should use a different file library.</div>
+                    </div>
+                    <div id="ragLibraryStatus" class="project-settings__status project-settings__status--secondary">
+                        Loading document libraries...
+                    </div>
+                    <div class="project-settings__action-row">
+                        <button type="button" class="project-settings__button project-settings__button--neutral" id="refreshLibraryListBtn">
+                            <i class="bi bi-arrow-repeat project-settings__button-icon" aria-hidden="true"></i>Refresh Library List
+                        </button>
+                        <button type="button" class="project-settings__button project-settings__button--accent" id="saveLibraryConnectionBtn">
+                            <i class="bi bi-link-45deg project-settings__button-icon" aria-hidden="true"></i>Save Library Connection
+                        </button>
+                        <button type="button" class="project-settings__button project-settings__button--danger-soft" id="disconnectLibraryBtn">
+                            <i class="bi bi-x-circle project-settings__button-icon" aria-hidden="true"></i>Remove Library Connection
+                        </button>
+                    </div>
+                </div>
+
+                {# Document reading setup #}
+                <div class="library-connection-panel" id="chunkTemplatePanel">
+                    <h4><i class="bi bi-scissors project-settings__title-icon" aria-hidden="true"></i>Reading Setup</h4>
+                    <p>Different file types work better with different reading setups. Use the recommended option unless an administrator asks you to change it.</p>
+                    <div id="recommendedTemplateHint" class="research-note mb-3">
+                        Choose the most common file type below to see the suggested reading setup.
+                    </div>
+                    <div class="project-settings__action-row project-settings__action-row--compact">
+                        <button type="button" class="project-settings__button project-settings__button--accent" id="useRecommendedTemplateBtn" disabled>
+                            <i class="bi bi-magic project-settings__button-icon" aria-hidden="true"></i>Use Suggested Setup
+                        </button>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label" for="chunkTemplateSelect">Saved reading setup</label>
+                        <select class="form-select" id="chunkTemplateSelect" disabled>
+                            <option value="">Use library default reading setup</option>
+                        </select>
+                    </div>
+                    <div id="chunkTemplateDescription" class="form-text mb-3 project-settings__template-description"></div>
+                    <div id="chunkTemplateStatus" class="project-settings__status" hidden></div>
+                    <div class="project-settings__action-row">
+                        <button type="button" class="project-settings__button project-settings__button--accent" id="applyChunkTemplateBtn" disabled>
+                            <i class="bi bi-check2-circle project-settings__button-icon" aria-hidden="true"></i>Use This Setup
+                        </button>
+                        <button type="button" class="project-settings__button project-settings__button--neutral" id="refreshChunkTemplatesBtn" disabled>
+                            <i class="bi bi-arrow-repeat project-settings__button-icon" aria-hidden="true"></i>Refresh Setups
+                        </button>
+                        <button type="button" class="project-settings__button project-settings__button--danger-soft" id="removeChunkTemplateBtn" disabled>
+                            <i class="bi bi-x-circle project-settings__button-icon" aria-hidden="true"></i>Use Library Default
+                        </button>
+                    </div>
+                </div>
+
+                <div id="ragProfileStatus" class="project-settings__status project-settings__status--secondary">
+                    {% if project.collection_id %}
+                    Loading document reading settings...
+                    {% else %}
+                    Choose a document library before changing reading settings.
+                    {% endif %}
+                </div>
+                <div class="research-current-setup mb-3" id="currentLibrarySetup">
+                    <h4>Current Library Setup</h4>
+                    <p class="mb-3">Saved setup currently in use for this project. This helps you see what comes from the library default and what this project overrides.</p>
+                    <div class="research-current-setup-grid">
+                        <div class="research-current-setup-item">
+                            <span class="research-current-setup-label">Connected library</span>
+                            <strong id="currentSetupCollection">No document library selected</strong>
+                            <span id="currentSetupCollectionNote">Connect a document library to see the saved setup.</span>
+                        </div>
+                        <div class="research-current-setup-item">
+                            <span class="research-current-setup-label">Reading setup</span>
+                            <strong id="currentSetupTemplate">Library default</strong>
+                            <span id="currentSetupTemplateNote">Using the library default reading setup.</span>
+                        </div>
+                        <div class="research-current-setup-item">
+                            <span class="research-current-setup-label">File connections</span>
+                            <strong id="currentSetupGraph">Library default</strong>
+                            <span id="currentSetupGraphNote">Using the library default file connection setup.</span>
+                        </div>
+                        <div class="research-current-setup-item">
+                            <span class="research-current-setup-label">Answer style</span>
+                            <strong id="currentSetupQuality">Balanced help</strong>
+                            <span id="currentSetupBehavior">Reading style details will appear after the saved setup loads.</span>
+                        </div>
+                    </div>
+                    <div class="research-current-setup-quickview" aria-label="Saved setup quick view">
+                        <span class="research-current-setup-chip" id="currentSetupChipQuality">Answer style: Balanced help</span>
+                        <span class="research-current-setup-chip" id="currentSetupChipFileStyle">File style: Research articles and narrative writing</span>
+                        <span class="research-current-setup-chip" id="currentSetupChipDocumentType">Document type: Not set yet</span>
+                        <span class="research-current-setup-chip" id="currentSetupChipFilters">Filters: Standard defaults</span>
+                    </div>
+                </div>
+                <div class="research-focus-grid">
+                    <div class="research-focus-card">
+                        <strong>Quick summaries</strong>
+                        <span>Best when you want faster overviews and broad guidance.</span>
+                    </div>
+                    <div class="research-focus-card">
+                        <strong>Balanced help</strong>
+                        <span>Recommended for most projects. Good speed with grounded answers.</span>
+                    </div>
+                    <div class="research-focus-card">
+                        <strong>Careful reading</strong>
+                        <span>Best for detailed reports, policy work, long papers, and higher-stakes reviews.</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label" for="ragQualityMode">Answer Style</label>
+                        <select class="form-select" id="ragQualityMode">
+                            <option value="fast">Quick summaries</option>
+                            <option value="balanced" selected>Balanced help</option>
+                            <option value="deep">Careful reading</option>
+                        </select>
+                        <div class="form-text">Start with <strong>Balanced help</strong> unless this project needs extra caution.</div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label" for="ragChunkStrategy">Most Common File Style</label>
+                        <select class="form-select" id="ragChunkStrategy">
+                            <option value="semantic">Research articles and narrative writing</option>
+                            <option value="hierarchical">Long reports, books, and policy documents</option>
+                            <option value="fixed">Scanned text or inconsistent formatting</option>
+                        </select>
+                        <div class="form-text">Pick the option that best matches most of the material in this project.</div>
+                    </div>
+                    <div class="col-md-4 mb-3 d-flex align-items-end">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="ragEnrichContext">
+                            <label class="form-check-label" for="ragEnrichContext">Use nearby paragraphs to improve context</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label" for="ragMetadataLanguage">Main Language</label>
+                        <input type="text" class="form-control" id="ragMetadataLanguage" placeholder="English">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label" for="ragDocumentTypeSelect">Most Common Document Type</label>
+                        <select class="form-select" id="ragDocumentTypeSelect">
+                            <option value="">Loading document types...</option>
+                        </select>
+                        <input
+                            type="text"
+                            class="form-control mt-2"
+                            id="ragMetadataDocumentKindCustom"
+                            placeholder="Describe the main file type for this project"
+                            hidden
+                        >
+                        <div id="ragDocumentTypeHint" class="form-text mt-2">
+                            Choose the file type that best matches most of the material in this project.
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label" for="ragMetadataSourceType">Usual File Source</label>
+                        <input type="text" class="form-control" id="ragMetadataSourceType" placeholder="uploaded, imported, web">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" for="graphReadingMode">How Files Connect</label>
+                        <select class="form-select" id="graphReadingMode">
+                            <option value="">Loading file connection options...</option>
+                        </select>
+                        <div id="graphReadingModeHint" class="form-text mt-2">
+                            Choose how much help the assistant should use when connecting related files.
+                        </div>
+                    </div>
+                </div>
+                <div class="research-note mb-3">
+                    These settings affect how the assistant finds useful passages inside your project library. They do not change your original files.
+                </div>
+                {% if current_user.is_admin %}
+                <details class="research-expert-panel">
+                    <summary class="research-expert-toggle list-unstyled">
+                        <i class="bi bi-chevron-right project-settings__title-icon" aria-hidden="true"></i>Expert Setup
+                    </summary>
+                    <p class="research-expert-copy">These are technical search-storage controls. Change them only when you are actively tuning document ingestion or troubleshooting answer quality.</p>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="ragChunkSize">Reading Window Size (chars)</label>
+                            <input type="number" class="form-control" id="ragChunkSize" min="200" step="100">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="ragChunkOverlap">Reading Window Overlap (chars)</label>
+                            <input type="number" class="form-control" id="ragChunkOverlap" min="0" step="50">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="ragFilterableFields">Indexed Detail Fields</label>
+                        <input type="text" class="form-control" id="ragFilterableFields"
+                            placeholder="document_kind, source_type, language, authors, tags">
+                        <div class="form-text">Comma-separated metadata keys that should stay fast to narrow, group, and filter.</div>
+                    </div>
+                </details>
+                {% endif %}
+                <button type="button" class="project-settings__button project-settings__button--accent" id="saveRagProfileBtn">
+                    <i class="bi bi-save project-settings__button-icon" aria-hidden="true"></i>Save Reading Settings
+                </button>
+            </div>
+        </div>
+
+        {# Export & Backup #}
+        <div class="spa-card mb-3">
+            <div class="spa-card-header">
+                <div class="spa-card-title"><i class="bi bi-download project-settings__title-icon" aria-hidden="true"></i>{{ t('project_settings.export.title') }}
+                </div>
+            </div>
+            <div class="spa-card-body">
+                <p class="project-settings__muted-copy project-settings__section-copy">{{ t('project_settings.export.desc') }}</p>
+                <div class="project-settings__action-row">
+                    <button class="project-settings__button project-settings__button--neutral" type="button" data-export-format="json"><i
+                            class="bi bi-file-code project-settings__button-icon" aria-hidden="true"></i>{{ t('project_settings.export.json') }}</button>
+                    <button class="project-settings__button project-settings__button--neutral" type="button" data-export-format="zip"><i
+                            class="bi bi-file-zip project-settings__button-icon" aria-hidden="true"></i>{{ t('project_settings.export.zip') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        {# Project Info #}
+        <div class="spa-card mb-3">
+            <div class="spa-card-header">
+                <div class="spa-card-title"><i class="bi bi-info-circle project-settings__title-icon" aria-hidden="true"></i>{{ t('project_settings.info.title') }}
+                </div>
+            </div>
+            <div class="spa-card-body">
+                <dl class="project-settings__info-list">
+                    <dt class="project-settings__info-label">{{ t('project_settings.info.created') }}</dt>
+                    <dd class="project-settings__info-value">{{ project.created_at.strftime('%B %d, %Y') }}</dd>
+                    <dt class="project-settings__info-label">{{ t('project_settings.info.modified') }}</dt>
+                    <dd class="project-settings__info-value">{{ project.updated_at.strftime('%B %d, %Y at %I:%M %p') }}</dd>
+                    <dt class="project-settings__info-label">{{ t('project_settings.info.documents') }}</dt>
+                    <dd class="project-settings__info-value">{{ document_count }} {{ t('project_settings.info.files') }}</dd>
+                    <dt class="project-settings__info-label">{{ t('project_settings.info.storage') }}</dt>
+                    <dd class="project-settings__info-value project-settings__info-value--last">{{ storage_used_formatted }}</dd>
+                </dl>
+            </div>
+        </div>
+
+        {# Danger Zone #}
+        <div class="spa-card project-settings__danger-card">
+            <div class="spa-card-header project-settings__danger-header">
+                <div class="spa-card-title project-settings__danger-title"><i class="bi bi-exclamation-triangle project-settings__title-icon" aria-hidden="true"></i>{{
+                    t('project_settings.danger.title') }}</div>
+            </div>
+            <div class="spa-card-body">
+                <p class="project-settings__muted-copy project-settings__danger-copy">{{ t('project_settings.danger.desc') }}</p>
+                <div class="project-settings__danger-actions">
+                    <button class="project-settings__button project-settings__button--danger-soft project-settings__button--block" type="button" id="archiveProjectBtn"><i
+                            class="bi bi-archive project-settings__button-icon" aria-hidden="true"></i>{{ t('project_settings.danger.archive') }}</button>
+                    <button class="project-settings__button project-settings__button--danger project-settings__button--block" type="button" id="deleteProjectBtn"><i class="bi bi-trash project-settings__button-icon" aria-hidden="true"></i>{{
+                    t('project_settings.danger.delete') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script src="{{ url_for('static', filename='js/project/settings.js') }}"></script>
+{% endblock %}

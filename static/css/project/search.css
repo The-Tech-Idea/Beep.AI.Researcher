@@ -1,0 +1,170 @@
+.project-search-clear-button {
+    background: color-mix(in srgb, var(--spa-surface-2) 90%, var(--spa-primary-light) 10%);
+    border: 1px solid color-mix(in srgb, var(--spa-primary) 14%, var(--spa-border));
+    color: var(--spa-text-secondary);
+}
+
+.project-search-clear-button:hover,
+.project-search-clear-button:focus-visible {
+    background: color-mix(in srgb, var(--spa-primary-light) 58%, var(--spa-surface));
+    border-color: color-mix(in srgb, var(--spa-primary) 24%, var(--spa-border));
+    color: var(--spa-primary);
+}
+
+.research-chat-setup {
+    border: 1px solid var(--spa-border);
+    border-radius: var(--spa-radius-lg);
+    background:
+        radial-gradient(circle at top right, color-mix(in srgb, var(--spa-primary) 12%, transparent), transparent 38%),
+        linear-gradient(145deg, var(--spa-surface), color-mix(in srgb, var(--spa-surface-2) 90%, var(--spa-primary-light) 10%));
+    padding: 0.95rem 1rem;
+    margin-bottom: 0.65rem;
+}
+
+.research-chat-setup-copy {
+    color: var(--spa-text-secondary);
+    font-size: 0.86rem;
+    line-height: 1.55;
+}
+
+.research-chat-setup-copy strong {
+    color: var(--spa-text);
+}
+
+.project-search-quality-panel {
+    margin-bottom: 0.5rem;
+    padding: 0.75rem;
+    border: 1px solid color-mix(in srgb, var(--spa-border) 84%, transparent);
+    border-radius: var(--spa-radius-lg);
+    background: color-mix(in srgb, var(--spa-surface) 88%, var(--spa-surface-2) 12%);
+}
+
+.project-search-quality-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.55rem;
+    border: 1px solid color-mix(in srgb, var(--spa-primary) 35%, var(--spa-border));
+    border-radius: var(--spa-radius-pill, 999px);
+    background: color-mix(in srgb, var(--spa-primary) 12%, var(--spa-surface));
+    color: var(--spa-text);
+    font-size: 0.76rem;
+    font-weight: 700;
+}
+
+.project-search-quality-scale {
+    display: flex;
+    justify-content: space-between;
+    margin-top: -0.15rem;
+    color: var(--spa-text-secondary);
+    font-size: 0.68rem;
+}
+
+.project-search-quality-heading {
+    font-size: 0.75rem;
+}
+
+.msg-evidence {
+    margin-top: 0.8rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid color-mix(in srgb, var(--spa-border) 70%, transparent);
+    display: grid;
+    gap: 0.6rem;
+}
+
+.msg-evidence-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.msg-evidence-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: var(--spa-radius-pill, 999px);
+    background: color-mix(in srgb, var(--spa-surface-2) 88%, transparent);
+    color: var(--spa-text-secondary);
+    font-size: 0.77rem;
+    border: 1px solid var(--spa-border);
+}
+
+.msg-evidence-pill strong {
+    color: var(--spa-text);
+    font-weight: 700;
+}
+
+.msg-grounding {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    align-items: center;
+}
+
+.grounding-badge,
+.grounding-flag,
+.grounding-warning {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.34rem 0.58rem;
+    border-radius: var(--spa-radius-pill, 999px);
+    font-size: 0.75rem;
+    border: 1px solid var(--spa-border);
+    background: var(--spa-surface);
+    color: var(--spa-text-secondary);
+}
+
+.grounding-high {
+    color: var(--spa-success);
+    border-color: color-mix(in srgb, var(--spa-success) 35%, var(--spa-border));
+    background: color-mix(in srgb, var(--spa-success) 10%, var(--spa-surface));
+}
+
+.grounding-medium {
+    color: var(--spa-warning);
+    border-color: color-mix(in srgb, var(--spa-warning) 35%, var(--spa-border));
+    background: color-mix(in srgb, var(--spa-warning) 10%, var(--spa-surface));
+}
+
+.grounding-low,
+.grounding-warning {
+    color: var(--spa-danger);
+    border-color: color-mix(in srgb, var(--spa-danger) 35%, var(--spa-border));
+    background: color-mix(in srgb, var(--spa-danger) 10%, var(--spa-surface));
+}
+
+.msg-sources-label {
+    color: var(--spa-text);
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.msg-source-link {
+    cursor: pointer;
+}
+
+.msg-add-report {
+    margin-top: 0.6rem;
+}
+
+.msg-add-report-button {
+    background: color-mix(in srgb, var(--spa-surface-2) 90%, var(--spa-primary-light) 10%);
+    border: 1px solid color-mix(in srgb, var(--spa-primary) 14%, var(--spa-border));
+    border-radius: var(--border-radius-pill);
+    color: var(--spa-text-secondary);
+    font-size: 0.75rem;
+}
+
+.msg-add-report-button:hover,
+.msg-add-report-button:focus-visible {
+    background: color-mix(in srgb, var(--spa-primary-light) 58%, var(--spa-surface));
+    border-color: color-mix(in srgb, var(--spa-primary) 24%, var(--spa-border));
+    color: var(--spa-primary);
+}
+
+.msg-add-report-button:disabled {
+    opacity: 0.75;
+}

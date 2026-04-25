@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup - Beep.AI.Researcher</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="{{ url_for('static', filename='vendor/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap-icons/bootstrap-icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/design-system.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard-theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/jenni-theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/setup.css') }}">
+</head>
+
+<body>
+    <div class="theme-switch-wrapper">
+        <button class="theme-btn" data-theme-value="light" title="Light" aria-label="Light theme"><i class="bi bi-sun-fill"></i></button>
+        <button class="theme-btn" data-theme-value="system" title="System" aria-label="System theme"><i class="bi bi-display"></i></button>
+        <button class="theme-btn" data-theme-value="dark" title="Dark" aria-label="Dark theme"><i
+                class="bi bi-moon-stars-fill"></i></button>
+    </div>
+
+    <div class="setup-card">
+        <div class="text-center mb-5">
+            <h3 class="mb-2"><i class="bi bi-journal-bookmark-fill me-2"></i>Beep.AI.Researcher</h3>
+            <p class="text-secondary">TheTechIdea | Initial workspace setup</p>
+        </div>
+
+        <div class="step-indicator">
+            <div class="step active" id="step1-indicator">1</div>
+            <div class="step" id="step2-indicator">2</div>
+            <div class="step" id="step3-indicator">3</div>
+            <div class="step" id="step4-indicator">4</div>
+        </div>
+
+        <!-- Step 1: Admin Account -->
+        <div id="step1">
+            <h5 class="mb-4"><i class="bi bi-person-shield me-2 text-primary"></i>Administrator account</h5>
+            <div class="mb-3">
+                <label class="form-label" for="adminUser">Username</label>
+                <input type="text" class="form-control" id="adminUser" value="admin">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="adminEmail">Email</label>
+                <input type="email" class="form-control" id="adminEmail" placeholder="admin@localhost">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="adminPass">Password</label>
+                <input type="password" class="form-control" id="adminPass" required minlength="4">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="adminPassConfirm">Confirm Password</label>
+                <input type="password" class="form-control" id="adminPassConfirm">
+            </div>
+            <div class="d-flex justify-content-end mt-5">
+                <button class="btn btn-primary" id="setupAdminNextButton" type="button">Next <i
+                        class="bi bi-arrow-right ms-1"></i></button>
+            </div>
+        </div>
+
+        <!-- Step 2: Database -->
+        <div id="step2" hidden>
+            <h5 class="mb-4"><i class="bi bi-database me-2 text-primary"></i>Database Configuration</h5>
+            {% if defaults %}
+            <p class="small mb-3"><i class="bi bi-info-circle me-1"></i>Default: {{ defaults.db_path }}</p>
+            {% endif %}
+            <div class="mb-3">
+                <label class="form-label" for="dbProvider">Database Provider</label>
+                <select class="form-select" id="dbProvider">
+                    <option value="sqlite">SQLite (Embedded / Local)</option>
+                    <option value="postgresql">PostgreSQL</option>
+                    <option value="mysql">MySQL / MariaDB</option>
+                    <option value="sqlserver">SQL Server</option>
+                    <option value="cosmosdb">Azure Cosmos DB (PostgreSQL API)</option>
+                </select>
+            </div>
+            <div class="alert alert-info d-none setup-info-alert" id="cosmosDbInfo">
+                <i class="bi bi-info-circle me-2"></i><strong>Azure Cosmos DB:</strong> Uses PostgreSQL API. Host
+                format: <code>your-account.postgres.cosmos.azure.com</code>
+            </div>
+            <div id="externalDbFields" hidden>
+                <div class="row g-2 mb-2">
+                    <div class="col-md-9">
+                        <label class="form-label" for="dbHost">Host</label>
+                        <input type="text" class="form-control" id="dbHost" placeholder="localhost">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label" for="dbPort">Port</label>
+                        <input type="number" class="form-control" id="dbPort">
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label" for="dbName">Database Name</label>
+                    <input type="text" class="form-control" id="dbName" placeholder="researcher">
+                </div>
+                <div class="row g-2 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label" for="dbUser">Username</label>
+                        <input type="text" class="form-control" id="dbUser">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="dbPass">Password</label>
+                        <input type="password" class="form-control" id="dbPass">
+                    </div>
+                </div>
+            </div>
+            <div class="alert alert-danger d-none setup-error-alert" id="dbError"></div>
+            <div class="d-flex justify-content-between mt-5">
+                <button class="btn btn-outline-secondary" id="setupDatabaseBackButton" type="button">Back</button>
+                <button class="btn btn-primary" id="setupDatabaseNextButton" type="button">Next</button>
+            </div>
+        </div>
+
+        <!-- Step 3: Authentication -->
+        <div id="step3" hidden>
+            <h5 class="mb-4"><i class="bi bi-shield-lock me-2 text-primary"></i>Sign-in method</h5>
+            <div class="d-flex gap-2 flex-wrap mb-4">
+                <button class="btn btn-outline-primary flex-fill active" id="authLocalBtn"
+                    data-auth-mode="local" type="button">
+                    <i class="bi bi-lock-fill me-1"></i> Built-in (local users)
+                </button>
+                <button class="btn btn-outline-primary flex-fill" id="authIdpBtn" data-auth-mode="identity"
+                    type="button">
+                    <i class="bi bi-cloud-lock me-1"></i> External sign-in (OpenID Connect)
+                </button>
+            </div>
+            <div id="identityFields" hidden>
+                <div class="mb-2">
+                    <label class="form-label" for="idpAuthority">Authority / Issuer URL</label>
+                    <input type="url" class="form-control" id="idpAuthority" placeholder="https://idp.example.com">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label" for="idpClientId">Client ID</label>
+                    <input type="text" class="form-control" id="idpClientId" placeholder="beep-researcher">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label" for="idpClientSecret">Client Secret</label>
+                    <input type="password" class="form-control" id="idpClientSecret" placeholder="(optional for PKCE)">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label" for="idpScopes">Scopes</label>
+                    <input type="text" class="form-control" id="idpScopes" value="openid profile email">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label" for="idpLogoutRedirect">Post-logout Redirect</label>
+                    <input type="url" class="form-control" id="idpLogoutRedirect" placeholder="http://localhost:5005/">
+                </div>
+            </div>
+            <div class="d-flex justify-content-between mt-5">
+                <button class="btn btn-outline-secondary" id="setupAuthBackButton" type="button">Back</button>
+                <button class="btn btn-primary" id="setupAuthNextButton" type="button">Next</button>
+            </div>
+        </div>
+
+        <!-- Step 4: Summary -->
+        <div id="step4" hidden>
+            <h5 class="mb-4"><i class="bi bi-check-circle me-2 text-success"></i>Ready to start</h5>
+            <p class="text-secondary mb-4">Review the choices below. Selecting "Finish and open app" will create the database and the administrator account.</p>
+            <ul class="list-group mb-4 opacity-75">
+                <li class="list-group-item bg-transparent"><i class="bi bi-person me-2 text-primary"></i> <span
+                        id="summaryUser">admin</span></li>
+                <li class="list-group-item bg-transparent"><i class="bi bi-database me-2 text-primary"></i> <span
+                        id="summaryDb">SQLite</span></li>
+                <li class="list-group-item bg-transparent"><i class="bi bi-shield-lock me-2 text-primary"></i> <span
+                        id="summaryAuth">Built-in (local users)</span></li>
+            </ul>
+            <div class="d-flex justify-content-between mt-5">
+                <button class="btn btn-outline-secondary" id="setupSummaryBackButton" type="button">Back</button>
+                <button class="btn btn-success" id="finishBtn" type="button">
+                    Finish and open app <i class="bi bi-rocket-takeoff ms-1"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/base_shell.js') }}?v={{ config.APP_VERSION or '1.0' }}"></script>
+    <script src="{{ url_for('static', filename='js/flow_notifications.js') }}?v={{ config.APP_VERSION or '1.0' }}"></script>
+    <script src="{{ url_for('static', filename='js/setup.js') }}?v={{ config.APP_VERSION or '1.0' }}"></script>
+</body>
+
+</html>

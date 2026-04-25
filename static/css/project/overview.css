@@ -1,0 +1,151 @@
+.overview-export-button {
+    background: color-mix(in srgb, var(--spa-surface-2) 90%, var(--spa-primary-light) 10%);
+    border: 1px solid color-mix(in srgb, var(--spa-primary) 14%, var(--spa-border));
+    color: var(--spa-text-secondary);
+}
+
+.overview-export-button:hover,
+.overview-export-button:focus-visible {
+    background: color-mix(in srgb, var(--spa-primary-light) 58%, var(--spa-surface));
+    border-color: color-mix(in srgb, var(--spa-primary) 24%, var(--spa-border));
+    color: var(--spa-primary);
+}
+
+.overview-export-menu {
+    border-color: var(--spa-border);
+    background: var(--spa-surface);
+    box-shadow: var(--spa-shadow-sm);
+}
+
+.overview-export-item {
+    color: var(--spa-text-secondary);
+}
+
+.overview-export-item:hover,
+.overview-export-item:focus-visible {
+    background: color-mix(in srgb, var(--spa-primary-light) 56%, var(--spa-surface));
+    color: var(--spa-primary);
+}
+
+.overview-pipeline-subtitle,
+.overview-pipeline-separator,
+.overview-actions-title,
+.overview-action-hint,
+.overview-todo-item--done,
+.overview-todo-text--done {
+    color: var(--spa-text-muted);
+}
+
+.overview-pipeline-step {
+    align-items: center;
+    border: 1px solid;
+    border-radius: var(--border-radius-pill);
+    display: inline-flex;
+    font-size: var(--font-size-eyebrow);
+    font-weight: 600;
+    line-height: 1;
+    min-height: 2rem;
+}
+
+.overview-pipeline-step--done {
+    background: color-mix(in srgb, var(--spa-success) 10%, var(--spa-surface));
+    border-color: color-mix(in srgb, var(--spa-success) 22%, var(--spa-border));
+    color: color-mix(in srgb, var(--spa-success) 82%, var(--spa-text));
+}
+
+.overview-pipeline-step--pending {
+    background: color-mix(in srgb, var(--spa-surface-2) 90%, var(--spa-primary-light) 10%);
+    border-color: color-mix(in srgb, var(--spa-primary) 14%, var(--spa-border));
+    color: var(--spa-text-secondary);
+}
+
+.overview-action-card {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.overview-action-card-shell {
+    border: 1px solid var(--spa-border);
+    box-shadow: var(--spa-shadow-sm);
+}
+
+.overview-action-card:hover,
+.overview-action-card:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+}
+
+.overview-stat-icon-info {
+    background: color-mix(in srgb, var(--spa-primary-light) 62%, var(--spa-surface));
+    color: var(--spa-primary);
+}
+
+.overview-stat-icon-study {
+    background: color-mix(in srgb, var(--spa-primary) 14%, var(--spa-surface));
+    color: color-mix(in srgb, var(--spa-primary) 84%, var(--spa-text));
+}
+
+.overview-action-icon {
+    width: 42px;
+    height: 42px;
+}
+
+.overview-action-icon--primary {
+    background: color-mix(in srgb, var(--spa-primary) 12%, var(--spa-surface));
+    color: var(--spa-primary);
+}
+
+.overview-action-icon--info {
+    background: color-mix(in srgb, var(--spa-info, #0891b2) 12%, var(--spa-surface));
+    color: var(--spa-info, #0891b2);
+}
+
+.overview-action-icon--success {
+    background: color-mix(in srgb, var(--spa-success) 12%, var(--spa-surface));
+    color: var(--spa-success);
+}
+
+.overview-action-icon--study {
+    background: color-mix(in srgb, var(--spa-primary) 12%, var(--spa-surface));
+    color: color-mix(in srgb, var(--spa-primary) 84%, var(--spa-text));
+}
+
+.overview-action-icon--warning {
+    background: color-mix(in srgb, var(--spa-warning) 12%, var(--spa-surface));
+    color: var(--spa-warning);
+}
+
+.overview-action-icon--secondary {
+    background: color-mix(in srgb, var(--spa-text-secondary) 10%, var(--spa-surface));
+    color: var(--spa-text-secondary);
+}
+
+.overview-action-hint,
+.overview-todo-link {
+    font-size: 0.75rem;
+}
+
+.overview-todo-status--done {
+    color: var(--spa-success);
+}
+
+.overview-todo-status--pending {
+    color: var(--spa-text-muted);
+}
+
+.overview-todo-text--done {
+    text-decoration: line-through;
+}
+
+.overview-todo-link {
+    background: color-mix(in srgb, var(--spa-primary-light) 62%, var(--spa-surface));
+    border: 1px solid color-mix(in srgb, var(--spa-primary) 18%, var(--spa-border));
+    border-radius: var(--border-radius-pill);
+    color: var(--spa-primary);
+}
+
+.overview-todo-link:hover,
+.overview-todo-link:focus-visible {
+    background: color-mix(in srgb, var(--spa-primary-light) 50%, var(--spa-surface));
+    border-color: color-mix(in srgb, var(--spa-primary) 28%, var(--spa-border));
+    color: color-mix(in srgb, var(--spa-primary) 84%, var(--spa-text));
+}

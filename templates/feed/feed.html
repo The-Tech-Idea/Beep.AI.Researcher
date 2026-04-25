@@ -1,0 +1,67 @@
+{% extends base_template or "base.html" %}
+{% block title %}My Feed{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/feed/feed.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="spa-page-header">
+    <div class="spa-page-header-left">
+        <div class="spa-page-icon"><i class="bi bi-newspaper"></i></div>
+        <div>
+            <div class="spa-page-title">My Feed</div>
+            <div class="spa-page-subtitle">Personalised paper recommendations based on your research interests</div>
+        </div>
+    </div>
+    <div class="spa-page-actions">
+        <button class="btn btn-primary btn-sm" id="feed-refresh-btn">
+            <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+        </button>
+    </div>
+</div>
+
+<div id="feed-status" class="alert d-none mb-3" role="alert"></div>
+
+<div id="feed-empty" class="spa-card d-none">
+    <div class="spa-card-body text-center py-5">
+        <i class="bi bi-newspaper feed-empty-icon"></i>
+        <p class="mt-3 mb-2 fw-semibold">No recommendations yet</p>
+        <p class="text-muted small mb-3">Configure your <a href="/settings/research-interests">research interests</a> then refresh your feed.</p>
+        <button class="btn btn-primary btn-sm" id="feed-empty-refresh-btn">
+            <i class="bi bi-arrow-clockwise me-1"></i>Refresh now
+        </button>
+    </div>
+</div>
+
+<div id="feed-loading" class="text-center py-5 d-none">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading…</span>
+    </div>
+</div>
+
+<div id="feed-list" class="feed-item-list"></div>
+
+<div class="modal fade" id="feed-save-project-modal" tabindex="-1" aria-labelledby="feed-save-project-modal-label" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="feed-save-project-modal-label">Save to Project</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label for="feed-project-select" class="form-label small">Select project</label>
+                <select id="feed-project-select" class="form-select form-select-sm"></select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary btn-sm" id="feed-save-project-confirm-btn">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/feed/feed.js') }}"></script>
+{% endblock %}

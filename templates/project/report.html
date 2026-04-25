@@ -1,0 +1,257 @@
+{% extends "project/_layout.html" %}
+
+{% set active_page = 'report' %}
+{% set page_title = t('report.title') %}
+{% set page_subtitle = t('report.subtitle') %}
+{% set page_icon = 'file-earmark-richtext' %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/library_setup_summary.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/supporting_sources_summary.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/report.css') }}">
+{% endblock %}
+
+{% block header_actions %}
+<div class="report-header-actions">
+    <button class="report-header-button report-header-button--neutral" type="button" data-bs-toggle="modal" data-bs-target="#insertDataModal">
+        <i class="bi bi-plus-square-dotted report-button-icon" aria-hidden="true"></i><span>{{ t('report.insert_data') }}</span>
+    </button>
+    <button class="report-header-button report-header-button--accent" type="button" data-bs-toggle="modal" data-bs-target="#aiWriteModal">
+        <i class="bi bi-stars report-button-icon" aria-hidden="true"></i><span>{{ t('report.ai_write') }}</span>
+    </button>
+    <button class="report-header-button report-header-button--primary" type="button" id="saveReportButton">
+        <i class="bi bi-save report-button-icon" aria-hidden="true"></i><span>{{ t('report.save') }}</span>
+    </button>
+    <button class="report-header-button report-header-button--secondary" type="button" id="shareReportButton">
+        <i class="bi bi-box-arrow-up-right report-button-icon" aria-hidden="true"></i><span>{{ t('report.share_export') }}</span>
+    </button>
+</div>
+{% endblock %}
+
+{% block workspace_content %}
+<div
+    data-library-setup-summary
+    data-project-api-base="/projects/{{ project.id }}"
+    data-collections-url="{{ url_for('projects.list_rag_collections_for_project') }}"
+    data-start-url="{{ url_for('project_start.project_start_page', project_id=project.id) }}"
+    data-settings-url="{{ url_for('researcher.project_settings', project_id=project.id) }}"
+    data-collection-id="{{ project.collection_id or '' }}"
+    data-quality-mode="{{ project.rag_quality_mode or 'balanced' }}"
+    data-quality-fast-label="{{ t('project_search.rag_mode.fast') }}"
+    data-quality-balanced-label="{{ t('project_search.rag_mode.balanced') }}"
+    data-quality-deep-label="{{ t('project_search.rag_mode.deep') }}"
+></div>
+
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
+<div class="report-guide-card">
+    <h5>Write your report in clear research language</h5>
+    <p class="report-guide-copy">Use the editor for your final draft, add project material from the side panel, and use the writing tools when you want help revising a section or finding supporting files.</p>
+    <ul>
+        <li>Save often so your draft is stored for this project.</li>
+        <li>Use the writing tools on selected text when you want focused help.</li>
+        <li>Open Share &amp; Export when you are ready to send or download the report.</li>
+    </ul>
+</div>
+<div id="reportSupportingSources" data-supporting-sources-panel class="report-supporting-sources-panel" hidden></div>
+
+<div class="spa-split">
+    <button class="report-sidebar-toggle report-sidebar-toggle-button" id="toggleDataSidebar"
+        title="{{ t('report.sidebar.toggle') }}" type="button">
+        <i class="bi bi-layout-sidebar-reverse" aria-hidden="true"></i>
+    </button>
+
+    <div class="spa-split-main">
+        <div id="editorArea"></div>
+        <div class="spa-report-wordcount" id="wordCount">
+            <i class="bi bi-body-text report-wordcount-icon" aria-hidden="true"></i><span class="report-wordcount-label">0 {{ t('report.wordcount') }}</span>
+        </div>
+    </div>
+
+    <aside class="spa-data-sidebar" id="dataSidebar">
+        <div class="spa-data-sidebar-inner">
+            <h6 class="fw-bold mb-3 report-sidebar-heading"><i class="bi bi-boxes me-2 report-sidebar-heading-icon"></i>{{ t('report.sidebar.title') }}</h6>
+            <div class="sidebar-item">
+                <div class="d-flex align-items-start justify-content-between gap-2">
+                    <div>
+                        <div class="sidebar-item-title"><i class="bi bi-tags me-2 report-sidebar-item-icon-primary"></i>{{ t('sidebar.nav.codes') }}</div>
+                        <div class="sidebar-item-count" id="sidebarCodeCount">{{ t('report.sidebar.loading') }}</div>
+                    </div>
+                    <button class="report-sidebar-action report-sidebar-action--primary" type="button" data-bs-toggle="modal" data-bs-target="#insertDataModal">{{ t('report.sidebar.insert') }}</button>
+                </div>
+            </div>
+            <div class="sidebar-item">
+                <div class="d-flex align-items-start justify-content-between gap-2">
+                    <div>
+                        <div class="sidebar-item-title"><i class="bi bi-table me-2 report-sidebar-item-icon-accent"></i>{{ t('sidebar.nav.extraction') }}</div>
+                        <div class="sidebar-item-count" id="sidebarExtractionCount">{{ t('report.sidebar.loading') }}</div>
+                    </div>
+                    <button class="report-sidebar-action report-sidebar-action--primary" type="button" data-bs-toggle="modal" data-bs-target="#insertDataModal">{{ t('report.sidebar.insert') }}</button>
+                </div>
+            </div>
+            <div class="sidebar-item">
+                <div class="d-flex align-items-start justify-content-between gap-2">
+                    <div>
+                        <div class="sidebar-item-title"><i class="bi bi-book me-2"></i>{{ t('sidebar.nav.references') }}</div>
+                        <div class="sidebar-item-count" id="sidebarRefCount">{{ t('report.sidebar.loading') }}</div>
+                    </div>
+                    <a class="report-sidebar-action report-sidebar-action--neutral" href="{{ url_for('researcher.project_references_page', project_id=project.id) }}">{{ t('report.sidebar.view') }}</a>
+                </div>
+            </div>
+            <div class="sidebar-item">
+                <div class="sidebar-item-title"><i class="bi bi-chat-dots me-2 report-sidebar-item-icon-info"></i>{{ t('report.sidebar.ai_answers') }}</div>
+                <div class="sidebar-item-count" id="sidebarAnswerCount">{{ t('report.sidebar.loading') }}</div>
+            </div>
+        </div>
+    </aside>
+</div>
+
+<div class="modal fade" id="insertDataModal" tabindex="-1" aria-labelledby="insertDataModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content report-modal-shell">
+            <div class="modal-header report-modal-header">
+                <h5 class="modal-title report-modal-title" id="insertDataModalLabel"><i class="bi bi-layout-text-window me-2 report-modal-title-icon"></i>Add project material</h5>
+                <button type="button" class="report-modal-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body report-modal-body report-modal-body--insert">
+                <div class="report-insert-layout">
+                    <div class="report-insert-sidebar-shell report-insert-sidebar">
+                        <div class="report-tab-list" id="insertDataTabs" role="tablist">
+                            <a class="report-tab-link active" id="tab-codes" data-bs-toggle="list" href="#pane-codes" role="tab">
+                                <i class="bi bi-tags me-2 report-tab-icon report-tab-icon--primary"></i>{{ t('sidebar.nav.codes') }}
+                            </a>
+                            <a class="report-tab-link" id="tab-extractions" data-bs-toggle="list" href="#pane-extractions" role="tab">
+                                <i class="bi bi-table me-2 report-tab-icon report-tab-icon--accent"></i>{{ t('sidebar.nav.extraction') }}
+                            </a>
+                            <a class="report-tab-link" id="tab-tasks" data-bs-toggle="list" href="#pane-tasks" role="tab">
+                                <i class="bi bi-check2-square me-2 report-tab-icon report-tab-icon--danger"></i>{{ t('sidebar.nav.tasks') }}
+                            </a>
+                            <a class="report-tab-link" id="tab-flashcards" data-bs-toggle="list" href="#pane-flashcards" role="tab">
+                                <i class="bi bi-card-text me-2 report-tab-icon report-tab-icon--info"></i>{{ t('flashcards.title') }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="tab-content report-insert-content" id="insertDataContent">
+                        <div class="tab-pane fade show active" id="pane-codes" role="tabpanel">
+                            <div class="report-modal-pane-header">
+                                <h6 class="report-modal-pane-title">Project codes</h6>
+                                <button class="report-refresh-button" type="button" data-insert-refresh="codes"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
+                            </div>
+                            <div id="insertCodesList" class="row g-3">
+                                <div class="report-loading-state report-loading-state--block">
+                                    <div class="report-loading-spinner report-loading-spinner--inline" aria-hidden="true"></div>
+                                    <span class="report-loading-copy">Loading project material...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="pane-extractions" role="tabpanel">
+                            <div class="report-modal-pane-header">
+                                <h6 class="report-modal-pane-title">Saved data tables</h6>
+                                <button class="report-refresh-button" type="button" data-insert-refresh="extractions"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
+                            </div>
+                            <div id="insertExtractionsList" class="report-runtime-stack report-runtime-stack--spacious">
+                                <div class="report-modal-empty report-modal-empty--block">
+                                    <i class="bi bi-inbox report-modal-empty-icon" aria-hidden="true"></i>
+                                    Loading saved data tables...
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="pane-tasks" role="tabpanel">
+                            <div class="report-modal-pane-header">
+                                <h6 class="report-modal-pane-title">Project tasks</h6>
+                                <button class="report-refresh-button" type="button" data-insert-refresh="tasks"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
+                            </div>
+                            <div id="insertTasksList" class="report-runtime-list">
+                                <div class="report-modal-empty report-modal-empty--block">
+                                    <i class="bi bi-check-all report-modal-empty-icon" aria-hidden="true"></i>
+                                    Loading project tasks...
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="pane-flashcards" role="tabpanel">
+                            <div class="report-modal-pane-header">
+                                <h6 class="report-modal-pane-title">Study cards</h6>
+                                <button class="report-refresh-button" type="button" data-insert-refresh="flashcards"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
+                            </div>
+                            <div id="insertFlashcardsList" class="report-runtime-stack">
+                                <div class="report-modal-empty report-modal-empty--block">
+                                    <i class="bi bi-card-text report-modal-empty-icon" aria-hidden="true"></i>
+                                    Loading study cards...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<div class="modal fade" id="aiWriteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content report-modal-shell report-modal-shell--compact">
+            <div class="modal-header report-modal-header">
+                <h5 class="modal-title report-modal-title"><i class="bi bi-stars me-2 report-modal-title-icon"></i>Draft a section</h5>
+                <button type="button" class="report-modal-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body report-modal-body">
+                <p class="report-ai-help-copy">Describe what you want this section to cover. The assistant will draft a clear section using the material already stored in this project.</p>
+                <label class="report-modal-label" for="aiWritePrompt">What should this section cover?</label>
+                <textarea class="form-control" id="aiWritePrompt" rows="4"></textarea>
+                <div id="aiWriteResult" class="report-ai-result" hidden>
+                    <div class="report-ai-result-card">
+                        <div id="aiWriteResultText" class="report-ai-result-text"></div>
+                        <button class="report-modal-button report-modal-button--insert report-ai-result-action" type="button" id="btnInsertAiWrite">
+                            <i class="bi bi-plus-circle report-button-icon" aria-hidden="true"></i><span>{{ t('report.ai_write_modal.insert') }}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="report-modal-button report-modal-button--cancel" type="button" data-bs-dismiss="modal">{{ t('project_tasks.modal.cancel') }}</button>
+                <button class="report-modal-button report-modal-button--generate" type="button" id="btnGenerateWrite">
+                    <i class="bi bi-stars report-button-icon" aria-hidden="true"></i><span>{{ t('report.ai_write_modal.generate') }}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="report-config" type="application/json">
+{
+    "save_success": {{ t('report.alerts.saved') | tojson }},
+    "select_text": {{ t('report.alerts.select_text') | tojson }},
+    "wordcount_suffix": {{ t('report.wordcount') | tojson }},
+    "projectId": {{ project.id | tojson }},
+    "draftEndpoint": {{ ("/researcher/api/projects/" ~ project.id ~ "/report/draft") | tojson }},
+    "assistEndpoint": {{ ("/researcher/projects/" ~ project.id ~ "/writing/assist") | tojson }},
+    "citationEndpoint": {{ ("/researcher/projects/" ~ project.id ~ "/writing/citations") | tojson }},
+    "shareUrl": {{ ("/researcher/projects/" ~ project.id ~ "/report/share") | tojson }},
+    "writeSectionEndpoint": {{ ("/researcher/api/projects/" ~ project.id ~ "/write-section") | tojson }},
+    "ai_unavailable": "Writing help is not available right now.",
+    "loading_label": "Loading project material...",
+    "empty_codes": "No codes are available yet.",
+    "empty_extractions": "No saved data tables are available yet.",
+    "empty_tasks": "No project tasks are available yet.",
+    "empty_flashcards": "No study cards are available yet.",
+    "insert_label": "Insert",
+    "support_label": "Supporting files",
+    "unitsCodes": {{ t("report.sidebar.codes_unit") | tojson }},
+    "unitsExtractions": {{ t("report.sidebar.templates_unit") | tojson }},
+    "unitsReferences": {{ t("report.sidebar.refs_unit") | tojson }},
+    "unitsAnswers": {{ t("report.sidebar.answers_unit") | tojson }},
+    "generatingLabel": {{ t("report.ai_write_modal.generating") | tojson }},
+    "generateButtonLabel": {{ t("report.ai_write_modal.generate") | tojson }}
+}
+</script>
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+<script src="{{ url_for('static', filename='js/project/report_page.js') }}"></script>
+<script src="{{ url_for('static', filename='js/project/library_setup_summary.js') }}"></script>
+<script src="{{ url_for('static', filename='js/project/supporting_sources_summary.js') }}"></script>
+<script src="{{ url_for('static', filename='js/project-report.js') }}?v={{ config.APP_VERSION or '1.0' }}"></script>
+{% endblock %}

@@ -1,0 +1,124 @@
+{# Quizzes — extends project layout #}
+{% extends "project/_layout.html" %}
+{% set page_title = t('quizzes.title') %}
+{% set page_subtitle = t('quizzes.subtitle') %}
+{% set page_icon = 'question-circle' %}
+{% set active_page = 'quizzes' %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/library_setup_summary.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/supporting_sources_summary.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/components/document_selector.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/quizzes.css') }}">
+{% endblock %}
+
+{% block workspace_content %}
+<div
+    data-library-setup-summary
+    data-project-api-base="/projects/{{ project.id }}"
+    data-collections-url="{{ url_for('projects.list_rag_collections_for_project') }}"
+    data-start-url="{{ url_for('project_start.project_start_page', project_id=project.id) }}"
+    data-settings-url="{{ url_for('researcher.project_settings', project_id=project.id) }}"
+    data-collection-id="{{ project.collection_id or '' }}"
+    data-quality-mode="{{ project.rag_quality_mode or 'balanced' }}"
+    data-quality-fast-label="{{ t('project_search.rag_mode.fast') }}"
+    data-quality-balanced-label="{{ t('project_search.rag_mode.balanced') }}"
+    data-quality-deep-label="{{ t('project_search.rag_mode.deep') }}"
+></div>
+
+<div class="quizzes-banner mb-3" role="note" id="quizzesFlashcardBanner">
+    <i class="bi bi-card-text quizzes-banner-icon" aria-hidden="true"></i>
+    <div class="quizzes-banner-copy">{{ t('quizzes.flashcard_banner.text') }}
+        <a href="{{ url_for('researcher.flashcards_page', project_id=project.id) }}" class="quizzes-banner-link">{{ t('quizzes.flashcard_banner.link') }} →</a>
+    </div>
+    <button type="button" class="quizzes-banner-dismiss" data-dismiss-key="quizzes_fc_banner"
+        id="quizzesFlashcardBannerDismiss" aria-label="Close"><i class="bi bi-x-lg" aria-hidden="true"></i></button>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="spa-card mb-3">
+            <div class="spa-card-header d-flex align-items-center gap-2">
+                <i class="bi bi-plus-circle"></i>
+                <span class="fw-medium">{{ t('quizzes.generate.panel_title') }}</span>
+            </div>
+            <div class="spa-card-body">
+                <div class="mb-3">
+                    <label for="quizName" class="form-label small fw-medium">{{ t('quizzes.generate.name_label') }}</label>
+                    <input type="text" class="form-control form-control-sm" id="quizName"
+                        placeholder="{{ t('quizzes.generate.name_placeholder') }}" value="{{ t('quizzes.generate.name_default') }}">
+                </div>
+
+                <div class="form-label small fw-medium">{{ t('quizzes.generate.from_docs') }}</div>
+                <div id="docSelector" class="mb-3 quizzes-doc-selector-shell"></div>
+
+                <div class="mb-3">
+                    <label for="qzLimit" class="form-label small">{{ t('quizzes.generate.num_questions') }}</label>
+                    <select class="form-select form-select-sm" id="qzLimit">
+                        <option value="3">3 {{ t('quizzes.generate.questions_unit') }}</option>
+                        <option value="5" selected>5 {{ t('quizzes.generate.questions_unit') }}</option>
+                        <option value="10">10 {{ t('quizzes.generate.questions_unit') }}</option>
+                    </select>
+                </div>
+
+                {# 10b: Difficulty toggle #}
+                <div class="mb-3">
+                    <label class="form-label small fw-medium">{{ t('quizzes.generate.difficulty') }}</label>
+                    <div class="quizzes-difficulty-group" role="group">
+                        <input type="radio" class="quizzes-difficulty-input" name="quizDifficulty" id="diffEasy" value="easy">
+                        <label class="quizzes-difficulty-option quizzes-difficulty-option--easy" for="diffEasy" title="{{ t('quizzes.difficulty.easy_hint') }}">{{ t('quizzes.difficulty.easy') }}</label>
+                        <input type="radio" class="quizzes-difficulty-input" name="quizDifficulty" id="diffStandard" value="standard" checked>
+                        <label class="quizzes-difficulty-option quizzes-difficulty-option--standard" for="diffStandard">{{ t('quizzes.difficulty.standard') }}</label>
+                        <input type="radio" class="quizzes-difficulty-input" name="quizDifficulty" id="diffHard" value="hard" title="{{ t('quizzes.difficulty.hard_hint') }}">
+                        <label class="quizzes-difficulty-option quizzes-difficulty-option--hard" for="diffHard">{{ t('quizzes.difficulty.hard') }}</label>
+                    </div>
+                    <div class="quizzes-difficulty-help" id="diffHelpText">{{ t('quizzes.difficulty.standard_help') }}</div>
+                </div>
+
+                <button type="button" class="quizzes-generate-button" id="btnGenerate">
+                    <i class="bi bi-stars quizzes-button-icon" aria-hidden="true"></i><span>{{ t('quizzes.generate.button') }}</span>
+                </button>
+                <div id="genProgress" class="mt-2 quizzes-progress-shell" hidden>
+                    <div class="progress quizzes-progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated quizzes-progress-bar"></div>
+                    </div>
+                    <small class="quizzes-progress-label">{{ t('quizzes.generate.progress') }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div id="quizzesSupportingSources" data-supporting-sources-panel class="mb-3" hidden></div>
+        <div id="quizzesList"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script id="quizzes-config" type="application/json">
+    { "projectId": {{ project.id }},
+      "flashcardsUrl": "{{ url_for('researcher.flashcards_page', project_id=project.id) }}",
+      "i18n": {
+        "diff_easy_help": "{{ t('quizzes.difficulty.easy_help')|escape }}",
+        "diff_standard_help": "{{ t('quizzes.difficulty.standard_help')|escape }}",
+        "diff_hard_help": "{{ t('quizzes.difficulty.hard_help')|escape }}",
+        "empty_title": {{ t('quizzes.empty_title') | tojson }},
+        "empty_desc": {{ t('quizzes.empty_desc') | tojson }},
+        "load_error": {{ t('quizzes.load_error') | tojson }},
+        "start_quiz": {{ t('quizzes.start_button') | tojson }},
+        "delete_confirm": {{ t('quizzes.delete_confirm') | tojson }},
+        "generate_error": {{ t('quizzes.generate_error') | tojson }},
+        "network_error": {{ t('quizzes.network_error') | tojson }},
+        "last_score": {{ t('quizzes.last_score') | tojson }},
+        "attempts_suffix": {{ t('quizzes.attempts_suffix') | tojson }},
+        "questions_suffix": {{ t('quizzes.questions_suffix') | tojson }},
+        "delete_label": {{ t('quizzes.delete_label') | tojson }}
+      }
+    }
+</script>
+<script src="{{ url_for('static', filename='js/components/document-selector.js') }}"></script>
+<script src="{{ url_for('static', filename='js/project/library_setup_summary.js') }}"></script>
+<script src="{{ url_for('static', filename='js/project/supporting_sources_summary.js') }}"></script>
+<script src="{{ url_for('static', filename='js/quizzes.js') }}"></script>
+{% endblock %}

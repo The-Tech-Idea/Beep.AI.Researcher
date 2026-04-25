@@ -1,0 +1,118 @@
+.admin-quota-message {
+    margin-bottom: var(--space-md);
+    padding: var(--space-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.admin-quota-message--success {
+    border-color: color-mix(in srgb, var(--color-success) 35%, var(--bg-secondary));
+    background: color-mix(in srgb, var(--color-success) 10%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-success) 74%, var(--text-primary));
+}
+
+.admin-quota-message--warning {
+    border-color: color-mix(in srgb, var(--color-warning) 45%, var(--bg-secondary));
+    background: color-mix(in srgb, var(--color-warning) 14%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-warning) 76%, var(--text-primary));
+}
+
+.admin-quota-message--danger,
+.admin-quota-message--error {
+    border-color: color-mix(in srgb, var(--color-error) 40%, var(--bg-secondary));
+    background: color-mix(in srgb, var(--color-error) 10%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-error) 76%, var(--text-primary));
+}
+
+.admin-quota-summary-card {
+    border: 1px solid color-mix(in srgb, var(--border-color) 88%, var(--surface-primary));
+    background: color-mix(in srgb, var(--bg-secondary) 88%, var(--bg-tertiary));
+}
+
+.admin-quota-summary-label,
+.admin-quota-summary-note,
+.admin-quota-progress-label,
+.admin-quota-muted-value,
+.admin-quota-empty-state {
+    color: var(--text-muted);
+}
+
+.admin-quota-summary-label {
+    font-size: var(--font-size-note);
+    font-weight: 500;
+}
+
+.admin-quota-table-head {
+    background: color-mix(in srgb, var(--text-primary) 90%, var(--bg-secondary));
+    color: var(--text-inverse);
+}
+
+.admin-quota-usage-column {
+    width: 200px;
+}
+
+.admin-quota-progress {
+    height: 6px;
+    overflow: hidden;
+    border-radius: var(--border-radius-pill);
+    background: color-mix(in srgb, var(--border-subtle) 70%, var(--surface-primary));
+}
+
+.admin-quota-progress-bar {
+    height: 100%;
+    width: var(--quota-progress-width, 0%);
+    border-radius: inherit;
+}
+
+.admin-quota-progress-bar-healthy {
+    background: color-mix(in srgb, var(--color-success) 72%, var(--surface-primary));
+}
+
+.admin-quota-progress-bar-warning {
+    background: color-mix(in srgb, var(--accent-warning) 76%, var(--surface-primary));
+}
+
+.admin-quota-progress-bar-high {
+    background: color-mix(in srgb, var(--color-danger) 76%, var(--surface-primary));
+}
+
+.admin-quota-override-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.65rem;
+    border-radius: var(--border-radius-pill);
+    font-size: var(--font-size-badge);
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.admin-quota-override-badge-custom {
+    background: color-mix(in srgb, var(--accent-warning) 18%, var(--surface-primary));
+    color: var(--accent-warning-strong);
+}
+
+.admin-quota-override-badge-global {
+    background: color-mix(in srgb, var(--text-muted) 12%, var(--surface-primary));
+    color: var(--text-secondary);
+}
+
+.admin-quota-tier-delete-button {
+    border-color: color-mix(in srgb, var(--color-error) 40%, var(--surface-primary));
+    color: color-mix(in srgb, var(--color-error) 78%, var(--text-primary));
+    background: transparent;
+}
+
+.admin-quota-tier-delete-button:hover,
+.admin-quota-tier-delete-button:focus-visible {
+    background: color-mix(in srgb, var(--color-error) 12%, var(--surface-primary));
+    border-color: color-mix(in srgb, var(--color-error) 52%, var(--surface-primary));
+}
+
+.admin-quota-empty-state {
+    padding: var(--space-lg);
+    text-align: center;
+}

@@ -1,0 +1,352 @@
+................F....................................................... [  6%]
+.........................................................FF..FFF..FFF... [ 12%]
+...........................F............................................ [ 19%]
+F.......F......F.....F................................E..E..E........... [ 25%]
+........................................................................ [ 32%]
+........................................................................ [ 38%]
+.............................EE......................................... [ 45%]
+........................................................................ [ 51%]
+........................................................................ [ 58%]
+........................................................................ [ 64%]
+..................................................................F..... [ 71%]
+........................................................................ [ 77%]
+........................................................................ [ 84%]
+........................................................................ [ 90%]
+.....E......F........................................................... [ 97%]
+................................                                         [100%]
+=================================== ERRORS ====================================
+_ ERROR at setup of TestEventBusWithRoutes.test_document_upload_publishes_event _
+E   sqlite3.OperationalError: no such table: users
+
+The above exception was the direct cause of the following exception:
+E   sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: users
+    [SQL: INSERT INTO users (username, password_hash, email, is_active, email_verified, verification_token, verification_token_expires, display_name, created_at, updated_at, role_id, storage_quota_bytes, document_quota, plan_tier_id, invite_id, failed_login_attempts, locked_until, password_changed_at, must_change_password, avatar_url, bio, phone_number, locale, timezone, mfa_enabled, mfa_methods, mfa_totp_secret, mfa_backup_codes_hash, mfa_backup_codes_remaining, mfa_last_used_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)]
+    [parameters: ('testuser', 'scrypt:32768:8:1$9n4r1Q3GkURtGEE0$9125b390d1f4b66b8c3af15f7292db3ed3a3788c83bf9f64cb5e2ba45868d7c4279f678b9abe5fd3b9e022c66e19901043c5cd3e8b6fb0c86db7387847036c04', 'test@example.com', 1, 0, None, None, None, '2026-04-13 03:42:36.240770', '2026-04-13 03:42:36.240775', None, None, None, None, None, 0, None, None, 0, None, None, None, 'en', 'UTC', 0, '', None, None, 0, None)]
+    (Background on this error at: https://sqlalche.me/e/20/e3q8)
+_ ERROR at setup of TestEventBusWithRoutes.test_event_handler_with_database_updates _
+E   sqlite3.OperationalError: no such table: users
+
+The above exception was the direct cause of the following exception:
+E   sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: users
+    [SQL: INSERT INTO users (username, password_hash, email, is_active, email_verified, verification_token, verification_token_expires, display_name, created_at, updated_at, role_id, storage_quota_bytes, document_quota, plan_tier_id, invite_id, failed_login_attempts, locked_until, password_changed_at, must_change_password, avatar_url, bio, phone_number, locale, timezone, mfa_enabled, mfa_methods, mfa_totp_secret, mfa_backup_codes_hash, mfa_backup_codes_remaining, mfa_last_used_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)]
+    [parameters: ('testuser', 'scrypt:32768:8:1$pVPDnUZPbL5xfvsQ$4da9941d604ccdf5f4435b162b9cb69f6d279494c7719a747db04a1746e2d96a31ad4cafc05f9f208a7ab4fb4725785c01b670e64fb31e742934ca8cee67dbf4', 'test@example.com', 1, 0, None, None, None, '2026-04-13 03:42:45.243403', '2026-04-13 03:42:45.243409', None, None, None, None, None, 0, None, None, 0, None, None, None, 'en', 'UTC', 0, '', None, None, 0, None)]
+    (Background on this error at: https://sqlalche.me/e/20/e3q8)
+__ ERROR at teardown of TestEventBusWithRoutes.test_async_handler_completion __
+E   sqlite3.OperationalError: no such table: performance_alert
+
+The above exception was the direct cause of the following exception:
+E   sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: performance_alert
+    [SQL: 
+    DROP TABLE performance_alert]
+    (Background on this error at: https://sqlalche.me/e/20/e3q8)
+__________________ ERROR at setup of test_translate_fallback __________________
+E   PermissionError: [WinError 5] Access is denied: 'C:\\Users\\f_ald\\AppData\\Local\\Temp\\pytest-of-f_ald'
+___________________ ERROR at setup of test_import_from_csv ____________________
+E   PermissionError: [WinError 5] Access is denied: 'C:\\Users\\f_ald\\AppData\\Local\\Temp\\pytest-of-f_ald'
+_______ ERROR at setup of TestCacheHitMiss.test_cache_hit_second_search _______
+E   sqlite3.OperationalError: table extraction_schemas already exists
+
+The above exception was the direct cause of the following exception:
+E   sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) table extraction_schemas already exists
+    [SQL: 
+    CREATE TABLE extraction_schemas (
+    	id INTEGER NOT NULL, 
+    	project_id INTEGER NOT NULL, 
+    	name VARCHAR(255) NOT NULL, 
+    	schema_json TEXT NOT NULL, 
+    	created_at DATETIME, 
+    	PRIMARY KEY (id), 
+    	FOREIGN KEY(project_id) REFERENCES research_projects (id)
+    )
+    
+    ]
+    (Background on this error at: https://sqlalche.me/e/20/e3q8)
+================================== FAILURES ===================================
+E   assert 302 == 200
+     +  where 302 = <WrapperTestResponse streamed [302 FOUND]>.status_code
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_admin_settings.py:322: assert 302 == 200
+E   AttributeError: 'bool' object has no attribute 'get'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_chat_feature_flag.py:26: AttributeError: 'bool' object has no attribute 'get'
+E   AttributeError: 'bool' object has no attribute 'get'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_config_manager_bridge.py:19: AttributeError: 'bool' object has no attribute 'get'
+E   AttributeError: type object 'ConfigManager' has no attribute 'get_instance'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_configuration.py:34: AttributeError: type object 'ConfigManager' has no attribute 'get_instance'
+E   AttributeError: type object 'ConfigManager' has no attribute 'get_instance'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_configuration.py:42: AttributeError: type object 'ConfigManager' has no attribute 'get_instance'
+E   AssertionError: assert False is True
+     +  where False = is_feature_enabled('auto_extract')
+     +    where is_feature_enabled = <app.config_manager.ConfigManager object at 0x000002B52ED596A0>.is_feature_enabled
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_configuration.py:58: AssertionError: assert False is True
+E   assert True is False
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_configuration.py:84: assert True is False
+E   TypeError: argument of type 'bool' is not iterable
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_configuration.py:92: TypeError: argument of type 'bool' is not iterable
+E   TypeError: argument of type 'bool' is not iterable
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_configuration.py:104: TypeError: argument of type 'bool' is not iterable
+E   AssertionError: assert 'auto_extract_enabled' in {'debug_mode': False, 'enabled_hooks_count': 4, 'environment': 'development', 'last_reload': '2026-04-13T06:41:22.371043', ...}
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_configuration.py:551: AssertionError: assert 'auto_extract_enabled' in {'debug_mode': False, 'enabled_hooks_count': 4, 'environment': 'development', 'last_reload': '2026-04-13T06:41:22.371043', ...}
+E   assert 302 == 201
+     +  where 302 = <WrapperTestResponse streamed [302 FOUND]>.status_code
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_document_annotations_routes.py:19: assert 302 == 201
+E   TypeError: argument of type 'NoneType' is not iterable
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_document_import_jobs.py:58: TypeError: argument of type 'NoneType' is not iterable
+E   assert 302 == 200
+     +  where 302 = <WrapperTestResponse streamed [302 FOUND]>.status_code
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_document_import_jobs.py:93: assert 302 == 200
+E   assert 302 == 404
+     +  where 302 = <WrapperTestResponse streamed [302 FOUND]>.status_code
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_document_import_jobs.py:122: assert 302 == 404
+E   assert 302 == 200
+     +  where 302 = <WrapperTestResponse streamed [302 FOUND]>.status_code
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_project_settings_plain_language_ui.py:344: assert 302 == 200
+E   assert 2 == 1
+     +  where 2 = len([<SearchCache 1>, <SearchCache 2>])
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_search_caching.py:297: assert 2 == 1
+============================== warnings summary ===============================
+tests/test_batch_operations.py: 60 warnings
+tests/test_debug_routes.py: 358 warnings
+tests/test_extraction_server_route.py: 6 warnings
+tests/test_extraction_validation.py: 121 warnings
+tests/test_monitoring.py: 17 warnings
+tests/test_phase_c.py: 12 warnings
+tests/test_plugin_permissions.py: 84 warnings
+tests/test_plugin_system.py: 41 warnings
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\.venv\Lib\site-packages\sqlalchemy\sql\schema.py:3624: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    return util.wrap_callable(lambda ctx: fn(), fn)  # type: ignore
+
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_status_transitions
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_pause
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_failure
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_estimated_time
+tests/test_batch_operations.py::TestBatchOperationService::test_start_batch_job
+tests/test_batch_operations.py::TestBatchOperationService::test_pause_batch_job
+tests/test_batch_operations.py::TestBatchOperationService::test_cancel_batch_job
+tests/test_batch_operations.py::TestBatchOperationService::test_get_batch_status
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\models\researcher\batch_operations.py:149: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    self.started_at = datetime.utcnow()
+
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_status_transitions
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\models\researcher\batch_operations.py:155: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    self.completed_at = datetime.utcnow()
+
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_pause
+tests/test_batch_operations.py::TestBatchOperationService::test_pause_batch_job
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\models\researcher\batch_operations.py:178: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    self.paused_at = datetime.utcnow()
+
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_failure
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\models\researcher\batch_operations.py:166: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    self.completed_at = datetime.utcnow()
+
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_estimated_time
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_batch_operations.py:93: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    job.started_at = datetime.utcnow() - timedelta(seconds=10)
+
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_estimated_time
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\models\researcher\batch_operations.py:134: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    elapsed = max((datetime.utcnow() - self.started_at).total_seconds(), 1)
+
+tests/test_batch_operations.py::TestBatchOperationService::test_cancel_batch_job
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\models\researcher\batch_operations.py:184: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    self.completed_at = datetime.utcnow()
+
+tests/test_batch_operations.py::TestBatchOperationService::test_cleanup_old_jobs
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_batch_operations.py:516: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    old_job.created_at = datetime.utcnow() - timedelta(days=40)
+
+tests/test_contradiction_detection.py: 10 warnings
+tests/test_extraction_server_route.py: 3 warnings
+tests/test_phase_c.py: 11 warnings
+tests/test_related_docs.py: 15 warnings
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\.venv\Lib\site-packages\flask_sqlalchemy\query.py:30: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    rv = self.get(ident)
+
+tests/test_debug_routes.py: 14 warnings
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_debug_routes.py:74: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = datetime.utcnow()
+
+tests/test_debug_routes.py::TestDebugValidationAnalytics::test_get_validation_history
+tests/test_debug_routes.py::TestDebugValidationAnalytics::test_get_validation_history_with_filters
+tests/test_debug_routes.py::TestDebugValidationAnalytics::test_get_validation_summary
+tests/test_debug_routes.py::TestDebugValidationAnalytics::test_get_validation_summary_custom_period
+tests/test_debug_routes.py::TestDebugHealth::test_get_debug_health
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_debug_routes.py:101: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = datetime.utcnow()
+
+tests/test_debug_routes.py::TestDebugDataStructures::test_execution_log_model_creation
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_debug_routes.py:266: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    retrieved = db.session.query(PluginExecutionLog).get(log.id)
+
+tests/test_debug_routes.py::TestDebugDataStructures::test_execution_log_error_tracking
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_debug_routes.py:286: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    retrieved = db.session.query(PluginExecutionLog).get(log.id)
+
+tests/test_debug_routes.py::TestDebugDataStructures::test_validation_result_suggestions
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_debug_routes.py:314: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    retrieved = db.session.query(ExtractionValidationResult).get(result.id)
+
+tests/test_debug_routes.py::TestDebugTimeSeriesData::test_execution_logs_with_dates
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_debug_routes.py:326: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    base_time = datetime.utcnow()
+
+tests/test_debug_routes.py::TestDebugTimeSeriesData::test_validation_results_with_dates
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_debug_routes.py:353: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    base_time = datetime.utcnow()
+
+tests/test_event_bus_integration.py: 4 warnings
+tests/test_search_caching.py: 19 warnings
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\.venv\Lib\site-packages\flask_sqlalchemy\extension.py:881: SAWarning: Can't sort tables for DROP; an unresolvable foreign key dependency exists between tables: user_invites, users; and backend does not support ALTER.  To restore at least a partial sort, apply use_alter=True to ForeignKey and ForeignKeyConstraint objects involved in the cycle to mark these as known cycles that will be ignored.
+    getattr(metadata, op_name)(bind=engine)
+
+tests/test_extraction_validation.py::TestExtractionValidationService::test_extracted_field_value_status_tracking
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_extraction_validation.py:303: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    retrieved = db.session.query(ExtractedFieldValue).get(field_value.id)
+
+tests/test_extraction_validation.py::TestExtractionValidationService::test_extraction_validation_result_model
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_extraction_validation.py:436: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    retrieved = db.session.query(ExtractionValidationResult).get(val_result.id)
+
+tests/test_extraction_validation.py::TestExtractionValidationService::test_schema_field_relationship
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_extraction_validation.py:453: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    retrieved_schema = db.session.query(ExtractionSchema).get(test_schema.id)
+
+tests/test_permission_service.py::TestPermissionServiceExpiry::test_expired_permission_not_granted
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_permission_service.py:202: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    past = datetime.utcnow() - timedelta(days=1)
+
+tests/test_permission_service.py::TestPermissionServiceExpiry::test_future_expiry_permission_granted
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_permission_service.py:229: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    future = datetime.utcnow() + timedelta(days=7)
+
+tests/test_permission_service.py::TestGetUserRoles::test_get_user_roles_includes_non_expired_only
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_permission_service.py:415: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    expires_at=datetime.utcnow() - timedelta(days=1)
+
+tests/test_phase_c.py::TestPhiRoutes::test_redact_document_removes_phi
+tests/test_phase_c.py::TestPhiRoutes::test_redact_document_prevents_double_redaction
+tests/test_phase_c.py::TestPhiRoutes::test_restore_after_redaction
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\routes\phi_routes.py:68: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    'redacted_at': datetime.utcnow().isoformat(),
+
+tests/test_plugin_permissions.py::TestPluginPermissionModel::test_create_permission
+tests/test_plugin_permissions.py::TestPluginPermissionModel::test_permission_to_dict
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_plugin_permissions.py:58: SAWarning: DELETE statement on table 'plugins' expected to delete 1 row(s); 0 were matched.  Please set confirm_deleted_rows=False within the mapper configuration to prevent this warning. (This warning originated from the Session 'autoflush' process, which was invoked automatically in response to a user-initiated operation. Consider using ``no_autoflush`` context manager if this warning happened while initializing objects.)
+    db.session.delete(role)
+
+tests/test_plugin_permissions.py::TestPluginPermissionModel::test_create_permission
+tests/test_plugin_permissions.py::TestPluginPermissionModel::test_permission_to_dict
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_plugin_permissions.py:59: SAWarning: DELETE statement on table 'rbac_roles' expected to delete 1 row(s); 0 were matched.  Please set confirm_deleted_rows=False within the mapper configuration to prevent this warning.
+    db.session.commit()
+
+tests/test_plugin_permissions.py::TestPluginRoleAssignment::test_assignment_expiry
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_plugin_permissions.py:153: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    past_date = datetime.utcnow() - timedelta(days=1)
+
+tests/test_plugin_permissions.py::TestPluginRoleAssignment::test_assignment_expiry
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_plugin_permissions.py:154: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    future_date = datetime.utcnow() + timedelta(days=30)
+
+tests/test_plugin_permissions.py::TestGetUserPluginAccessLevel::test_user_no_access
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_plugin_permissions.py:345: SAWarning: DELETE statement on table 'users' expected to delete 1 row(s); 0 were matched.  Please set confirm_deleted_rows=False within the mapper configuration to prevent this warning. (This warning originated from the Session 'autoflush' process, which was invoked automatically in response to a user-initiated operation. Consider using ``no_autoflush`` context manager if this warning happened while initializing objects.)
+    db.session.delete(role)
+
+tests/test_plugin_permissions.py::TestGetUserPluginAccessLevel::test_user_no_access
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_plugin_permissions.py:345: SAWarning: DELETE statement on table 'user_roles' expected to delete 1 row(s); 0 were matched.  Please set confirm_deleted_rows=False within the mapper configuration to prevent this warning. (This warning originated from the Session 'autoflush' process, which was invoked automatically in response to a user-initiated operation. Consider using ``no_autoflush`` context manager if this warning happened while initializing objects.)
+    db.session.delete(role)
+
+tests/test_plugin_permissions.py::TestGetUserPluginAccessLevel::test_user_no_access
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_plugin_permissions.py:346: SAWarning: DELETE statement on table 'rbac_roles' expected to delete 1 row(s); 0 were matched.  Please set confirm_deleted_rows=False within the mapper configuration to prevent this warning. (This warning originated from the Session 'autoflush' process, which was invoked automatically in response to a user-initiated operation. Consider using ``no_autoflush`` context manager if this warning happened while initializing objects.)
+    db.session.delete(plugin)
+
+tests/test_plugin_permissions.py::TestGetUserPluginAccessLevel::test_user_no_access
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_plugin_permissions.py:347: SAWarning: DELETE statement on table 'plugins' expected to delete 1 row(s); 0 were matched.  Please set confirm_deleted_rows=False within the mapper configuration to prevent this warning.
+    db.session.commit()
+
+tests/test_plugin_permissions.py::TestPluginPermissionService::test_assign_user_access
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_plugin_permissions.py:428: SAWarning: DELETE statement on table 'users' expected to delete 1 row(s); 0 were matched.  Please set confirm_deleted_rows=False within the mapper configuration to prevent this warning. (This warning originated from the Session 'autoflush' process, which was invoked automatically in response to a user-initiated operation. Consider using ``no_autoflush`` context manager if this warning happened while initializing objects.)
+    db.session.delete(plugin)
+
+tests/test_plugin_permissions.py::TestPluginPermissionService::test_assign_user_access
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_plugin_permissions.py:429: SAWarning: DELETE statement on table 'plugins' expected to delete 1 row(s); 0 were matched.  Please set confirm_deleted_rows=False within the mapper configuration to prevent this warning. (This warning originated from the Session 'autoflush' process, which was invoked automatically in response to a user-initiated operation. Consider using ``no_autoflush`` context manager if this warning happened while initializing objects.)
+    db.session.delete(role)
+
+tests/test_plugin_permissions.py::TestPluginPermissionService::test_assign_user_access
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_plugin_permissions.py:430: SAWarning: DELETE statement on table 'rbac_roles' expected to delete 1 row(s); 0 were matched.  Please set confirm_deleted_rows=False within the mapper configuration to prevent this warning.
+    db.session.commit()
+
+tests/test_plugin_permissions.py::TestPluginPermissionService::test_assign_user_access_with_expiry
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_plugin_permissions.py:497: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    future_date = datetime.utcnow() + timedelta(days=30)
+
+tests/test_plugin_permissions.py::TestPluginPermissionService::test_cleanup_expired_assignments
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_plugin_permissions.py:592: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    past = datetime.utcnow() - timedelta(days=1)
+
+tests/test_plugin_permissions.py::TestPluginPermissionService::test_cleanup_expired_assignments
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_plugin_permissions.py:593: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    future = datetime.utcnow() + timedelta(days=30)
+
+tests/test_plugin_system.py::TestHookContext::test_context_creation
+tests/test_plugin_system.py::TestHookContext::test_context_to_dict
+tests/test_plugin_system.py::TestPluginBase::test_plugin_hook_execution
+tests/test_plugin_system.py::TestPluginManager::test_execute_hook_no_plugins
+tests/test_plugin_system.py::TestPluginIntegration::test_hook_context_flow
+  <string>:8: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+
+tests/test_rbac_e2e.py::TestCompleteWorkflows::test_workflow_temporary_access_expires_revoked
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_e2e.py:163: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    future = datetime.utcnow() + timedelta(days=7)
+
+tests/test_rbac_e2e.py::TestCompleteWorkflows::test_workflow_temporary_access_expires_revoked
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_e2e.py:179: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    user_role.expires_at = datetime.utcnow() - timedelta(seconds=1)
+
+tests/test_rbac_models.py::TestUserRoleModel::test_user_role_with_expiry
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_models.py:154: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    future = datetime.utcnow() + timedelta(days=7)
+
+tests/test_rbac_models.py::TestUserRoleModel::test_user_role_is_expired
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_models.py:179: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    past = datetime.utcnow() - timedelta(days=1)
+
+tests/test_search_caching.py::TestCacheTTL::test_cache_expired_after_ttl
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_search_caching.py:198: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    cache_entry.expires_at = datetime.utcnow() - timedelta(hours=1)
+
+tests/test_search_caching.py::TestCacheTTL::test_clear_expired_cache
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_search_caching.py:223: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    expired_cache.expires_at = datetime.utcnow() - timedelta(hours=1)
+
+tests/test_search_system.py::TestSearchManagerSearching::test_search_clear_cache
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_search_system.py:451: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    manager.result_cache['test_key'] = {'time': datetime.utcnow(), 'results': []}
+
+tests/test_search_system.py::TestSearchManagerSearching::test_search_cache_ttl
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_search_system.py:472: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    'time': datetime.utcnow() - timedelta(seconds=10),
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_admin_settings.py::test_mfa_challenge_page_uses_asset_based_workflow
+FAILED tests/test_chat_feature_flag.py::test_chat_endpoint_blocked_when_feature_disabled
+FAILED tests/test_config_manager_bridge.py::test_legacy_feature_overrides_sync_to_runtime
+FAILED tests/test_configuration.py::TestConfigManagerSingleton::test_singleton_instance
+FAILED tests/test_configuration.py::TestConfigManagerSingleton::test_get_config_convenience
+FAILED tests/test_configuration.py::TestFeatureFlags::test_feature_enabled_default
+FAILED tests/test_configuration.py::TestFeatureFlags::test_set_feature_nonexistent
+FAILED tests/test_configuration.py::TestFeatureFlags::test_get_feature_config
+FAILED tests/test_configuration.py::TestFeatureFlags::test_get_all_features
+FAILED tests/test_configuration.py::TestConfigurationExport::test_get_config_summary
+FAILED tests/test_document_annotations_routes.py::test_document_annotation_routes_create_list_and_delete
+FAILED tests/test_document_import_jobs.py::TestJobStatusRoute::test_response_has_output_data
+FAILED tests/test_document_import_jobs.py::TestJobStatusRoute::test_all_job_statuses[completed]
+FAILED tests/test_document_import_jobs.py::TestImportStatsRoute::test_project_not_found_returns_404
+FAILED tests/test_project_settings_plain_language_ui.py::test_agent_plans_page_uses_asset_based_plan_workflow_copy
+FAILED tests/test_search_caching.py::TestCacheInvalidation::test_invalidate_query_cache
+ERROR tests/test_event_bus_integration.py::TestEventBusWithRoutes::test_document_upload_publishes_event
+ERROR tests/test_event_bus_integration.py::TestEventBusWithRoutes::test_event_handler_with_database_updates
+ERROR tests/test_event_bus_integration.py::TestEventBusWithRoutes::test_async_handler_completion
+ERROR tests/test_localization.py::test_translate_fallback - PermissionError: ...
+ERROR tests/test_localization.py::test_import_from_csv - PermissionError: [Wi...
+ERROR tests/test_search_caching.py::TestCacheHitMiss::test_cache_hit_second_search
+16 failed, 1090 passed, 839 warnings, 6 errors in 617.17s (0:10:17)

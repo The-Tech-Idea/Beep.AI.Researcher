@@ -1,0 +1,13 @@
+.mfa-setup-sms-container {
+    max-width: 520px;
+}
+
+.mfa-setup-sms-header-icon {
+    color: var(--accent-primary-strong);
+    font-size: 1.25rem;
+}
+
+.mfa-setup-sms-code-input {
+    letter-spacing: 0.4em;
+    font-size: 1.3rem;
+}

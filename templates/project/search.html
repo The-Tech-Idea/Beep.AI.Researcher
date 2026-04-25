@@ -1,0 +1,143 @@
+{% extends "project/_layout.html" %}
+
+{% set active_page = 'search' %}
+{% set page_title = t('project_search.title') %}
+{% set page_subtitle = t('project_search.subtitle') %}
+{% set page_icon = 'chat-left-text' %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/library_setup_summary.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/search.css') }}">
+{% endblock %}
+
+{% block header_actions %}
+<button class="btn btn-sm project-search-clear-button" id="clearChatBtn">
+    <i class="bi bi-arrow-counterclockwise me-1"></i>{{ t('project_search.clear') }}
+</button>
+{% endblock %}
+
+{% block workspace_content %}
+<div
+    data-library-setup-summary
+    data-project-api-base="/projects/{{ project.id }}"
+    data-collections-url="{{ url_for('projects.list_rag_collections_for_project') }}"
+    data-start-url="{{ url_for('project_start.project_start_page', project_id=project.id) }}"
+    data-settings-url="{{ url_for('researcher.project_settings', project_id=project.id) }}"
+    data-collection-id="{{ project.collection_id or '' }}"
+    data-quality-mode="{{ project.rag_quality_mode or 'balanced' }}"
+    data-quality-fast-label="{{ t('project_search.rag_mode.fast') }}"
+    data-quality-balanced-label="{{ t('project_search.rag_mode.balanced') }}"
+    data-quality-deep-label="{{ t('project_search.rag_mode.deep') }}"
+></div>
+
+<div class="spa-chat-container">
+    <div class="spa-chat-body" id="chatMessages">
+        {# Welcome #}
+        <div class="spa-chat-welcome" id="welcomeMessage">
+            <i class="bi bi-chat-left-text"></i>
+            <h3>{{ t('project_search.welcome.title') }}</h3>
+            <p>{{ t('project_search.welcome.desc') }}</p>
+        </div>
+
+        {# Chat history #}
+        {% for message in chat_history %}
+        <div class="spa-chat-msg {{ message.role }}">
+            <div class="spa-chat-msg-avatar">
+                <i class="bi bi-{{ 'person' if message.role == 'user' else 'robot' }}"></i>
+            </div>
+            <div class="spa-chat-msg-bubble">
+                <div class="msg-text">{{ message.content|safe }}</div>
+                {% if message.sources %}
+                <div class="msg-sources">
+                    <span class="msg-sources-label">{{ t('project_search.sources') }}</span>
+                    {% for source in message.sources %}
+                    <a class="msg-source-link view-source-btn" data-doc-id="{{ source.doc_id }}"
+                        data-chunk-id="{{ source.chunk_id }}">
+                        <i class="bi bi-file-earmark-text"></i> {{ source.name }}
+                    </a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="spa-chat-footer">
+        <div class="research-chat-setup">
+            <div class="research-chat-setup-copy">
+                <strong>Ask in natural language.</strong> The assistant will look through this project’s files, answer as clearly as it can, and show which files it relied on when support is available.
+            </div>
+        </div>
+        <div class="project-search-quality-panel">
+            <div class="d-flex flex-wrap align-items-center gap-3">
+                {# Visual quality slider — drives the hidden checkboxes #}
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label class="form-label mb-0 project-search-quality-heading" for="answerQualitySlider">
+                            Answer style
+                        </label>
+                        <span id="qualityLabel" class="project-search-quality-label">{{ t('project_search.rag_mode.balanced') }}</span>
+                    </div>
+                    <input type="range" class="form-range" id="answerQualitySlider" min="1" max="3" step="1" value="2">
+                    <div class="project-search-quality-scale">
+                        <span>{{ t('project_search.rag_mode.fast') }}</span>
+                        <span>{{ t('project_search.rag_mode.balanced') }}</span>
+                        <span>{{ t('project_search.rag_mode.deep') }}</span>
+                    </div>
+                </div>
+                {# Hidden mode select still used by project-search.js #}
+                <select id="qualityMode" class="d-none">
+                    <option value="fast">{{ t('project_search.rag_mode.fast') }}</option>
+                    <option value="balanced" selected>{{ t('project_search.rag_mode.balanced') }}</option>
+                    <option value="deep">{{ t('project_search.rag_mode.deep') }}</option>
+                </select>
+                {# Hidden checkboxes still used by project-search.js #}
+                <input class="d-none" type="checkbox" id="rewriteQuery" checked>
+                <input class="d-none" type="checkbox" id="hybridSearch" checked>
+                <input class="d-none" type="checkbox" id="rerank" checked>
+                <input class="d-none" type="checkbox" id="groundedOnly" checked>
+            </div>
+        </div>
+        <div class="spa-chat-input-row">
+            <label for="chatInput" class="visually-hidden">{{ t('project_search.placeholder') }}</label>
+            <textarea id="chatInput" placeholder="{{ t('project_search.placeholder') }}" rows="1"></textarea>
+            <button class="btn btn-primary" id="sendBtn" type="button" aria-label="{{ t('base.chat.send') }}"><i
+                    class="bi bi-send"></i></button>
+        </div>
+        <div class="spa-chat-chips">
+            <span class="spa-chip ask-chip">{{ t('project_search.chip.summarize') }}</span>
+            <span class="spa-chip ask-chip">{{ t('project_search.chip.themes') }}</span>
+            <span class="spa-chip ask-chip">{{ t('project_search.chip.compare') }}</span>
+            <span class="spa-chip ask-chip">{{ t('project_search.chip.contradictions') }}</span>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script id="search-i18n-data" type="application/json">
+{{ {
+    "projectId": project.id,
+    "confirm_clear": t("project_search.confirm.clear"),
+    "error_generic": t("project_search.error.generic") | default("An error occurred.", true),
+    "sources_label": t("project_search.sources") | default("Used from your files", true),
+    "support_title": "Why this answer",
+    "support_files_used": "Files used",
+    "support_open_file": "Open file",
+    "add_to_report": t("project_search.add_to_report") | default("+ Add to Report", true),
+    "add_to_report_done": "Added",
+    "report_append_url": "/researcher/api/projects/" ~ project.id ~ "/report/append",
+    "grounding": {
+        "label": "Support in your project files",
+        "high": "Strong support",
+        "medium": "Some support",
+        "low": "Limited support",
+        "flagged": "Review carefully"
+    }
+} | tojson | safe }}
+</script>
+<script src="{{ url_for('static', filename='js/project/library_setup_summary.js') }}"></script>
+<script src="{{ url_for('static', filename='js/project-search.js') }}"></script>
+<script src="{{ url_for('static', filename='js/project/search_controls.js') }}"></script>
+{% endblock %}

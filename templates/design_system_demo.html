@@ -1,0 +1,292 @@
+{% extends "base.html" %}
+
+{% block title %}Design System Demo - Beep.AI.Researcher{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5">
+    <header class="mb-5">
+        <h1>Design System Showcase</h1>
+        <p class="text-secondary">Preview of the new Beep.AI.Researcher design system</p>
+    </header>
+
+    <!-- Color Palette -->
+    <section class="mb-5">
+        <h2 class="mb-4">Color Palette</h2>
+        <div class="row g-3">
+            <div class="col-md-2">
+                <div class="card-glass p-4 text-center">
+                    <div class="swatch-box swatch-primary"></div>
+                    <small class="d-block mt-2">Primary</small>
+                    <code>#6366f1</code>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card-glass p-4 text-center">
+                    <div class="swatch-box swatch-secondary"></div>
+                    <small class="d-block mt-2">Secondary</small>
+                    <code>#a855f7</code>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card-glass p-4 text-center">
+                    <div class="swatch-box swatch-cta"></div>
+                    <small class="d-block mt-2">CTA</small>
+                    <code>#6366f1</code>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card-glass p-4 text-center">
+                    <div class="swatch-box swatch-success"></div>
+                    <small class="d-block mt-2">Success</small>
+                    <code>#22c55e</code>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card-glass p-4 text-center">
+                    <div class="swatch-box swatch-warning"></div>
+                    <small class="d-block mt-2">Warning</small>
+                    <code>#ffc107</code>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card-glass p-4 text-center">
+                    <div class="swatch-box swatch-error"></div>
+                    <small class="d-block mt-2">Error</small>
+                    <code>#ef4444</code>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Buttons -->
+    <section class="mb-5">
+        <h2 class="mb-4">Buttons</h2>
+        <div class="d-flex flex-wrap gap-3">
+            <button class="btn btn-primary">Primary Button</button>
+            <button class="btn btn-secondary">Secondary Button</button>
+            <button class="btn btn-ai-assist">
+                <i class="bi bi-stars"></i> AI Assist
+            </button>
+            <button class="btn btn-primary btn-sm">Small Button</button>
+            <button class="btn btn-primary btn-lg">Large Button</button>
+            <button class="btn btn-icon" aria-label="Settings">
+                <i class="bi bi-gear"></i>
+            </button>
+        </div>
+    </section>
+
+    <!-- Cards -->
+    <section class="mb-5">
+        <h2 class="mb-4">Cards</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card-glass">
+                    <h3>Glassmorphic Card</h3>
+                    <p class="text-secondary mb-0">
+                        This card uses glassmorphism with backdrop blur and subtle transparency.
+                        Hover to see the lift effect.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-data-dense">
+                    <h3>Data-Dense Card</h3>
+                    <p class="text-secondary mb-0">
+                        Optimized for dashboards with minimal padding and clear borders.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="ai-action-card">
+                    <div class="ai-icon">
+                        <i class="bi bi-file-text"></i>
+                    </div>
+                    <h4>Write Literature Review</h4>
+                    <p>AI writes comprehensive review based on your sources</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Action Grid -->
+    <section class="mb-5">
+        <h2 class="mb-4">AI Action Cards</h2>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="ai-action-card">
+                    <div class="ai-icon">
+                        <i class="bi bi-file-text"></i>
+                    </div>
+                    <h4>Write Literature Review</h4>
+                    <p>AI writes comprehensive review based on your input</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="ai-action-card">
+                    <div class="ai-icon">
+                        <i class="bi bi-mic"></i>
+                    </div>
+                    <h4>Transcribe Interview</h4>
+                    <p>Upload audio and get timestamped transcript</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="ai-action-card">
+                    <div class="ai-icon">
+                        <i class="bi bi-chat-dots"></i>
+                    </div>
+                    <h4>Summarize Documents</h4>
+                    <p>Extract key insights from your research</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="ai-action-card">
+                    <div class="ai-icon">
+                        <i class="bi bi-robot"></i>
+                    </div>
+                    <h4>Chat with Documents</h4>
+                    <p>Ask questions about your research corpus</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Forms -->
+    <section class="mb-5">
+        <h2 class="mb-4">Form Elements</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card-glass">
+                    <form>
+                        <div class="form-group">
+                            <label class="form-label" for="demoTextInput">Text Input</label>
+                            <input type="text" id="demoTextInput" class="form-input" placeholder="Enter text...">
+                            <span class="form-hint">This is a hint text</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="demoSelect">Select Dropdown</label>
+                            <select id="demoSelect" class="form-select">
+                                <option>Option 1</option>
+                                <option>Option 2</option>
+                                <option>Option 3</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="demoTextarea">Textarea</label>
+                            <textarea id="demoTextarea" class="form-textarea" rows="4" placeholder="Enter longer text..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Submit Form</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Loading States -->
+    <section class="mb-5">
+        <h2 class="mb-4">Loading States</h2>
+        <div class="d-flex gap-4 align-items-center">
+            <div>
+                <div class="loading-spinner"></div>
+                <small class="d-block mt-2 text-center">Spinner</small>
+            </div>
+            <div>
+                <div class="pulse-glow pulse-demo"></div>
+                <small class="d-block mt-2 text-center">Pulse Glow</small>
+            </div>
+        </div>
+    </section>
+
+    <!-- Typography -->
+    <section class="mb-5">
+        <h2 class="mb-4">Typography</h2>
+        <div class="card-glass">
+            <h1>Heading 1 - Outfit</h1>
+            <h2>Heading 2 - Outfit</h2>
+            <h3>Heading 3 - Outfit</h3>
+            <h4>Heading 4 - Outfit</h4>
+            <h5>Heading 5 - Outfit</h5>
+            <h6>Heading 6 - Outfit</h6>
+            <p class="text-primary">This is primary text using Inter + Noto Sans Arabic fallback.</p>
+            <p class="text-secondary">This is secondary text using Inter + Noto Sans Arabic fallback.</p>
+            <p class="text-secondary">This is muted text using Inter + Noto Sans Arabic fallback.</p>
+            <code>This is code text using JetBrains Mono</code>
+        </div>
+    </section>
+
+    <!-- Shadows & Effects -->
+    <section class="mb-5">
+        <h2 class="mb-4">Shadows & Elevation</h2>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="card-glass shadow-sm p-4">
+                    <h4>Shadow SM</h4>
+                    <p class="text-secondary mb-0">Subtle lift</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card-glass shadow-md p-4">
+                    <h4>Shadow MD</h4>
+                    <p class="text-secondary mb-0">Medium elevation</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card-glass shadow-lg p-4">
+                    <h4>Shadow LG</h4>
+                    <p class="text-secondary mb-0">High elevation</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Toast Notification Demo -->
+    <section class="mb-5">
+        <h2 class="mb-4">Notifications</h2>
+        <div class="d-flex gap-3">
+            <button class="btn btn-primary" onclick="showToast('success')">Show Success Toast</button>
+            <button class="btn btn-secondary" onclick="showToast('error')">Show Error Toast</button>
+            <button class="btn btn-secondary" onclick="showToast('info')">Show Info Toast</button>
+        </div>
+    </section>
+</div>
+
+<script>
+function showToast(type) {
+    const icons = {
+        success: 'check-circle-fill',
+        error: 'x-circle-fill',
+        info: 'info-circle-fill'
+    };
+    
+    const messages = {
+        success: 'Operation completed successfully!',
+        error: 'An error occurred. Please try again.',
+        info: 'This is an informational message.'
+    };
+    
+    const toast = document.createElement('div');
+    toast.className = `toast-notification ${type}`;
+    toast.innerHTML = `
+        <i class="bi bi-${icons[type]}"></i>
+        <span>${messages[type]}</span>
+    `;
+    
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.animation = 'slide-out-down 0.3s ease-out';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+@keyframes slide-out-down {
+    to {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+}
+</script>
+{% endblock %}

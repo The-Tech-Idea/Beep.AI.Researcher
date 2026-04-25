@@ -1,0 +1,98 @@
+.project-supporting-sources[hidden] {
+    display: none !important;
+}
+
+.project-supporting-sources {
+    border: 1px solid var(--spa-border);
+    border-radius: var(--spa-radius-xl, var(--border-radius-xl));
+    background:
+        radial-gradient(circle at top right, color-mix(in srgb, var(--spa-primary) 12%, transparent), transparent 42%),
+        linear-gradient(145deg, var(--spa-surface), color-mix(in srgb, var(--spa-surface-2) 92%, var(--spa-primary-light) 8%));
+    box-shadow: var(--spa-shadow-sm);
+    padding: 1rem 1.1rem;
+}
+
+.project-supporting-sources__header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    justify-content: space-between;
+    margin-bottom: 0.9rem;
+}
+
+.project-supporting-sources__eyebrow {
+    margin: 0 0 0.2rem;
+    color: var(--spa-primary);
+    font-size: var(--font-size-eyebrow, 0.76rem);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.project-supporting-sources__title {
+    margin: 0;
+    color: var(--spa-text);
+    font-size: 1.08rem;
+    font-weight: 700;
+}
+
+.project-supporting-sources__intro {
+    margin: 0;
+    color: var(--spa-text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    max-width: 42rem;
+}
+
+.project-supporting-sources__list {
+    display: grid;
+    gap: 0.8rem;
+}
+
+.project-supporting-sources__item {
+    border: 1px solid color-mix(in srgb, var(--spa-border) 84%, transparent);
+    border-radius: var(--spa-radius-lg);
+    background: color-mix(in srgb, var(--spa-surface) 88%, var(--spa-surface-2) 12%);
+    padding: 0.85rem 0.95rem;
+}
+
+.project-supporting-sources__item-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.65rem;
+    align-items: start;
+}
+
+.project-supporting-sources__name {
+    color: var(--spa-text);
+    font-size: 0.96rem;
+    font-weight: 700;
+    line-height: 1.45;
+}
+
+.project-supporting-sources__link {
+    color: var(--spa-primary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.project-supporting-sources__link:hover,
+.project-supporting-sources__link:focus-visible {
+    color: var(--spa-primary);
+    text-decoration: underline;
+}
+
+.project-supporting-sources__snippet {
+    margin: 0.55rem 0 0;
+    color: var(--spa-text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+@media (max-width: 767.98px) {
+    .project-supporting-sources {
+        padding: 0.95rem 1rem;
+    }
+}

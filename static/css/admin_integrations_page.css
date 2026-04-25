@@ -1,0 +1,164 @@
+.admin-integrations-subtitle,
+.admin-integrations-description,
+.admin-integrations-history,
+.admin-integrations-details-summary,
+.admin-integrations-details-helper,
+.admin-integrations-empty-state {
+    color: var(--text-muted);
+}
+
+.admin-integrations-message {
+    margin-bottom: var(--space-md);
+    padding: var(--space-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.admin-integrations-message--success {
+    border-color: color-mix(in srgb, var(--color-success) 35%, var(--bg-secondary));
+    background: color-mix(in srgb, var(--color-success) 10%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-success) 74%, var(--text-primary));
+}
+
+.admin-integrations-message--warning {
+    border-color: color-mix(in srgb, var(--color-warning) 45%, var(--bg-secondary));
+    background: color-mix(in srgb, var(--color-warning) 14%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-warning) 76%, var(--text-primary));
+}
+
+.admin-integrations-message--danger,
+.admin-integrations-message--error {
+    border-color: color-mix(in srgb, var(--color-error) 40%, var(--bg-secondary));
+    background: color-mix(in srgb, var(--color-error) 10%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-error) 76%, var(--text-primary));
+}
+
+.admin-integrations-back-link,
+.admin-integrations-connected-button,
+.admin-integrations-test-toggle-button,
+.admin-integrations-configure-button,
+.admin-integrations-test-button,
+.admin-integrations-disable-button {
+    border-width: 1px;
+    border-style: solid;
+}
+
+.admin-integrations-back-link,
+.admin-integrations-connected-button {
+    border-color: color-mix(in srgb, var(--border-color) 88%, var(--surface-primary));
+    color: var(--text-secondary);
+    background: transparent;
+}
+
+.admin-integrations-back-link:hover,
+.admin-integrations-back-link:focus-visible,
+.admin-integrations-connected-button:hover,
+.admin-integrations-connected-button:focus-visible {
+    background: color-mix(in srgb, var(--text-muted) 10%, var(--surface-primary));
+    border-color: color-mix(in srgb, var(--text-muted) 28%, var(--surface-primary));
+    color: var(--text-primary);
+}
+
+.admin-integrations-test-toggle-button,
+.admin-integrations-test-button {
+    border-color: color-mix(in srgb, var(--accent-info) 36%, var(--surface-primary));
+    color: var(--accent-info-strong);
+    background: color-mix(in srgb, var(--accent-info) 10%, var(--surface-primary));
+}
+
+.admin-integrations-test-toggle-button:hover,
+.admin-integrations-test-toggle-button:focus-visible,
+.admin-integrations-test-button:hover,
+.admin-integrations-test-button:focus-visible {
+    background: color-mix(in srgb, var(--accent-info) 18%, var(--surface-primary));
+    border-color: color-mix(in srgb, var(--accent-info) 48%, var(--surface-primary));
+}
+
+.admin-integrations-configure-button {
+    border-color: color-mix(in srgb, var(--accent-primary) 36%, var(--surface-primary));
+    color: var(--accent-primary-strong);
+    background: color-mix(in srgb, var(--accent-primary) 10%, var(--surface-primary));
+}
+
+.admin-integrations-configure-button:hover,
+.admin-integrations-configure-button:focus-visible {
+    background: color-mix(in srgb, var(--accent-primary) 18%, var(--surface-primary));
+    border-color: color-mix(in srgb, var(--accent-primary) 48%, var(--surface-primary));
+}
+
+.admin-integrations-disable-button {
+    border-color: color-mix(in srgb, var(--color-error) 40%, var(--surface-primary));
+    color: color-mix(in srgb, var(--color-error) 78%, var(--text-primary));
+    background: transparent;
+}
+
+.admin-integrations-disable-button:hover,
+.admin-integrations-disable-button:focus-visible {
+    background: color-mix(in srgb, var(--color-error) 12%, var(--surface-primary));
+    border-color: color-mix(in srgb, var(--color-error) 52%, var(--surface-primary));
+}
+
+.admin-integrations-status-badge,
+.admin-integrations-scope-badge,
+.admin-integrations-mini-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.65rem;
+    border-radius: var(--border-radius-pill);
+    font-size: var(--font-size-badge);
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.admin-integrations-status-badge-enabled,
+.admin-integrations-mini-badge-ready {
+    background: color-mix(in srgb, var(--color-success) 14%, var(--surface-primary));
+    color: var(--color-success-strong);
+}
+
+.admin-integrations-status-badge-disabled {
+    background: color-mix(in srgb, var(--text-muted) 12%, var(--surface-primary));
+    color: var(--text-secondary);
+}
+
+.admin-integrations-scope-badge-admin_only {
+    background: color-mix(in srgb, var(--text-muted) 12%, var(--surface-primary));
+    color: var(--text-secondary);
+}
+
+.admin-integrations-scope-badge-user_personal {
+    background: color-mix(in srgb, var(--accent-info) 16%, var(--surface-primary));
+    color: var(--accent-info-strong);
+}
+
+.admin-integrations-scope-badge-dual {
+    background: color-mix(in srgb, var(--accent-primary) 16%, var(--surface-primary));
+    color: var(--accent-primary-strong);
+}
+
+.admin-integrations-test-result[data-state="success"] {
+    color: var(--color-success-strong);
+}
+
+.admin-integrations-test-result[data-state="error"] {
+    color: var(--color-danger-strong);
+}
+
+.admin-integrations-history-status--success {
+    color: var(--color-success-strong);
+}
+
+.admin-integrations-history-status--error {
+    color: var(--color-danger-strong);
+}
+
+.admin-integrations-empty-state {
+    padding: var(--space-lg);
+    border: 1px solid color-mix(in srgb, var(--border-color) 88%, var(--surface-primary));
+    border-radius: var(--radius-md);
+    background: color-mix(in srgb, var(--bg-secondary) 88%, var(--bg-tertiary));
+}

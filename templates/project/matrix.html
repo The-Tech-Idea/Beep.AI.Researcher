@@ -1,0 +1,93 @@
+{# Matrix — extends project layout #}
+{% extends "project/_layout.html" %}
+{% set page_title = t('matrix.title') %}
+{% set page_subtitle = t('matrix.subtitle') %}
+{% set page_icon = 'grid-3x3' %}
+{% set active_page = 'matrix' %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/matrix.css') }}">
+{% endblock %}
+
+{% block workspace_content %}
+
+{# ── Intro banner ── #}
+<div class="matrix-guide-card d-flex align-items-start gap-3 mb-3">
+    <i class="bi bi-grid-3x3 matrix-guide-icon flex-shrink-0 mt-1"></i>
+    <div class="small matrix-guide-copy">
+        <div class="fw-semibold mb-1">{{ t('matrix.intro.title') }}</div>
+        <div class="matrix-guide-description">{{ t('matrix.intro.desc') }}</div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-grid-3x3-gap"></i>
+            <span class="fw-medium">{{ t('matrix.subtitle') }}</span>
+        </div>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="btnExportMatrixCSV">
+                <i class="bi bi-download me-1"></i>{{ t('matrix.export_csv') }}
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="btnRefreshMatrix">
+                <i class="bi bi-arrow-clockwise me-1"></i>{{ t('tasks.actions.refresh') }}
+            </button>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered table-hover mb-0" id="matrixTable">
+                <thead class="table-dark" id="matrixHeader"></thead>
+                <tbody id="matrixBody">
+                    <tr>
+                        <td class="text-muted text-center py-4">{{ t('matrix.loading') }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{# ── Excerpt side panel (shown when a cell is clicked) ── #}
+<div class="offcanvas offcanvas-end matrix-excerpt-panel" tabindex="-1" id="excerptPanel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="excerptPanelTitle">{{ t('matrix.excerpt.title') }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body" id="excerptPanelBody">
+        <p class="text-muted">{{ t('matrix.excerpt.loading') }}</p>
+    </div>
+</div>
+
+{# ── Cross-link footer ── #}
+<div class="d-flex flex-wrap gap-2 mt-3 text-muted small">
+    <span>{{ t('matrix.crosslink.label') }}</span>
+    <a href="{{ url_for('researcher.project_codes', project_id=project.id) }}" class="text-decoration-none">
+        <i class="bi bi-tags me-1"></i>{{ t('matrix.crosslink.codes') }}
+    </a>
+    <span>·</span>
+    <a href="{{ url_for('researcher.document_map', project_id=project.id) }}" class="text-decoration-none">
+        <i class="bi bi-diagram-3 me-1"></i>{{ t('matrix.crosslink.document_map') }}
+    </a>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script id="matrix-config" type="application/json">
+    {
+        "projectId": {{ project.id }},
+        "i18n": {
+            "document": "{{ t('matrix.col.document') }}",
+            "total": "{{ t('matrix.col.total') }}",
+            "totalsRow": "{{ t('matrix.row.totals') }}",
+            "uncodedTitle": "{{ t('matrix.uncoded.title') }}",
+            "noData": "{{ t('matrix.nodata') }}",
+            "excerptLoading": "{{ t('matrix.excerpt.loading') }}",
+            "excerptEmpty": "{{ t('matrix.excerpt.empty') }}",
+            "exportFilename": "coding_matrix.csv"
+        }
+    }
+</script>
+<script src="{{ url_for('static', filename='js/matrix.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Verify your email - Beep.AI.Researcher{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-envelope-check me-2"></i>Verify your email</h5>
+            </div>
+            <div class="card-body">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for cat, msg in messages %}
+                <div class="alert alert-{{ 'danger' if cat == 'error' else cat }}">{{ msg }}</div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+                {% if verify_url %}
+                <p class="text-secondary">Use the link below to verify your account (for development when SMTP is not configured):</p>
+                <p class="mb-3"><a href="{{ verify_url }}" class="text-primary">{{ verify_url }}</a></p>
+                {% else %}
+                <p class="text-secondary">We sent a verification link to <strong>{{ email }}</strong>. Please check your inbox and click the link to verify your account.</p>
+                {% endif %}
+                <p class="small">Didn't receive the email? Check spam or <a href="{{ url_for('auth.resend_verification') }}">resend verification</a>.</p>
+                <a href="{{ url_for('auth.login') }}" class="btn btn-outline-secondary">Back to login</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

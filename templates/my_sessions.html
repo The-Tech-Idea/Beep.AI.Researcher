@@ -1,0 +1,80 @@
+{% extends base_template|default("base.html") %}
+{% block title %}Active Sessions — Beep.AI.Researcher{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/my_sessions.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4 my-sessions-container">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h4 class="mb-0"><i class="bi bi-display me-2 my-sessions-header-icon"></i>Active Sessions</h4>
+        <a href="{{ url_for('auth.profile') }}" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Back to Profile
+        </a>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}{% for cat, msg in messages %}
+        <div class="alert alert-{{ 'danger' if cat == 'error' else cat }} alert-dismissible fade show" role="alert">
+          {{ msg }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}{% endif %}
+    {% endwith %}
+
+    {% if sessions %}
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Device / Browser</th>
+                        <th>IP Address</th>
+                        <th>Started</th>
+                        <th>Last Seen</th>
+                        <th>Expires</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in sessions %}
+                    <tr>
+                        <td>
+                            <i class="bi bi-laptop me-1 text-muted"></i>
+                            <span class="small">{{ s.device_label or s.user_agent or 'Unknown device' }}</span>
+                        </td>
+                        <td class="font-monospace small">{{ s.ip_address or '—' }}</td>
+                        <td class="small text-muted">{{ s.created_at.strftime('%Y-%m-%d %H:%M') if s.created_at else '—' }}</td>
+                        <td class="small text-muted">{{ s.last_seen_at.strftime('%Y-%m-%d %H:%M') if s.last_seen_at else '—' }}</td>
+                        <td class="small text-muted">
+                            {% if s.expires_at %}{{ s.expires_at.strftime('%Y-%m-%d') }}{% else %}Never{% endif %}
+                        </td>
+                        <td class="text-center">
+                            <form method="post"
+                                  action="{{ url_for('auth.revoke_session', session_id=s.id) }}"
+                                  class="revoke-session-form"
+                                  data-confirm-message="Revoke this session?">
+                                <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2"
+                                        aria-label="Revoke session from {{ s.ip_address or 'unknown IP' }}">
+                                    <i class="bi bi-x-circle" aria-hidden="true"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-5 text-muted">
+        <i class="bi bi-display fs-1"></i>
+        <p class="mt-2">No active sessions found.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/my_sessions.js') }}"></script>
+{% endblock %}

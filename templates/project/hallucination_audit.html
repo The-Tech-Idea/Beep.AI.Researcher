@@ -1,0 +1,113 @@
+{% extends "project/_layout.html" %}
+
+{% set active_page = 'hallucination' %}
+{% set page_title = t('audit.title_friendly') %}
+{% set page_subtitle = t('audit.subtitle_friendly') %}
+{% set page_icon = 'shield-exclamation' %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/hallucination_audit.css') }}">
+{% endblock %}
+
+{% block workspace_content %}
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="spa-card">
+            <div class="spa-card-body text-center">
+                <div class="text-muted small">{{ t('audit.stat.total') }}</div>
+                <div class="fs-4 fw-bold">{{ total }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="spa-card">
+            <div class="spa-card-body text-center">
+                <div class="text-muted small">{{ t('audit.stat.flagged') }}
+                    <span tabindex="0" data-bs-toggle="popover" class="audit-popover-trigger"
+                        data-bs-content="{{ t('audit.flagged_explain') }}"
+                        data-bs-placement="top" data-bs-trigger="focus hover">
+                        <i class="bi bi-question-circle text-muted ms-1 audit-popover-icon"></i>
+                    </span>
+                </div>
+                <div class="fs-4 fw-bold audit-stat-value audit-stat-value--danger">{{ flagged }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="spa-card">
+            <div class="spa-card-body text-center">
+                <div class="text-muted small">{{ t('audit.stat.avg_score') }}</div>
+                <div class="fs-4 fw-bold">{{ avg_score }}%</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="spa-card">
+            <div class="spa-card-body text-center">
+                <div class="text-muted small">{{ t('audit.stat.pass_rate') }}</div>
+                <div class="fs-4 fw-bold audit-stat-value audit-stat-value--success">
+                    {{ ((total - flagged) / total * 100)|round|int if total else 0 }}%
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="spa-card">
+    <div class="spa-card-header">
+        <div class="spa-card-title">{{ t('audit.recent_title') }}</div>
+        <button class="btn btn-outline-secondary btn-sm" id="btnRefreshAudit">
+            <i class="bi bi-arrow-clockwise me-1"></i>{{ t('audit.refresh') }}
+        </button>
+    </div>
+    <div class="spa-card-body flush">
+        {% if recent %}
+        <table class="spa-table">
+            <thead>
+                <tr>
+                    <th>{{ t('audit.col.step') }}</th>
+                    <th>{{ t('audit.col.score') }}</th>
+                    <th>{{ t('audit.col.flagged') }}</th>
+                    <th>{{ t('audit.col.answer') }}</th>
+                    <th>{{ t('audit.col.date') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in recent %}
+                <tr>
+                    <td><span class="badge audit-step-badge small" title="{{ t('audit.step_explain') }}">{{ entry.step_name }}</span></td>
+                    <td>
+                        {% set score = entry.grounding_score or 0 %}
+                        <span
+                            class="grounding-badge {{ 'grounding-high' if score >= 0.8 else ('grounding-medium' if score >= 0.5 else 'grounding-low') }}">
+                            {{ (score * 100)|round|int }}%
+                        </span>
+                    </td>
+                    <td>
+                        {% if entry.flagged %}
+                        <i class="bi bi-flag-fill audit-flag-icon audit-flag-icon--danger"></i>
+                        {% else %}
+                        <i class="bi bi-check-circle audit-flag-icon audit-flag-icon--success"></i>
+                        {% endif %}
+                    </td>
+                    <td class="small audit-answer-cell">
+                        {{ entry.answer_text[:120] }}{{ '…' if entry.answer_text|length > 120 else '' }}
+                    </td>
+                    <td class="small text-muted">{{ entry.created_at[:10] if entry.created_at else '—' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="spa-empty">
+            <i class="bi bi-shield-check"></i>
+            <p>{{ t('audit.empty') }}</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script src="{{ url_for('static', filename='js/project/hallucination_audit.js') }}"></script>
+{% endblock %}

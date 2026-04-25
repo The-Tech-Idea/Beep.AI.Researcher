@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Resend verification - Beep.AI.Researcher{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-envelope-plus me-2"></i>Resend verification email</h5>
+            </div>
+            <div class="card-body">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for cat, msg in messages %}
+                <div class="alert alert-{{ 'danger' if cat == 'error' else cat }}">{{ msg }}</div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+                <form method="post" action="{{ url_for('auth.resend_verification') }}">
+                    <div class="mb-3">
+                        <label class="form-label" for="resendEmail">Email</label>
+                        <input type="email" id="resendEmail" name="email" class="form-control" required value="{{ request.args.email or '' }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Resend</button>
+                </form>
+                <p class="mt-3 small"><a href="{{ url_for('auth.login') }}">Back to login</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

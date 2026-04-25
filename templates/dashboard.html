@@ -1,0 +1,229 @@
+﻿{% extends base_template or "base.html" %}
+
+{% block title %}{{ t('dashboard.heading') }} - Beep.AI.Researcher{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_page.css') }}">
+{% endblock %}
+
+{% block content %}
+{% set showcase_project = projects[0] if projects else None %}
+
+{# ═══ Greeting + New Project ═══ #}
+<div class="spa-greeting d-flex justify-content-between align-items-start flex-wrap gap-3">
+    <div>
+        <h2>{{ t('dashboard.heading') }}</h2>
+        <p>{{ t('dashboard.subtitle') }}</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        {% if tenants %}
+        <select id="tenantFilter" class="form-select form-select-sm dashboard-tenant-filter">
+            <option value="">{{ t('dashboard.filter.all') }}</option>
+            {% for tenant in tenants %}
+            <option value="{{ tenant.id }}" {% if selected_tenant_id == tenant.id %}selected{% endif %}>{{ tenant.name }}</option>
+            {% endfor %}
+        </select>
+        {% endif %}
+        <button type="button" class="btn btn-primary btn-sm" id="btnNewProject" data-bs-toggle="modal" data-bs-target="#newProjectModal">
+            <i class="bi bi-plus-lg me-1"></i>{{ t('dashboard.button.new_project') }}
+        </button>
+    </div>
+</div>
+
+{# ═══ Stats Row ═══ #}
+<div class="spa-stats-row">
+    <div class="spa-stat-chip">
+        <div class="spa-stat-icon"><i class="bi bi-file-earmark-text"></i></div>
+        <div>
+            <div class="spa-stat-value">{{ project_totals.documents }}</div>
+            <div class="spa-stat-label">{{ t('dashboard.summary.documents') }}</div>
+        </div>
+    </div>
+    <div class="spa-stat-chip">
+        <div class="spa-stat-icon success"><i class="bi bi-tags"></i></div>
+        <div>
+            <div class="spa-stat-value">{{ project_totals.codes }}</div>
+            <div class="spa-stat-label">{{ t('dashboard.summary.codes') }}</div>
+        </div>
+    </div>
+    <div class="spa-stat-chip">
+        <div class="spa-stat-icon warning"><i class="bi bi-kanban"></i></div>
+        <div>
+            <div class="spa-stat-value">{{ project_totals.tasks }}</div>
+            <div class="spa-stat-label">{{ t('dashboard.summary.tasks') }}</div>
+        </div>
+    </div>
+    {% if status_counts %}
+    <div class="spa-stat-chip">
+        <div class="spa-stat-icon accent"><i class="bi bi-collection"></i></div>
+        <div>
+            <div class="spa-stat-value">{{ projects|length }}</div>
+            <div class="spa-stat-label">{{ t('dashboard.stat.projects') }}</div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{# ═══ Quick Actions ═══ #}
+<div class="spa-quick-actions">
+    {% if showcase_project %}
+    <a href="{{ url_for('researcher.project_documents', project_id=showcase_project.id) }}" class="spa-quick-btn">
+        <i class="bi bi-upload"></i> {{ t('dashboard.quick.upload.action') }}
+    </a>
+    <a href="{{ url_for('researcher.project_search', project_id=showcase_project.id) }}" class="spa-quick-btn">
+        <i class="bi bi-chat-left-text"></i> {{ t('dashboard.quick.search.action') }}
+    </a>
+    {% endif %}
+    <a href="{{ url_for('references.references_page') }}" class="spa-quick-btn">
+        <i class="bi bi-journal-bookmark"></i> {{ t('dashboard.quick.upload.action_secondary') }}
+    </a>
+    <a href="{{ url_for('admin.index') }}" class="spa-quick-btn">
+        <i class="bi bi-shield-lock"></i> {{ t('dashboard.quick.governance.action') }}
+    </a>
+</div>
+
+{# ═══ Feature Tools Grid ═══ #}
+<div class="spa-section-divider">{{ t('dashboard.feature.title') }}</div>
+<div class="feature-grid mb-4">
+    <div class="feature-card" data-dashboard-route="project-search" role="button" tabindex="0">
+        <div class="feature-icon"><i class="bi bi-chat-left-text"></i></div>
+        <h5>{{ t('dashboard.feature.chat_pdfs.title') }}</h5>
+        <p>{{ t('dashboard.feature.chat_pdfs.desc') }}</p>
+    </div>
+    <div class="feature-card" data-dashboard-route="project-documents" role="button" tabindex="0">
+        <div class="feature-icon"><i class="bi bi-journals"></i></div>
+        <h5>{{ t('dashboard.feature.research_cite.title') }}</h5>
+        <p>{{ t('dashboard.feature.research_cite.desc') }}</p>
+    </div>
+    <div class="feature-card" data-dashboard-route="project-report" role="button" tabindex="0">
+        <div class="feature-icon"><i class="bi bi-pencil-square"></i></div>
+        <h5>{{ t('dashboard.feature.ai_writing.title') }}</h5>
+        <p>{{ t('dashboard.feature.ai_writing.desc') }}</p>
+    </div>
+    <div class="feature-card" data-dashboard-route="project-codes" role="button" tabindex="0">
+        <div class="feature-icon"><i class="bi bi-tags"></i></div>
+        <h5>{{ t('dashboard.feature.codes_themes.title') }}</h5>
+        <p>{{ t('dashboard.feature.codes_themes.desc') }}</p>
+    </div>
+    <div class="feature-card" data-dashboard-route="project-flashcards" role="button" tabindex="0">
+        <div class="feature-icon"><i class="bi bi-card-text"></i></div>
+        <h5>{{ t('dashboard.feature.flashcards.title') }}</h5>
+        <p>{{ t('dashboard.feature.flashcards.desc') }}</p>
+    </div>
+    <div class="feature-card" data-dashboard-route="project-extraction" role="button" tabindex="0">
+        <div class="feature-icon"><i class="bi bi-funnel"></i></div>
+        <h5>{{ t('dashboard.feature.data_extraction.title') }}</h5>
+        <p>{{ t('dashboard.feature.data_extraction.desc') }}</p>
+    </div>
+</div>
+
+{# ═══ Projects List ═══ #}
+<div class="spa-section-divider">{{ t('dashboard.projects') }}</div>
+{% if projects %}
+<div class="spa-project-grid">
+    {% for project in projects %}
+    {% set doc_count = project_counts.documents.get(project.id, 0) %}
+    {% set code_count = project_counts.codes.get(project.id, 0) %}
+    {% set task_count = project_counts.tasks.get(project.id, 0) %}
+    <div class="spa-project-card" data-project-id="{{ project.id }}" data-project-url="/researcher/projects/{{ project.id }}" role="button" tabindex="0">
+        <div class="spa-project-card-top">
+            <div>
+                <h4 class="spa-project-card-name">{{ project.name }}</h4>
+                <p class="spa-project-card-desc">{{ project.description or t('dashboard.project.no_description') }}</p>
+            </div>
+            <span class="spa-badge {{ project.status|default('active') }}">{{ project.status|default('active') }}</span>
+        </div>
+        <div class="spa-project-card-meta">
+            <span><i class="bi bi-file-earmark"></i> {{ doc_count }}</span>
+            <span><i class="bi bi-tags"></i> {{ code_count }}</span>
+            <span><i class="bi bi-kanban"></i> {{ task_count }}</span>
+        </div>
+        <div class="spa-project-card-footer">
+            <span>{{ project.updated_at.strftime('%b %d, %Y') if project.updated_at else t('dashboard.project.updated_unknown') }}</span>
+            <span>{{ project.owner.username if project.owner else '' }}</span>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="spa-empty">
+    <i class="bi bi-inbox"></i>
+    <h4>{{ t('dashboard.empty.heading') }}</h4>
+    <p>{{ t('dashboard.empty.body') }}</p>
+    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#newProjectModal">
+        <i class="bi bi-plus-lg me-1"></i>{{ t('dashboard.button.new_project') }}
+    </button>
+</div>
+{% endif %}
+
+{# ═══ Activities ═══ #}
+{% if activities %}
+<div class="spa-section-divider dashboard-activity-divider">{{ t('dashboard.activity.title') }}</div>
+<div class="spa-card">
+    <div class="spa-card-body">
+        <ul class="spa-timeline">
+            {% for activity in activities[:8] %}
+            <li class="spa-timeline-item">
+                <div class="spa-timeline-dot"></div>
+                <div class="spa-timeline-content">
+                    <p class="spa-timeline-text">{{ activity.text }}</p>
+                    <span class="spa-timeline-time">{{ activity.time_ago }}</span>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endif %}
+
+{# ═══ New Project Modal ═══ #}
+<div class="modal fade" id="newProjectModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ t('dashboard.modal.title') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">{{ t('dashboard.modal.field.name') }}</label>
+                    <input type="text" id="newProjectName" class="form-control" placeholder="{{ t('dashboard.modal.placeholder.name') }}" required>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">{{ t('dashboard.modal.field.description') }}</label>
+                    <textarea id="newProjectDesc" class="form-control" rows="2" placeholder="{{ t('dashboard.modal.placeholder.description') }}"></textarea>
+                </div>
+                {% if tenants %}
+                <div class="mb-2">
+                    <label class="form-label">{{ t('dashboard.modal.field.tenant') }}</label>
+                    <select id="newProjectTenant" class="form-select">
+                        <option value="">{{ t('dashboard.modal.option.none') }}</option>
+                        {% for tenant in tenants %}
+                        <option value="{{ tenant.id }}">{{ tenant.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ t('dashboard.modal.button.cancel') }}</button>
+                <button type="button" class="btn btn-primary" id="btnCreateProject">{{ t('dashboard.modal.button.create') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="dashboard-page-config" type="application/json">
+{{ {
+    "baseUrl": "/researcher",
+    "createProjectUrl": "/projects/",
+    "defaultProjectRoute": "project-overview",
+    "projectNameRequired": t("dashboard.errors.project_name_required"),
+    "createFailed": t("dashboard.errors.create_failed")
+} | tojson | safe }}
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/dashboard_page.js') }}"></script>
+{% endblock %}

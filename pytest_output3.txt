@@ -1,0 +1,381 @@
+........................................................................ [  6%]
+........................................................................ [ 12%]
+........................................................................ [ 19%]
+......................................................E................. [ 25%]
+........................................................................ [ 32%]
+........................................................................ [ 38%]
+............................EE.......................................... [ 45%]
+............................EEEEEEEEE...EEEEE........................... [ 51%]
+........................................................................ [ 58%]
+........................................................................ [ 64%]
+........................................................................ [ 71%]
+.......F..F............................................................. [ 77%]
+........................................................................ [ 84%]
+........................................................................ [ 90%]
+...........F............................................................ [ 97%]
+...............................                                          [100%]
+=================================== ERRORS ====================================
+_ ERROR at setup of TestEventBusWithRoutes.test_document_upload_publishes_event _
+E   PermissionError: [WinError 5] Access is denied: 'C:\\Users\\f_ald\\AppData\\Local\\Temp\\pytest-of-f_ald'
+__________________ ERROR at setup of test_translate_fallback __________________
+E   PermissionError: [WinError 5] Access is denied: 'C:\\Users\\f_ald\\AppData\\Local\\Temp\\pytest-of-f_ald'
+___________________ ERROR at setup of test_import_from_csv ____________________
+E   PermissionError: [WinError 5] Access is denied: 'C:\\Users\\f_ald\\AppData\\Local\\Temp\\pytest-of-f_ald'
+____ ERROR at setup of TestAdminSettingsKeyAlignment.test_mfa_method_keys _____
+E   sqlite3.OperationalError: no such table: users
+
+The above exception was the direct cause of the following exception:
+E   sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: users
+    [SQL: INSERT INTO users (username, password_hash, email, is_active, email_verified, verification_token, verification_token_expires, display_name, created_at, updated_at, role_id, storage_quota_bytes, document_quota, plan_tier_id, invite_id, failed_login_attempts, locked_until, password_changed_at, must_change_password, avatar_url, bio, phone_number, locale, timezone, mfa_enabled, mfa_methods, mfa_totp_secret, mfa_backup_codes_hash, mfa_backup_codes_remaining, mfa_last_used_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)]
+    [parameters: ('admin_5b288465', 'scrypt:32768:8:1$iQ2UXZnCKziFnwtH$006d78992fa25abb2068953dc5b89d2e8844c8bb19da3964c625d9d44128472f1f2b1653d0bc15e8cd4f477e222e84de0dd8cba2148d9597f9d38ab7519de7cd', 'admin_5b288465@example.com', 1, 0, None, None, None, '2026-04-13 12:24:12.134866', '2026-04-13 12:24:12.134870', 1, None, None, None, None, 0, None, None, 0, None, None, None, 'en', 'UTC', 0, '', None, None, 0, None)]
+    (Background on this error at: https://sqlalche.me/e/20/e3q8)
+_ ERROR at setup of TestAdminSettingsKeyAlignment.test_mfa_sms_provider_keys __
+E   sqlite3.OperationalError: table roles already exists
+
+The above exception was the direct cause of the following exception:
+E   sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) table roles already exists
+    [SQL: 
+    CREATE TABLE roles (
+    	id INTEGER NOT NULL, 
+    	name VARCHAR(50) NOT NULL, 
+    	permissions TEXT, 
+    	PRIMARY KEY (id), 
+    	UNIQUE (name)
+    )
+    
+    ]
+    (Background on this error at: https://sqlalche.me/e/20/e3q8)
+_ ERROR at setup of TestAdminSettingsKeyAlignment.test_mfa_enforcement_option_values _
+E   sqlite3.OperationalError: no such table: users
+
+The above exception was the direct cause of the following exception:
+E   sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: users
+    [SQL: INSERT INTO users (username, password_hash, email, is_active, email_verified, verification_token, verification_token_expires, display_name, created_at, updated_at, role_id, storage_quota_bytes, document_quota, plan_tier_id, invite_id, failed_login_attempts, locked_until, password_changed_at, must_change_password, avatar_url, bio, phone_number, locale, timezone, mfa_enabled, mfa_methods, mfa_totp_secret, mfa_backup_codes_hash, mfa_backup_codes_remaining, mfa_last_used_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)]
+    [parameters: ('admin_6eee37fc', 'scrypt:32768:8:1$0RAjNIDe5oZEa9zO$3c1a8e4158bff8453bfc412ed4b40bf16cacf7d56726468157592a96768945433410b2dd7aae691104af726f824654c1379709558ae3f1bc3f6ec33cff3cd2a5', 'admin_6eee37fc@example.com', 1, 0, None, None, None, '2026-04-13 12:24:16.011149', '2026-04-13 12:24:16.011159', 1, None, None, None, None, 0, None, None, 0, None, None, None, 'en', 'UTC', 0, '', None, None, 0, None)]
+    (Background on this error at: https://sqlalche.me/e/20/e3q8)
+_ ERROR at setup of TestAdminSettingsKeyAlignment.test_settings_update_saves_mfa_sms_otp_enabled _
+E   sqlite3.OperationalError: no such table: users
+
+The above exception was the direct cause of the following exception:
+E   sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: users
+    [SQL: INSERT INTO users (username, password_hash, email, is_active, email_verified, verification_token, verification_token_expires, display_name, created_at, updated_at, role_id, storage_quota_bytes, document_quota, plan_tier_id, invite_id, failed_login_attempts, locked_until, password_changed_at, must_change_password, avatar_url, bio, phone_number, locale, timezone, mfa_enabled, mfa_methods, mfa_totp_secret, mfa_backup_codes_hash, mfa_backup_codes_remaining, mfa_last_used_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)]
+    [parameters: ('admin_8b07681d', 'scrypt:32768:8:1$pwLqigqL5nKZQ8aD$de797a25397d97f1ac7ba7eebf03dbd15456d98b1edff6408b7067f356bf281bb0d2a22dd66db581ace244174012e5fe9bd27834a9f9689ebebe841a62c4c81a', 'admin_8b07681d@example.com', 1, 0, None, None, None, '2026-04-13 12:24:18.310620', '2026-04-13 12:24:18.310627', 1, None, None, None, None, 0, None, None, 0, None, None, None, 'en', 'UTC', 0, '', None, None, 0, None)]
+    (Background on this error at: https://sqlalche.me/e/20/e3q8)
+_ ERROR at setup of TestAdminSettingsKeyAlignment.test_settings_update_mfa_enforcement _
+E   sqlite3.OperationalError: no such table: users
+
+The above exception was the direct cause of the following exception:
+E   sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: users
+    [SQL: INSERT INTO users (username, password_hash, email, is_active, email_verified, verification_token, verification_token_expires, display_name, created_at, updated_at, role_id, storage_quota_bytes, document_quota, plan_tier_id, invite_id, failed_login_attempts, locked_until, password_changed_at, must_change_password, avatar_url, bio, phone_number, locale, timezone, mfa_enabled, mfa_methods, mfa_totp_secret, mfa_backup_codes_hash, mfa_backup_codes_remaining, mfa_last_used_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)]
+    [parameters: ('admin_bf4d3129', 'scrypt:32768:8:1$OKJenhY1M2V6cfiQ$96662905e248972f9ef97b6c607aef258d9bd29c4030afe4534b500e485cc3ef3d2081d75cd36cdfe50941d5d3fac27b047ad7c21629a1f26489f24a9f37ff44', 'admin_bf4d3129@example.com', 1, 0, None, None, None, '2026-04-13 12:24:20.107023', '2026-04-13 12:24:20.107030', 1, None, None, None, None, 0, None, None, 0, None, None, None, 'en', 'UTC', 0, '', None, None, 0, None)]
+    (Background on this error at: https://sqlalche.me/e/20/e3q8)
+_ ERROR at setup of TestAdminSettingsKeyAlignment.test_settings_update_password_expiry _
+E   sqlite3.OperationalError: no such table: users
+
+The above exception was the direct cause of the following exception:
+E   sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: users
+    [SQL: INSERT INTO users (username, password_hash, email, is_active, email_verified, verification_token, verification_token_expires, display_name, created_at, updated_at, role_id, storage_quota_bytes, document_quota, plan_tier_id, invite_id, failed_login_attempts, locked_until, password_changed_at, must_change_password, avatar_url, bio, phone_number, locale, timezone, mfa_enabled, mfa_methods, mfa_totp_secret, mfa_backup_codes_hash, mfa_backup_codes_remaining, mfa_last_used_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)]
+    [parameters: ('admin_cfd8f4e3', 'scrypt:32768:8:1$VcUSTqFoarzhv2O4$24d55810e21328fc994f659d033cff24913856c3cbfd60139f830979081b487705991dc75a34bbe608091b8ade910b3bb7ee4b6317a1faf5d929c2333db2d1fb', 'admin_cfd8f4e3@example.com', 1, 0, None, None, None, '2026-04-13 12:24:22.017976', '2026-04-13 12:24:22.017983', 1, None, None, None, None, 0, None, None, 0, None, None, None, 'en', 'UTC', 0, '', None, None, 0, None)]
+    (Background on this error at: https://sqlalche.me/e/20/e3q8)
+___ ERROR at setup of TestUserIntegrations.test_my_integrations_page_loads ____
+E   sqlite3.OperationalError: no such table: users
+
+The above exception was the direct cause of the following exception:
+E   sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: users
+    [SQL: INSERT INTO users (username, password_hash, email, is_active, email_verified, verification_token, verification_token_expires, display_name, created_at, updated_at, role_id, storage_quota_bytes, document_quota, plan_tier_id, invite_id, failed_login_attempts, locked_until, password_changed_at, must_change_password, avatar_url, bio, phone_number, locale, timezone, mfa_enabled, mfa_methods, mfa_totp_secret, mfa_backup_codes_hash, mfa_backup_codes_remaining, mfa_last_used_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)]
+    [parameters: ('user_e39d028f', 'scrypt:32768:8:1$QjfYTj8SCujoalI7$cdd0c2027df8eeddcb9523562da6a11d16015c3d98a4f31db70000b2339ce5b882d080b96d03b72252b18247ab1642a034c7a830923d56c80a29db21594e8851', 'user_e39d028f@example.com', 1, 0, None, None, None, '2026-04-13 12:24:23.970558', '2026-04-13 12:24:23.970565', 1, None, None, None, None, 0, None, None, 0, None, None, None, 'en', 'UTC', 0, '', None, None, 0, None)]
+    (Background on this error at: https://sqlalche.me/e/20/e3q8)
+_ ERROR at setup of TestUserIntegrations.test_my_integrations_shows_service_cards _
+E   sqlite3.OperationalError: no such table: users
+
+The above exception was the direct cause of the following exception:
+E   sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: users
+    [SQL: INSERT INTO users (username, password_hash, email, is_active, email_verified, verification_token, verification_token_expires, display_name, created_at, updated_at, role_id, storage_quota_bytes, document_quota, plan_tier_id, invite_id, failed_login_attempts, locked_until, password_changed_at, must_change_password, avatar_url, bio, phone_number, locale, timezone, mfa_enabled, mfa_methods, mfa_totp_secret, mfa_backup_codes_hash, mfa_backup_codes_remaining, mfa_last_used_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)]
+    [parameters: ('user_cb19cd82', 'scrypt:32768:8:1$VQ6I4GJ5zRmRl7Mq$3bd99d5e786a95cd013812d66e924cbcd30fe28a74277c65cabf7f6cecd241c3ff19b3104cd8b35c053ea5624c6d7ae0527ffb28992d4a845e9dcfb3388ebdbe', 'user_cb19cd82@example.com', 1, 0, None, None, None, '2026-04-13 12:24:26.004021', '2026-04-13 12:24:26.004026', 1, None, None, None, None, 0, None, None, 0, None, None, None, 'en', 'UTC', 0, '', None, None, 0, None)]
+    (Background on this error at: https://sqlalche.me/e/20/e3q8)
+_ ERROR at setup of TestUserIntegrations.test_disconnect_nonexistent_service_redirects _
+E   sqlite3.OperationalError: no such table: users
+
+The above exception was the direct cause of the following exception:
+E   sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: users
+    [SQL: INSERT INTO users (username, password_hash, email, is_active, email_verified, verification_token, verification_token_expires, display_name, created_at, updated_at, role_id, storage_quota_bytes, document_quota, plan_tier_id, invite_id, failed_login_attempts, locked_until, password_changed_at, must_change_password, avatar_url, bio, phone_number, locale, timezone, mfa_enabled, mfa_methods, mfa_totp_secret, mfa_backup_codes_hash, mfa_backup_codes_remaining, mfa_last_used_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)]
+    [parameters: ('user_3983fc90', 'scrypt:32768:8:1$gIs6Qbk0bKiynpPs$1e4efb5c583eb7edcf154d485fda16e4bb067f0c2ec08cba550b429728345285beda0a42ee46b3f66b2165952c2abc43b16a7c239a318a36777902efd43d0eea', 'user_3983fc90@example.com', 1, 0, None, None, None, '2026-04-13 12:24:27.806677', '2026-04-13 12:24:27.806684', 1, None, None, None, None, 0, None, None, 0, None, None, None, 'en', 'UTC', 0, '', None, None, 0, None)]
+    (Background on this error at: https://sqlalche.me/e/20/e3q8)
+_ ERROR at setup of TestAdminIntegrations.test_admin_integrations_shows_configured_badge _
+E   sqlite3.OperationalError: no such table: users
+
+The above exception was the direct cause of the following exception:
+E   sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: users
+    [SQL: INSERT INTO users (username, password_hash, email, is_active, email_verified, verification_token, verification_token_expires, display_name, created_at, updated_at, role_id, storage_quota_bytes, document_quota, plan_tier_id, invite_id, failed_login_attempts, locked_until, password_changed_at, must_change_password, avatar_url, bio, phone_number, locale, timezone, mfa_enabled, mfa_methods, mfa_totp_secret, mfa_backup_codes_hash, mfa_backup_codes_remaining, mfa_last_used_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)]
+    [parameters: ('admin_4e41b120', 'scrypt:32768:8:1$CF3p3zzso7jHVsep$2e2c3f0d1c38d0ba3a461e73f2a556893a8d87cba1b617402388204e8acdd6b2353b2396bd29b5df8ba4aced34046f12588d7013cedadd1eb57cb4135490fb16', 'admin_4e41b120@example.com', 1, 0, None, None, None, '2026-04-13 12:24:33.153153', '2026-04-13 12:24:33.153158', 1, None, None, None, None, 0, None, None, 0, None, None, None, 'en', 'UTC', 0, '', None, None, 0, None)]
+    (Background on this error at: https://sqlalche.me/e/20/e3q8)
+_ ERROR at setup of TestAdminIntegrations.test_admin_integration_users_page_loads _
+E   sqlite3.OperationalError: table audit_logs already exists
+
+The above exception was the direct cause of the following exception:
+E   sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) table audit_logs already exists
+    [SQL: 
+    CREATE TABLE audit_logs (
+    	id INTEGER NOT NULL, 
+    	user_id INTEGER, 
+    	action VARCHAR(100) NOT NULL, 
+    	resource VARCHAR(255), 
+    	resource_id VARCHAR(100), 
+    	project_id INTEGER, 
+    	created_at DATETIME, 
+    	PRIMARY KEY (id), 
+    	FOREIGN KEY(user_id) REFERENCES users (id)
+    )
+    
+    ]
+    (Background on this error at: https://sqlalche.me/e/20/e3q8)
+_ ERROR at setup of TestAdminIntegrations.test_admin_integration_update_name __
+E   sqlite3.OperationalError: no such table: users
+
+The above exception was the direct cause of the following exception:
+E   sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: users
+    [SQL: INSERT INTO users (username, password_hash, email, is_active, email_verified, verification_token, verification_token_expires, display_name, created_at, updated_at, role_id, storage_quota_bytes, document_quota, plan_tier_id, invite_id, failed_login_attempts, locked_until, password_changed_at, must_change_password, avatar_url, bio, phone_number, locale, timezone, mfa_enabled, mfa_methods, mfa_totp_secret, mfa_backup_codes_hash, mfa_backup_codes_remaining, mfa_last_used_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)]
+    [parameters: ('admin_153adbd4', 'scrypt:32768:8:1$K9uWNGqdEv0iv0yu$d5380d6ec623caf94cf60bf41f8d12d20bb9423be2f637dac69a77217377f85f730d4a4da07eb03821399ae0c74e2f65a67d4efdae42bb0c5b0d234f16e6e0cb', 'admin_153adbd4@example.com', 1, 0, None, None, None, '2026-04-13 12:24:37.257311', '2026-04-13 12:24:37.257317', 1, None, None, None, None, 0, None, None, 0, None, None, None, 'en', 'UTC', 0, '', None, None, 0, None)]
+    (Background on this error at: https://sqlalche.me/e/20/e3q8)
+_____ ERROR at setup of TestResearchBriefModel.test_create_minimal_brief ______
+E   sqlite3.OperationalError: no such table: users
+
+The above exception was the direct cause of the following exception:
+E   sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: users
+    [SQL: INSERT INTO users (username, password_hash, email, is_active, email_verified, verification_token, verification_token_expires, display_name, created_at, updated_at, role_id, storage_quota_bytes, document_quota, plan_tier_id, invite_id, failed_login_attempts, locked_until, password_changed_at, must_change_password, avatar_url, bio, phone_number, locale, timezone, mfa_enabled, mfa_methods, mfa_totp_secret, mfa_backup_codes_hash, mfa_backup_codes_remaining, mfa_last_used_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)]
+    [parameters: ('testuser_805342', 'hashed_password', 'test_805342@example.com', 1, 0, None, None, None, '2026-04-13 12:24:39.807319', '2026-04-13 12:24:39.807324', None, None, None, None, None, 0, None, None, 0, None, None, None, 'en', 'UTC', 0, '', None, None, 0, None)]
+    (Background on this error at: https://sqlalche.me/e/20/e3q8)
+_________ ERROR at setup of TestResearchBriefModel.test_brief_to_dict _________
+E   sqlite3.OperationalError: no such table: users
+
+The above exception was the direct cause of the following exception:
+E   sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: users
+    [SQL: INSERT INTO users (username, password_hash, email, is_active, email_verified, verification_token, verification_token_expires, display_name, created_at, updated_at, role_id, storage_quota_bytes, document_quota, plan_tier_id, invite_id, failed_login_attempts, locked_until, password_changed_at, must_change_password, avatar_url, bio, phone_number, locale, timezone, mfa_enabled, mfa_methods, mfa_totp_secret, mfa_backup_codes_hash, mfa_backup_codes_remaining, mfa_last_used_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)]
+    [parameters: ('testuser_812974', 'hashed_password', 'test_812974@example.com', 1, 0, None, None, None, '2026-04-13 12:24:42.814826', '2026-04-13 12:24:42.814832', None, None, None, None, None, 0, None, None, 0, None, None, None, 'en', 'UTC', 0, '', None, None, 0, None)]
+    (Background on this error at: https://sqlalche.me/e/20/e3q8)
+================================== FAILURES ===================================
+E   assert 302 == 200
+     +  where 302 = <WrapperTestResponse streamed [302 FOUND]>.status_code
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_project_settings_plain_language_ui.py:719: assert 302 == 200
+E   assert 302 == 200
+     +  where 302 = <WrapperTestResponse streamed [302 FOUND]>.status_code
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_project_settings_plain_language_ui.py:789: assert 302 == 200
+E   assert 2 == 1
+     +  where 2 = len([<SearchCache 1>, <SearchCache 2>])
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_search_caching.py:297: assert 2 == 1
+============================== warnings summary ===============================
+tests/test_batch_operations.py: 60 warnings
+tests/test_debug_routes.py: 358 warnings
+tests/test_extraction_server_route.py: 6 warnings
+tests/test_extraction_validation.py: 121 warnings
+tests/test_monitoring.py: 17 warnings
+tests/test_phase_c.py: 12 warnings
+tests/test_plugin_permissions.py: 84 warnings
+tests/test_plugin_system.py: 41 warnings
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\.venv\Lib\site-packages\sqlalchemy\sql\schema.py:3624: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    return util.wrap_callable(lambda ctx: fn(), fn)  # type: ignore
+
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_status_transitions
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_pause
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_failure
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_estimated_time
+tests/test_batch_operations.py::TestBatchOperationService::test_start_batch_job
+tests/test_batch_operations.py::TestBatchOperationService::test_pause_batch_job
+tests/test_batch_operations.py::TestBatchOperationService::test_cancel_batch_job
+tests/test_batch_operations.py::TestBatchOperationService::test_get_batch_status
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\models\researcher\batch_operations.py:149: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    self.started_at = datetime.utcnow()
+
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_status_transitions
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\models\researcher\batch_operations.py:155: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    self.completed_at = datetime.utcnow()
+
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_pause
+tests/test_batch_operations.py::TestBatchOperationService::test_pause_batch_job
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\models\researcher\batch_operations.py:178: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    self.paused_at = datetime.utcnow()
+
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_failure
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\models\researcher\batch_operations.py:166: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    self.completed_at = datetime.utcnow()
+
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_estimated_time
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_batch_operations.py:93: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    job.started_at = datetime.utcnow() - timedelta(seconds=10)
+
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_estimated_time
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\models\researcher\batch_operations.py:134: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    elapsed = max((datetime.utcnow() - self.started_at).total_seconds(), 1)
+
+tests/test_batch_operations.py::TestBatchOperationService::test_cancel_batch_job
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\models\researcher\batch_operations.py:184: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    self.completed_at = datetime.utcnow()
+
+tests/test_batch_operations.py::TestBatchOperationService::test_cleanup_old_jobs
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_batch_operations.py:516: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    old_job.created_at = datetime.utcnow() - timedelta(days=40)
+
+tests/test_contradiction_detection.py: 10 warnings
+tests/test_extraction_server_route.py: 3 warnings
+tests/test_phase_c.py: 11 warnings
+tests/test_related_docs.py: 15 warnings
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\.venv\Lib\site-packages\flask_sqlalchemy\query.py:30: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    rv = self.get(ident)
+
+tests/test_debug_routes.py: 14 warnings
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_debug_routes.py:74: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = datetime.utcnow()
+
+tests/test_debug_routes.py::TestDebugValidationAnalytics::test_get_validation_history
+tests/test_debug_routes.py::TestDebugValidationAnalytics::test_get_validation_history_with_filters
+tests/test_debug_routes.py::TestDebugValidationAnalytics::test_get_validation_summary
+tests/test_debug_routes.py::TestDebugValidationAnalytics::test_get_validation_summary_custom_period
+tests/test_debug_routes.py::TestDebugHealth::test_get_debug_health
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_debug_routes.py:101: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = datetime.utcnow()
+
+tests/test_debug_routes.py::TestDebugDataStructures::test_execution_log_model_creation
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_debug_routes.py:266: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    retrieved = db.session.query(PluginExecutionLog).get(log.id)
+
+tests/test_debug_routes.py::TestDebugDataStructures::test_execution_log_error_tracking
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_debug_routes.py:286: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    retrieved = db.session.query(PluginExecutionLog).get(log.id)
+
+tests/test_debug_routes.py::TestDebugDataStructures::test_validation_result_suggestions
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_debug_routes.py:314: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    retrieved = db.session.query(ExtractionValidationResult).get(result.id)
+
+tests/test_debug_routes.py::TestDebugTimeSeriesData::test_execution_logs_with_dates
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_debug_routes.py:326: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    base_time = datetime.utcnow()
+
+tests/test_debug_routes.py::TestDebugTimeSeriesData::test_validation_results_with_dates
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_debug_routes.py:353: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    base_time = datetime.utcnow()
+
+tests/test_event_bus_integration.py: 8 warnings
+tests/test_search_caching.py: 20 warnings
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\.venv\Lib\site-packages\flask_sqlalchemy\extension.py:881: SAWarning: Can't sort tables for DROP; an unresolvable foreign key dependency exists between tables: user_invites, users; and backend does not support ALTER.  To restore at least a partial sort, apply use_alter=True to ForeignKey and ForeignKeyConstraint objects involved in the cycle to mark these as known cycles that will be ignored.
+    getattr(metadata, op_name)(bind=engine)
+
+tests/test_extraction_validation.py::TestExtractionValidationService::test_extracted_field_value_status_tracking
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_extraction_validation.py:303: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    retrieved = db.session.query(ExtractedFieldValue).get(field_value.id)
+
+tests/test_extraction_validation.py::TestExtractionValidationService::test_extraction_validation_result_model
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_extraction_validation.py:436: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    retrieved = db.session.query(ExtractionValidationResult).get(val_result.id)
+
+tests/test_extraction_validation.py::TestExtractionValidationService::test_schema_field_relationship
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_extraction_validation.py:453: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    retrieved_schema = db.session.query(ExtractionSchema).get(test_schema.id)
+
+tests/test_job_queue.py::TestJobExecution::test_execute_job_success
+tests/test_job_queue.py::TestJobExecution::test_execute_job_no_handler
+tests/test_job_queue.py::TestJobExecution::test_execute_job_handler_error
+tests/test_job_queue.py::TestJobExecution::test_execute_job_retry_on_failure
+tests/test_job_queue.py::TestJobExecution::test_execute_job_permanent_failure
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_event_bus_integration.py:173: SAWarning: fully NULL primary key identity cannot load any object.  This condition may raise an error in a future release.
+    task = db.session.get(Task, task_id)
+
+tests/test_permission_service.py::TestPermissionServiceExpiry::test_expired_permission_not_granted
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_permission_service.py:202: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    past = datetime.utcnow() - timedelta(days=1)
+
+tests/test_permission_service.py::TestPermissionServiceExpiry::test_future_expiry_permission_granted
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_permission_service.py:229: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    future = datetime.utcnow() + timedelta(days=7)
+
+tests/test_permission_service.py::TestGetUserRoles::test_get_user_roles_includes_non_expired_only
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_permission_service.py:415: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    expires_at=datetime.utcnow() - timedelta(days=1)
+
+tests/test_phase_c.py::TestPhiRoutes::test_redact_document_removes_phi
+tests/test_phase_c.py::TestPhiRoutes::test_redact_document_prevents_double_redaction
+tests/test_phase_c.py::TestPhiRoutes::test_restore_after_redaction
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\routes\phi_routes.py:68: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    'redacted_at': datetime.utcnow().isoformat(),
+
+tests/test_plugin_permissions.py::TestPluginRoleAssignment::test_assignment_expiry
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_plugin_permissions.py:153: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    past_date = datetime.utcnow() - timedelta(days=1)
+
+tests/test_plugin_permissions.py::TestPluginRoleAssignment::test_assignment_expiry
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_plugin_permissions.py:154: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    future_date = datetime.utcnow() + timedelta(days=30)
+
+tests/test_plugin_permissions.py::TestPluginPermissionService::test_assign_user_access_with_expiry
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_plugin_permissions.py:497: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    future_date = datetime.utcnow() + timedelta(days=30)
+
+tests/test_plugin_permissions.py::TestPluginPermissionService::test_cleanup_expired_assignments
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_plugin_permissions.py:592: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    past = datetime.utcnow() - timedelta(days=1)
+
+tests/test_plugin_permissions.py::TestPluginPermissionService::test_cleanup_expired_assignments
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_plugin_permissions.py:593: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    future = datetime.utcnow() + timedelta(days=30)
+
+tests/test_plugin_system.py::TestHookContext::test_context_creation
+tests/test_plugin_system.py::TestHookContext::test_context_to_dict
+tests/test_plugin_system.py::TestPluginBase::test_plugin_hook_execution
+tests/test_plugin_system.py::TestPluginManager::test_execute_hook_no_plugins
+tests/test_plugin_system.py::TestPluginIntegration::test_hook_context_flow
+  <string>:8: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+
+tests/test_rbac_e2e.py::TestCompleteWorkflows::test_workflow_temporary_access_expires_revoked
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_e2e.py:163: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    future = datetime.utcnow() + timedelta(days=7)
+
+tests/test_rbac_e2e.py::TestCompleteWorkflows::test_workflow_temporary_access_expires_revoked
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_e2e.py:179: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    user_role.expires_at = datetime.utcnow() - timedelta(seconds=1)
+
+tests/test_rbac_models.py::TestUserRoleModel::test_user_role_with_expiry
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_models.py:154: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    future = datetime.utcnow() + timedelta(days=7)
+
+tests/test_rbac_models.py::TestUserRoleModel::test_user_role_is_expired
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_models.py:179: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    past = datetime.utcnow() - timedelta(days=1)
+
+tests/test_search_caching.py::TestCacheTTL::test_cache_expired_after_ttl
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_search_caching.py:198: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    cache_entry.expires_at = datetime.utcnow() - timedelta(hours=1)
+
+tests/test_search_caching.py::TestCacheTTL::test_clear_expired_cache
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_search_caching.py:223: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    expired_cache.expires_at = datetime.utcnow() - timedelta(hours=1)
+
+tests/test_search_system.py::TestSearchManagerSearching::test_search_clear_cache
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_search_system.py:451: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    manager.result_cache['test_key'] = {'time': datetime.utcnow(), 'results': []}
+
+tests/test_search_system.py::TestSearchManagerSearching::test_search_cache_ttl
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_search_system.py:472: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    'time': datetime.utcnow() - timedelta(seconds=10),
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED Beep.AI.Researcher\tests\test_project_settings_plain_language_ui.py::test_take_quiz_page_uses_plain_language_review_copy
+FAILED Beep.AI.Researcher\tests\test_project_settings_plain_language_ui.py::test_document_map_page_uses_asset_based_map_copy
+FAILED Beep.AI.Researcher\tests\test_search_caching.py::TestCacheInvalidation::test_invalidate_query_cache
+ERROR Beep.AI.Researcher\tests\test_event_bus_integration.py::TestEventBusWithRoutes::test_document_upload_publishes_event
+ERROR Beep.AI.Researcher\tests\test_localization.py::test_translate_fallback
+ERROR Beep.AI.Researcher\tests\test_localization.py::test_import_from_csv - P...
+ERROR Beep.AI.Researcher\tests\test_phase_8g_9cd_features.py::TestAdminSettingsKeyAlignment::test_mfa_method_keys
+ERROR Beep.AI.Researcher\tests\test_phase_8g_9cd_features.py::TestAdminSettingsKeyAlignment::test_mfa_sms_provider_keys
+ERROR Beep.AI.Researcher\tests\test_phase_8g_9cd_features.py::TestAdminSettingsKeyAlignment::test_mfa_enforcement_option_values
+ERROR Beep.AI.Researcher\tests\test_phase_8g_9cd_features.py::TestAdminSettingsKeyAlignment::test_settings_update_saves_mfa_sms_otp_enabled
+ERROR Beep.AI.Researcher\tests\test_phase_8g_9cd_features.py::TestAdminSettingsKeyAlignment::test_settings_update_mfa_enforcement
+ERROR Beep.AI.Researcher\tests\test_phase_8g_9cd_features.py::TestAdminSettingsKeyAlignment::test_settings_update_password_expiry
+ERROR Beep.AI.Researcher\tests\test_phase_8g_9cd_features.py::TestUserIntegrations::test_my_integrations_page_loads
+ERROR Beep.AI.Researcher\tests\test_phase_8g_9cd_features.py::TestUserIntegrations::test_my_integrations_shows_service_cards
+ERROR Beep.AI.Researcher\tests\test_phase_8g_9cd_features.py::TestUserIntegrations::test_disconnect_nonexistent_service_redirects
+ERROR Beep.AI.Researcher\tests\test_phase_8g_9cd_features.py::TestAdminIntegrations::test_admin_integrations_shows_configured_badge
+ERROR Beep.AI.Researcher\tests\test_phase_8g_9cd_features.py::TestAdminIntegrations::test_admin_integration_users_page_loads
+ERROR Beep.AI.Researcher\tests\test_phase_8g_9cd_features.py::TestAdminIntegrations::test_admin_integration_update_name
+ERROR Beep.AI.Researcher\tests\test_phase_a_models.py::TestResearchBriefModel::test_create_minimal_brief
+ERROR Beep.AI.Researcher\tests\test_phase_a_models.py::TestResearchBriefModel::test_brief_to_dict
+3 failed, 1091 passed, 838 warnings, 17 errors in 600.68s (0:10:00)

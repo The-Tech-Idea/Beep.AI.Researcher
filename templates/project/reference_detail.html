@@ -1,0 +1,325 @@
+{% extends "project/_layout.html" %}
+{% set page_title = reference.title %}
+{% set page_subtitle = t('references.detail.subtitle') %}
+{% set page_icon = 'book' %}
+{% set active_page = 'references' %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/library_setup_summary.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/reference_detail.css') }}">
+{% endblock %}
+
+{% block header_actions %}
+<a href="{{ url_for('researcher.project_references_page', project_id=project.id) }}" class="reference-detail-header-link">
+    {{ t('references.detail.back_to_library') }}
+</a>
+{% endblock %}
+
+{% block workspace_content %}
+<div
+    data-library-setup-summary
+    data-project-api-base="/projects/{{ project.id }}"
+    data-collections-url="{{ url_for('projects.list_rag_collections_for_project') }}"
+    data-start-url="{{ url_for('project_start.project_start_page', project_id=project.id) }}"
+    data-settings-url="{{ url_for('researcher.project_settings', project_id=project.id) }}"
+    data-collection-id="{{ project.collection_id or '' }}"
+    data-quality-mode="{{ project.rag_quality_mode or 'balanced' }}"
+    data-quality-fast-label="{{ t('project_search.rag_mode.fast') }}"
+    data-quality-balanced-label="{{ t('project_search.rag_mode.balanced') }}"
+    data-quality-deep-label="{{ t('project_search.rag_mode.deep') }}"
+></div>
+
+<section class="reference-detail-hero">
+    <div class="reference-detail-hero__body">
+        <p class="reference-detail-hero__eyebrow">{{ t('references.detail.hero_label') }}</p>
+        <h2 class="reference-detail-hero__title">{{ reference.title }}</h2>
+        {% if reference_authors %}
+        <p class="reference-detail-hero__authors">{{ reference_authors | join(', ') }}</p>
+        {% endif %}
+        <div class="reference-detail-meta">
+            {% if reference.year %}
+            <span class="reference-detail-meta__chip">{{ reference.year }}</span>
+            {% endif %}
+            {% if reference.publication or reference.source %}
+            <span class="reference-detail-meta__chip">{{ reference.publication or reference.source }}</span>
+            {% endif %}
+            <span class="reference-detail-meta__chip">{{ reference.source_type or 'other' }}</span>
+            {% if reference.citation_count %}
+            <span class="reference-detail-meta__chip">{{ reference.citation_count }} {{ t('references.detail.citations_label') }}</span>
+            {% endif %}
+            {% if reference_annotation_count %}
+            <span class="reference-detail-meta__chip">{{ reference_annotation_count }} {{ t('references.detail.annotation_total_label') }}</span>
+            {% endif %}
+        </div>
+        {% if reference_tags %}
+        <div class="reference-detail-tags">
+            {% for tag in reference_tags %}
+            <span class="reference-detail-tag">{{ tag }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% if reference_keywords %}
+        <div class="reference-detail-tags reference-detail-tags--keywords">
+            {% for keyword in reference_keywords %}
+            <span class="reference-detail-tag is-keyword">{{ keyword }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    <div class="reference-detail-hero__actions">
+        {% if reference.doi %}
+        <a href="https://doi.org/{{ reference.doi }}" target="_blank" rel="noopener" class="reference-detail-action-link">
+            {{ t('references.detail.open_doi') }}
+        </a>
+        {% endif %}
+        {% if reference.url %}
+        <a href="{{ reference.url }}" target="_blank" rel="noopener" class="reference-detail-action-link">
+            {{ t('references.detail.open_source') }}
+        </a>
+        {% endif %}
+        <a href="{{ url_for('researcher.project_report', project_id=project.id) }}?ref_id={{ reference.id }}" class="reference-detail-action-link">
+            {{ t('references.project.add_to_report') }}
+        </a>
+    </div>
+</section>
+
+<div class="reference-detail-grid">
+    <section class="reference-detail-card">
+        <div class="reference-detail-card__header">
+            <div>
+                <h2 class="reference-detail-card__title">{{ t('references.detail.formatted_title') }}</h2>
+                <p class="reference-detail-card__copy">{{ t('references.detail.formatted_body') }}</p>
+            </div>
+        </div>
+        <div class="reference-detail-export-tabs">
+            {% for style_key in ['apa', 'mla', 'chicago'] %}
+            <button
+                type="button"
+                class="reference-detail-export-tab{% if style_key == 'apa' %} is-active{% endif %}"
+                data-reference-export-style="{{ style_key }}"
+            >
+                {{ style_key | upper }}
+            </button>
+            {% endfor %}
+        </div>
+        <pre class="reference-detail-export-preview" id="referenceExportPreview">{{ reference_formatted_exports['apa'] }}</pre>
+        <div class="reference-detail-export-actions">
+            <button type="button" class="reference-detail-primary-button" id="referenceCopyBtn">
+                {{ t('references.detail.copy_button') }}
+            </button>
+            <a href="{{ url_for('references.export_single_reference', project_id=project.id, reference_id=reference.id, style='apa') }}" id="referenceDownloadBtn" class="reference-detail-secondary-button">
+                {{ t('references.detail.download_button') }}
+            </a>
+        </div>
+        <div class="reference-detail-download-list">
+            {% for style_key in ['bibtex', 'ris', 'json'] %}
+            <a href="{{ url_for('references.export_single_reference', project_id=project.id, reference_id=reference.id, style=style_key) }}" class="reference-detail-download-chip">
+                {{ t('references.detail.download_style_label') }} {{ style_key | upper }}
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="reference-detail-card">
+        <div class="reference-detail-card__header">
+            <div>
+                <h2 class="reference-detail-card__title">{{ t('references.detail.files_title') }}</h2>
+                <p class="reference-detail-card__copy">{{ t('references.detail.files_body') }}</p>
+            </div>
+        </div>
+
+        {% if documents %}
+        <div class="reference-detail-link-form">
+            <div class="reference-detail-link-form__field">
+                <label for="referenceLinkDocumentSelect" class="reference-detail-link-form__label">{{ t('references.detail.link_document_label') }}</label>
+                <select id="referenceLinkDocumentSelect" class="reference-detail-link-form__select">
+                    <option value="">{{ t('references.detail.link_document_placeholder') }}</option>
+                    {% for document in documents %}
+                    <option value="{{ document.id }}">{{ document.filename }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="reference-detail-link-form__field">
+                <label for="referenceLinkContextInput" class="reference-detail-link-form__label">{{ t('references.detail.link_context_label') }}</label>
+                <input id="referenceLinkContextInput" class="reference-detail-link-form__input" type="text" placeholder="{{ t('references.detail.link_context_placeholder') }}">
+            </div>
+            <button type="button" class="reference-detail-primary-button" id="referenceLinkBtn">{{ t('references.detail.link_button') }}</button>
+        </div>
+        {% endif %}
+
+        {% if reference_linked_documents %}
+        <div class="reference-detail-documents">
+            {% for linked_document in reference_linked_documents %}
+            <article class="reference-detail-document-card">
+                <div class="reference-detail-document-card__header">
+                    <div>
+                        <h3 class="reference-detail-document-card__title">{{ linked_document.filename }}</h3>
+                        <div class="reference-detail-document-card__meta">
+                            {% if linked_document.is_primary %}
+                            <span class="reference-detail-document-card__badge">{{ t('references.detail.primary_file_badge') }}</span>
+                            {% endif %}
+                            {% if linked_document.citation_type %}
+                            <span class="reference-detail-document-card__badge">{{ linked_document.citation_type }}</span>
+                            {% endif %}
+                            <span class="reference-detail-document-card__badge">{{ linked_document.annotation_count }} {{ t('references.detail.annotation_count_label') }}</span>
+                        </div>
+                    </div>
+                    <div class="reference-detail-document-card__actions">
+                        <a href="{{ linked_document.open_url }}" class="reference-detail-inline-link">{{ t('references.detail.open_file') }}</a>
+                        {% if not linked_document.is_primary %}
+                        <button
+                            type="button"
+                            class="reference-detail-inline-button"
+                            data-reference-remove-document="{{ linked_document.document_id }}"
+                        >
+                            {{ t('references.detail.remove_link_button') }}
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+                {% if linked_document.citation_context %}
+                <p class="reference-detail-document-card__context">{{ linked_document.citation_context }}</p>
+                {% endif %}
+                {% if linked_document.recent_annotations %}
+                <div class="reference-detail-annotation-list">
+                    {% for annotation in linked_document.recent_annotations %}
+                    <div class="reference-detail-annotation-item">
+                        <div class="reference-detail-annotation-item__quote">"{{ annotation.selected_text or annotation.context_preview }}"</div>
+                        {% if annotation.note %}
+                        <div class="reference-detail-annotation-item__note">{{ annotation.note }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="reference-detail-document-card__empty">{{ t('references.detail.no_annotations') }}</p>
+                {% endif %}
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="reference-detail-card__empty">{{ t('references.detail.files_empty') }}</p>
+        {% endif %}
+    </section>
+</div>
+
+{% if reference_external_library %}
+<section class="reference-detail-card">
+    <div class="reference-detail-card__header">
+        <div>
+            <h2 class="reference-detail-card__title">{{ t('references.detail.external_title') }}</h2>
+            <p class="reference-detail-card__copy">{{ t('references.detail.external_body') }}</p>
+        </div>
+    </div>
+    <dl class="reference-detail-external-grid">
+        <div>
+            <dt>{{ t('references.detail.external_provider') }}</dt>
+            <dd>{{ reference_external_library.provider or '—' }}</dd>
+        </div>
+        <div>
+            <dt>{{ t('references.detail.external_item_key') }}</dt>
+            <dd>{{ reference_external_library.item_key or '—' }}</dd>
+        </div>
+        <div>
+            <dt>{{ t('references.detail.external_library_type') }}</dt>
+            <dd>{{ reference_external_library.library_type or '—' }}</dd>
+        </div>
+        <div>
+            <dt>{{ t('references.detail.external_synced_at') }}</dt>
+            <dd>{{ reference_external_library.synced_at or '—' }}</dd>
+        </div>
+    </dl>
+    <div class="reference-detail-attachments">
+        <div class="reference-detail-attachments__header">
+            <div>
+                <h3 class="reference-detail-card__title">{{ t('references.detail.attachments_title') }}</h3>
+                <p class="reference-detail-card__copy">{{ t('references.detail.attachments_body') }}</p>
+            </div>
+        </div>
+        <div id="referenceExternalAttachmentsList" class="reference-detail-attachment-list">
+            {% for attachment in reference_external_attachments %}
+            <article class="reference-detail-attachment-card">
+                <div class="reference-detail-attachment-card__body">
+                    <h4 class="reference-detail-attachment-card__title">{{ attachment.title }}</h4>
+                    <div class="reference-detail-attachment-meta">
+                        {% if attachment.filename %}
+                        <span class="reference-detail-attachment-chip">{{ attachment.filename }}</span>
+                        {% endif %}
+                        {% if attachment.content_type %}
+                        <span class="reference-detail-attachment-chip">{{ attachment.content_type }}</span>
+                        {% endif %}
+                        {% if attachment.link_mode %}
+                        <span class="reference-detail-attachment-chip">{{ attachment.link_mode }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="reference-detail-attachment-card__actions">
+                    {% if attachment.open_url %}
+                    <a href="{{ attachment.open_url }}" target="_blank" rel="noopener" class="reference-detail-attachment-link">
+                        {{ t('references.detail.attachment_open') }}
+                    </a>
+                    {% else %}
+                    <span class="reference-detail-attachment-link is-disabled">
+                        {{ t('references.detail.attachment_not_available') }}
+                    </span>
+                    {% endif %}
+                    {% if attachment.can_import %}
+                    <button
+                        type="button"
+                        class="reference-detail-inline-button"
+                        data-reference-import-attachment="{{ attachment.item_key }}"
+                    >
+                        {{ t('references.detail.attachment_import') }}
+                    </button>
+                    {% endif %}
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        <p
+            id="referenceExternalAttachmentsEmpty"
+            class="reference-detail-attachments-empty{% if reference_external_attachments %} is-hidden{% endif %}"
+        >
+            {{ t('references.detail.attachments_empty') }}
+        </p>
+    </div>
+</section>
+{% endif %}
+
+<script id="reference-detail-config" type="application/json">
+{
+    "defaultStyle": "apa",
+    "exportContent": {
+        "apa": {{ reference_formatted_exports['apa'] | tojson }},
+        "mla": {{ reference_formatted_exports['mla'] | tojson }},
+        "chicago": {{ reference_formatted_exports['chicago'] | tojson }}
+    },
+    "copySuccessLabel": {{ t('references.detail.copy_success') | tojson }},
+    "copyFailedLabel": {{ t('references.detail.copy_failed') | tojson }},
+    "downloadUrlTemplate": {{ url_for('references.export_single_reference', project_id=project.id, reference_id=reference.id, style='STYLE_TOKEN') | tojson }},
+    "linkUrl": {{ url_for('references.link_reference_document', project_id=project.id, reference_id=reference.id) | tojson }},
+    "removeUrlTemplate": {{ url_for('references.unlink_reference_document', project_id=project.id, reference_id=reference.id, document_id=999999999) | tojson }},
+    "externalAttachmentsUrl": {{ url_for('references.reference_external_attachments', project_id=project.id, reference_id=reference.id) | tojson if reference_external_library else 'null' }},
+    "externalAttachmentsLoadingLabel": {{ t('references.detail.attachments_loading') | tojson }},
+    "externalAttachmentsEmptyLabel": {{ t('references.detail.attachments_empty') | tojson }},
+    "externalAttachmentsFailedLabel": {{ t('references.detail.attachments_failed') | tojson }},
+    "externalAttachmentOpenLabel": {{ t('references.detail.attachment_open') | tojson }},
+    "externalAttachmentUnavailableLabel": {{ t('references.detail.attachment_not_available') | tojson }},
+    "attachmentImportUrlTemplate": {{ url_for('references.import_reference_external_attachment', project_id=project.id, reference_id=reference.id, attachment_key='ATTACHMENT_KEY_TOKEN') | tojson }},
+    "attachmentImportLabel": {{ t('references.detail.attachment_import') | tojson }},
+    "attachmentImportSuccessLabel": {{ t('references.detail.attachment_import_success') | tojson }},
+    "attachmentImportFailedLabel": {{ t('references.detail.attachment_import_failed') | tojson }},
+    "linkRequiredLabel": {{ t('references.detail.link_required_error') | tojson }},
+    "linkSuccessLabel": {{ t('references.detail.link_success') | tojson }},
+    "linkFailedLabel": {{ t('references.detail.link_failed') | tojson }},
+    "removeSuccessLabel": {{ t('references.detail.remove_success') | tojson }},
+    "removeFailedLabel": {{ t('references.detail.remove_failed') | tojson }},
+    "loadingLabel": {{ t('base.loading') | tojson }}
+}
+</script>
+{% endblock %}
+
+{% block page_js %}
+<script src="{{ url_for('static', filename='js/project/library_setup_summary.js') }}"></script>
+<script src="{{ url_for('static', filename='js/project/reference_detail.js') }}"></script>
+{% endblock %}

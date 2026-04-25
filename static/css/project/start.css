@@ -1,0 +1,167 @@
+.project-start {
+    display: grid;
+    gap: 1rem;
+}
+
+.project-start__hero,
+.project-start__panel,
+.project-start__status {
+    border: 1px solid var(--spa-border);
+    border-radius: var(--spa-radius-lg);
+    background:
+        radial-gradient(
+            circle at top right,
+            color-mix(in srgb, var(--spa-primary) 12%, transparent),
+            transparent 40%
+        ),
+        linear-gradient(
+            145deg,
+            var(--spa-surface),
+            color-mix(in srgb, var(--spa-surface-2) 92%, var(--spa-primary-light) 8%)
+        );
+    box-shadow: var(--spa-shadow-sm);
+}
+
+.project-start__hero,
+.project-start__panel {
+    padding: 1rem 1.1rem;
+}
+
+.project-start__kicker {
+    color: var(--spa-text-secondary);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin: 0 0 0.45rem;
+    text-transform: uppercase;
+}
+
+.project-start__hero h2,
+.project-start__panel h3 {
+    color: var(--spa-text);
+    font-size: 1.02rem;
+    font-weight: 700;
+    margin: 0 0 0.45rem;
+}
+
+.project-start__copy,
+.project-start__panel-copy,
+.project-start__steps,
+.project-start__suggestion span {
+    color: var(--spa-text-secondary);
+}
+
+.project-start__steps {
+    display: grid;
+    gap: 0.35rem;
+    margin: 0.85rem 0 0;
+    padding-left: 1.15rem;
+}
+
+.project-start__status {
+    padding: 0.8rem 0.95rem;
+    color: var(--spa-text);
+}
+
+.project-start__status.is-info {
+    border-color: color-mix(in srgb, var(--spa-primary) 22%, var(--spa-border));
+}
+
+.project-start__status.is-success {
+    border-color: color-mix(in srgb, var(--spa-success) 24%, var(--spa-border));
+    background:
+        linear-gradient(
+            145deg,
+            color-mix(in srgb, var(--spa-surface) 92%, var(--spa-success) 8%),
+            var(--spa-surface-2)
+        );
+}
+
+.project-start__status.is-warning {
+    border-color: color-mix(in srgb, var(--spa-warning) 28%, var(--spa-border));
+    background:
+        linear-gradient(
+            145deg,
+            color-mix(in srgb, var(--spa-surface) 92%, var(--spa-warning) 8%),
+            var(--spa-surface-2)
+        );
+}
+
+.project-start__status.is-danger {
+    border-color: color-mix(in srgb, var(--spa-danger) 28%, var(--spa-border));
+    background:
+        linear-gradient(
+            145deg,
+            color-mix(in srgb, var(--spa-surface) 92%, var(--spa-danger) 8%),
+            var(--spa-surface-2)
+        );
+}
+
+.project-start__form {
+    display: grid;
+    gap: 1rem;
+}
+
+.project-start__grid {
+    display: grid;
+    gap: 0.9rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.project-start__suggestion {
+    display: grid;
+    gap: 0.35rem;
+    background: color-mix(in srgb, var(--spa-surface-2) 82%, transparent);
+    border: 1px solid color-mix(in srgb, var(--spa-border) 84%, transparent);
+    border-radius: var(--spa-radius);
+    padding: 0.85rem 0.95rem;
+}
+
+.project-start__suggestion strong {
+    color: var(--spa-text);
+    font-size: 0.94rem;
+}
+
+.project-start__suggestion-note {
+    font-size: 0.83rem;
+    line-height: 1.55;
+}
+
+.project-start__suggestion-note.is-ready {
+    color: var(--spa-success);
+}
+
+.project-start__suggestion-note.is-warning {
+    color: var(--spa-warning);
+}
+
+.project-start__suggestion-note.is-danger {
+    color: var(--spa-danger);
+}
+
+.project-start__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+@media (max-width: 991.98px) {
+    .project-start__grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .project-start__hero,
+    .project-start__panel {
+        padding: 0.9rem 0.95rem;
+    }
+
+    .project-start__actions {
+        flex-direction: column;
+    }
+
+    .project-start__actions .btn {
+        width: 100%;
+    }
+}

@@ -1,0 +1,175 @@
+{% extends "project/_layout.html" %}
+
+{% set active_page = 'tasks' %}
+{% set page_title = t('project_tasks.title') %}
+{% set page_subtitle = t('project_tasks.subtitle') %}
+{% set page_icon = 'kanban' %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/library_setup_summary.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/tasks.css') }}">
+{% endblock %}
+
+{% block header_actions %}
+<button class="tasks-header-action tasks-header-action--suggest" id="suggestTasksBtn" type="button">
+    <i class="bi bi-stars tasks-button-icon" aria-hidden="true"></i><span>{{ t('project_tasks.suggest_tasks') }}</span>
+</button>
+<button class="tasks-header-action tasks-header-action--add" id="addTaskBtn" type="button">
+    <i class="bi bi-plus tasks-button-icon" aria-hidden="true"></i><span>{{ t('project_tasks.add_task') }}</span>
+</button>
+{% endblock %}
+
+{% block workspace_content %}
+<div
+    data-library-setup-summary
+    data-project-api-base="/projects/{{ project.id }}"
+    data-collections-url="{{ url_for('projects.list_rag_collections_for_project') }}"
+    data-start-url="{{ url_for('project_start.project_start_page', project_id=project.id) }}"
+    data-settings-url="{{ url_for('researcher.project_settings', project_id=project.id) }}"
+    data-collection-id="{{ project.collection_id or '' }}"
+    data-quality-mode="{{ project.rag_quality_mode or 'balanced' }}"
+    data-quality-fast-label="{{ t('project_search.rag_mode.fast') }}"
+    data-quality-balanced-label="{{ t('project_search.rag_mode.balanced') }}"
+    data-quality-deep-label="{{ t('project_search.rag_mode.deep') }}"
+></div>
+
+<div class="spa-kanban" id="kanbanBoard">
+    <div class="spa-kanban-col" data-status="todo">
+        <div class="spa-kanban-col-header">
+            <span><span class="status-dot tasks-status-dot tasks-status-dot-todo"></span> {{ t('project_tasks.column.todo') }} <span
+                    class="spa-badge">{{ tasks_todo|length }}</span></span>
+            <button class="tasks-column-add-button" type="button" data-add-task-status="todo"
+                aria-label="Add task to To Do"><i class="bi bi-plus" aria-hidden="true"></i></button>
+        </div>
+        <div class="spa-kanban-col-body" id="todoTasks">
+            {% for task in tasks_todo %}
+            <div class="spa-task-card" draggable="true" data-task-id="{{ task.id }}">
+                <div class="spa-task-title">{{ task.title }}</div>
+                {% if task.description %}<div class="spa-task-desc">{{ task.description }}</div>{% endif %}
+                <div class="spa-task-meta">
+                    <span class="spa-priority {{ task.priority }}">{{ task.priority|capitalize }}</span>
+                    {% if task.due_date %}
+                    <span class="tasks-due-date tasks-due-date--scheduled">
+                        <i class="bi bi-calendar3 tasks-due-date-icon" aria-hidden="true"></i>{{ task.due_date.strftime('%b %d') if task.due_date else '' }}
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+            {% else %}
+            <div class="spa-kanban-drop">{{ t('project_tasks.drop_here') }}</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="spa-kanban-col" data-status="in_progress">
+        <div class="spa-kanban-col-header">
+            <span><span class="status-dot tasks-status-dot tasks-status-dot-progress"></span> {{ t('project_tasks.column.in_progress') }} <span
+                    class="spa-badge">{{ tasks_in_progress|length }}</span></span>
+            <button class="tasks-column-add-button" type="button" data-add-task-status="in_progress"
+                aria-label="Add task to In Progress"><i class="bi bi-plus" aria-hidden="true"></i></button>
+        </div>
+        <div class="spa-kanban-col-body" id="progressTasks">
+            {% for task in tasks_in_progress %}
+            <div class="spa-task-card" draggable="true" data-task-id="{{ task.id }}">
+                <div class="spa-task-title">{{ task.title }}</div>
+                {% if task.description %}<div class="spa-task-desc">{{ task.description }}</div>{% endif %}
+                <div class="spa-task-meta">
+                    <span class="spa-priority {{ task.priority }}">{{ task.priority|capitalize }}</span>
+                    {% if task.due_date %}
+                    <span class="tasks-due-date tasks-due-date--scheduled">
+                        <i class="bi bi-calendar3 tasks-due-date-icon" aria-hidden="true"></i>{{ task.due_date.strftime('%b %d') if task.due_date else '' }}
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+            {% else %}
+            <div class="spa-kanban-drop">{{ t('project_tasks.drop_here') }}</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="spa-kanban-col" data-status="done">
+        <div class="spa-kanban-col-header">
+            <span><span class="status-dot tasks-status-dot tasks-status-dot-done"></span> {{ t('project_tasks.column.done') }} <span
+                    class="spa-badge">{{ tasks_done|length }}</span></span>
+        </div>
+        <div class="spa-kanban-col-body" id="doneTasks">
+            {% for task in tasks_done %}
+            <div class="spa-task-card" draggable="true" data-task-id="{{ task.id }}">
+                <div class="spa-task-title tasks-task-title-complete">{{ task.title }}</div>
+                <div class="spa-task-meta">
+                    <span class="spa-priority {{ task.priority }}">{{ task.priority|capitalize }}</span>
+                    {% if task.due_date %}
+                    <span class="tasks-due-date tasks-due-date--complete">
+                        <i class="bi bi-calendar-check tasks-due-date-icon" aria-hidden="true"></i>{{ task.due_date.strftime('%b %d') if task.due_date else '' }}
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+            {% else %}
+            <div class="spa-kanban-drop">{{ t('project_tasks.drop_here') }}</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="taskModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">{{ t('project_tasks.modal.title') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="taskModalBody">
+                <form id="taskForm">
+                    <input type="hidden" id="taskId">
+                    <input type="hidden" id="taskStatus" value="todo">
+                    <div class="mb-3">
+                        <label class="form-label" for="taskTitle">{{ t('tasks.form.title') }}</label>
+                        <input type="text" class="form-control" id="taskTitle" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="taskDescription">{{ t('tasks.form.description') }}</label>
+                        <textarea class="form-control" id="taskDescription" rows="3"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label" for="taskPriority">{{ t('tasks.form.priority') }}</label>
+                            <select class="form-select" id="taskPriority">
+                                <option value="low">{{ t('tasks.priority.low') }}</option>
+                                <option value="medium" selected>{{ t('tasks.priority.medium') }}</option>
+                                <option value="high">{{ t('tasks.priority.high') }}</option>
+                            </select>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label" for="taskDueDate">{{ t('tasks.form.due_date') }}</label>
+                            <input type="date" class="form-control" id="taskDueDate">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="tasks-modal-action tasks-modal-action--cancel" type="button" data-bs-dismiss="modal">{{ t('project_tasks.modal.cancel') }}</button>
+                <button class="tasks-modal-action tasks-modal-action--save" type="button" id="saveTaskBtn">{{ t('project_tasks.modal.save') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script id="tasks-config" type="application/json">
+{{ {
+    "projectId": project.id,
+    "suggestTasksUrl": "/researcher/api/projects/" ~ project.id ~ "/suggest-tasks",
+    "tasksUrl": "/api/projects/" ~ project.id ~ "/tasks",
+    "taskStatusUrlTemplate": "/api/projects/" ~ project.id ~ "/tasks/__TASK_ID__/status",
+    "modalTitle": t("project_tasks.modal.title"),
+    "suggestTasksLabel": t("project_tasks.suggest_tasks"),
+    "suggestLoadingLabel": t("project_tasks.suggest_loading"),
+    "suggestPickLabel": t("project_tasks.suggest_pick")
+} | tojson | safe }}
+</script>
+<script src="{{ url_for('static', filename='js/project/library_setup_summary.js') }}"></script>
+<script src="{{ url_for('static', filename='js/project/tasks.js') }}"></script>
+{% endblock %}

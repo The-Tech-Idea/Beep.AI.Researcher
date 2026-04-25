@@ -1,0 +1,8 @@
+.mfa-challenge-container {
+    max-width: 460px;
+}
+
+.mfa-challenge-header-icon {
+    color: var(--color-accent-strong);
+    font-size: 1.25rem;
+}

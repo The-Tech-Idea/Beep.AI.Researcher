@@ -1,0 +1,189 @@
+{# Stats — extends project layout #}
+{% extends "project/_layout.html" %}
+{% set page_title = t('stats.title') %}
+{% set page_subtitle = t('stats.subtitle') %}
+{% set page_icon = 'bar-chart' %}
+{% set active_page = 'stats' %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/library_setup_summary.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/stats.css') }}">
+{% endblock %}
+
+{% block workspace_content %}
+<div
+    data-library-setup-summary
+    data-project-api-base="/projects/{{ project.id }}"
+    data-collections-url="{{ url_for('projects.list_rag_collections_for_project') }}"
+    data-start-url="{{ url_for('project_start.project_start_page', project_id=project.id) }}"
+    data-settings-url="{{ url_for('researcher.project_settings', project_id=project.id) }}"
+    data-collection-id="{{ project.collection_id or '' }}"
+    data-quality-mode="{{ project.rag_quality_mode or 'balanced' }}"
+    data-quality-fast-label="{{ t('project_search.rag_mode.fast') }}"
+    data-quality-balanced-label="{{ t('project_search.rag_mode.balanced') }}"
+    data-quality-deep-label="{{ t('project_search.rag_mode.deep') }}"
+></div>
+
+<div class="row g-3">
+    <div class="col-12">
+        <div class="row g-3" id="statsSummary">
+            <div class="col-md-3">
+                <div class="card stats-summary-card">
+                    <div class="card-body text-center py-3">
+                        <i class="bi bi-file-earmark-text stats-summary-icon stats-summary-icon--documents"></i>
+                        <h4 class="mt-2 mb-0" id="statDocs">—</h4>
+                        <small class="stats-summary-label">{{ t('overview.stat.documents') }}</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-summary-card">
+                    <div class="card-body text-center py-3">
+                        <i class="bi bi-card-text stats-summary-icon stats-summary-icon--flashcards"></i>
+                        <h4 class="mt-2 mb-0" id="statFlashcards">—</h4>
+                        <small class="stats-summary-label">{{ t('flashcards.title') }}</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-summary-card">
+                    <div class="card-body text-center py-3">
+                        <i class="bi bi-question-circle stats-summary-icon stats-summary-icon--quizzes"></i>
+                        <h4 class="mt-2 mb-0" id="statQuizzes">—</h4>
+                        <small class="stats-summary-label">{{ t('quizzes.title') }}</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-summary-card">
+                    <div class="card-body text-center py-3">
+                        <i class="bi bi-tags stats-summary-icon stats-summary-icon--codes"></i>
+                        <h4 class="mt-2 mb-0" id="statCodes">—</h4>
+                        <small class="stats-summary-label">{{ t('sidebar.nav.codes') }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header d-flex align-items-center gap-2">
+                <i class="bi bi-pie-chart"></i>
+                <span class="fw-medium">{{ t('stats.chart.docs_by_type') }}</span>
+            </div>
+            <div class="card-body stats-chart-body">
+                <canvas id="chartDocTypes"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header d-flex align-items-center gap-2">
+                <i class="bi bi-bar-chart"></i>
+                <span class="fw-medium">{{ t('stats.chart.activity') }}</span>
+            </div>
+            <div class="card-body stats-chart-body">
+                <canvas id="chartActivity"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center gap-2">
+                <i class="bi bi-table"></i>
+                <span class="fw-medium">{{ t('stats.datasource_stats') }}</span>
+            </div>
+            <div class="card-body">
+                {% if not sources %}
+                <div class="text-center py-4 stats-empty-state">
+                    <i class="bi bi-database-x stats-empty-icon"></i>
+                    <h6 class="mt-3 mb-1">{{ t('stats.no_sources.title') }}</h6>
+                    <p class="small mb-3 stats-empty-copy">{{ t('stats.no_sources.desc') }}</p>
+                    <a href="{{ url_for('researcher.data_page', project_id=project.id) }}"
+                       class="btn btn-sm stats-empty-action">
+                        <i class="bi bi-plus-circle me-1"></i>{{ t('stats.no_sources.cta') }}
+                    </a>
+                </div>
+                {% else %}
+                <div class="row g-3 mb-3">
+                    <div class="col-md-4">
+                        <label for="sourceSelect" class="form-label small fw-medium">{{ t('stats.data_source') }}</label>
+                        <select class="form-select form-select-sm" id="sourceSelect">
+                            <option value="">{{ t('stats.select_source') }}</option>
+                            {% for s in sources %}
+                            <option value="{{ s.id }}">{{ s.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4" id="describeCols"></div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="button" class="btn btn-sm stats-primary-action" id="btnDescribe">
+                            <i class="bi bi-calculator me-1"></i>{{ t('stats.describe') }}
+                        </button>
+                    </div>
+                </div>
+                <pre id="describeResults" class="p-3 rounded small stats-output"></pre>
+
+                <hr>
+                <h6 class="mb-3">{{ t('stats.crosstab') }}</h6>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-4">
+                        <label for="rowCol" class="form-label small">{{ t('stats.row_column') }}</label>
+                        <select class="form-select form-select-sm" id="rowCol">
+                            <option value="">{{ t('stats.select_column') }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="colCol" class="form-label small">{{ t('stats.column') }}</label>
+                        <select class="form-select form-select-sm" id="colCol">
+                            <option value="">{{ t('stats.select_column') }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="button" class="btn btn-sm stats-secondary-action" id="btnCrosstab">
+                            <i class="bi bi-grid me-1"></i>{{ t('stats.run_crosstab') }}
+                        </button>
+                    </div>
+                </div>
+                <pre id="crosstabResults" class="p-3 rounded small stats-output"></pre>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script src="{{ url_for('static', filename='js/project/library_setup_summary.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/chart.umd.min.js') }}"></script>
+<script id="stats-config" type="application/json">
+    {
+        "projectId": {{ project.id }},
+        "hasSources": {{ 'true' if sources else 'false' }},
+        "strings": {
+            "docTypeLabel": {{ t('stats.chart.docs_added_label') | default('Documents Added', true) | tojson }},
+            "unknownType": {{ t('stats.chart.unknown_type') | default('Unknown', true) | tojson }},
+            "columnsLabel": {{ t('stats.columns') | tojson }},
+            "selectColumn": {{ t('stats.select_column') | tojson }},
+            "selectSource": {{ t('stats.select_source') | tojson }},
+            "selectBoth": {{ t('stats.select_both') | tojson }}
+        },
+        "chartColors": {
+            "docTypes": [
+                "var(--color-accent-primary)",
+                "var(--color-accent-secondary)",
+                "var(--spa-primary)",
+                "var(--spa-success)",
+                "var(--spa-warning)",
+                "var(--spa-danger)",
+                "var(--spa-text-secondary)",
+                "var(--spa-primary-light)"
+            ],
+            "activityBar": "var(--color-accent-primary)"
+        }
+    }
+</script>
+<script src="{{ url_for('static', filename='js/stats.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,49 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.5, pytest-9.0.2, pluggy-1.6.0 -- C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher
+configfile: pytest.ini
+plugins: asyncio-1.3.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collecting ... collected 25 items
+
+tests/test_phase_1_models.py::TestResearchInterestProfileModel::test_create_profile PASSED [  4%]
+tests/test_phase_1_models.py::TestResearchInterestProfileModel::test_profile_to_dict PASSED [  8%]
+tests/test_phase_1_models.py::TestFeedRecommendationModel::test_create_recommendation PASSED [ 12%]
+tests/test_phase_1_models.py::TestFeedRecommendationModel::test_recommendation_to_dict PASSED [ 16%]
+tests/test_phase_1_models.py::TestReadingListItemModel::test_create_reading_list_item PASSED [ 20%]
+tests/test_phase_1_models.py::TestReadingListItemModel::test_reading_list_item_to_dict PASSED [ 24%]
+tests/test_phase_1_models.py::TestPaperAlertModel::test_create_paper_alert PASSED [ 28%]
+tests/test_phase_1_models.py::TestPaperAlertModel::test_paper_alert_to_dict PASSED [ 32%]
+tests/test_phase_1_models.py::TestPhase1ModelRegistration::test_models_exported_from_package PASSED [ 36%]
+tests/test_phase_1_models.py::TestPhase1ModelRegistration::test_tablenames PASSED [ 40%]
+tests/test_interest_profile_service.py::test_get_or_create_profile_defaults PASSED [ 44%]
+tests/test_interest_profile_service.py::test_update_profile_invalidates_feed_and_can_run_sync PASSED [ 48%]
+tests/test_interest_profile_service.py::test_trigger_inference_queues_background_job PASSED [ 52%]
+tests/test_interest_inference_service.py::test_infer_topics_uses_documents_and_references FAILED [ 56%]
+tests/test_interest_inference_service.py::test_update_profile_persists_inferred_topics FAILED [ 60%]
+tests/test_recommendation_service.py::test_refresh_feed_ranks_recent_items_and_filters_known_or_dismissed PASSED [ 64%]
+tests/test_recommendation_service.py::test_invalidate_user_feed_preserves_dismissed_feedback PASSED [ 68%]
+tests/test_reading_list_service.py::test_save_recommendation_creates_reading_list_item PASSED [ 72%]
+tests/test_reading_list_service.py::test_move_to_project_creates_reference_and_links_item PASSED [ 76%]
+tests/test_reading_list_service.py::test_update_status_validates_value PASSED [ 80%]
+tests/test_alert_service.py::test_generate_alerts_deduplicates_existing_items PASSED [ 84%]
+tests/test_alert_service.py::test_mark_read_and_mark_all_read PASSED     [ 88%]
+tests/test_audio_summary_service.py::test_build_summary_text_extracts_abstract_and_findings PASSED [ 92%]
+tests/test_audio_summary_service.py::test_generate_audio_summary_calls_tts PASSED [ 96%]
+tests/test_audio_summary_service.py::test_build_summary_text_raises_for_missing_document PASSED [100%]
+
+================================== FAILURES ===================================
+_______________ test_infer_topics_uses_documents_and_references _______________
+tests\test_interest_inference_service.py:64: in test_infer_topics_uses_documents_and_references
+    assert "machine learning" in topic_names
+E   AssertionError: assert 'machine learning' in {'imaging', 'learning', 'machine', 'medical', 'networks'}
+________________ test_update_profile_persists_inferred_topics _________________
+tests\test_interest_inference_service.py:91: in test_update_profile_persists_inferred_topics
+    assert any(item["topic"] == "machine learning" for item in result)
+E   assert False
+E    +  where False = any(<generator object test_update_profile_persists_inferred_topics.<locals>.<genexpr> at 0x0000026109E40040>)
+=========================== short test summary info ===========================
+FAILED tests/test_interest_inference_service.py::test_infer_topics_uses_documents_and_references
+FAILED tests/test_interest_inference_service.py::test_update_profile_persists_inferred_topics
+======================== 2 failed, 23 passed in 10.36s ========================

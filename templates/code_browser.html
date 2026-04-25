@@ -1,0 +1,99 @@
+﻿{% extends base_template or "base.html" %}
+
+{% block title %}{{ project.name }} - {{ t('code_browser.title') }}{% endblock %}
+
+{% block content %}
+<section class="code-browser-grid">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h1 class="h5 mb-1">{{ t('code_browser.heading') }}</h1>
+                <p class="small mb-0">{{ t('code_browser.subtitle') }}</p>
+            </div>
+            <div class="d-flex gap-2 align-items-center">
+                <input id="codeSearch" class="form-control form-control-sm" placeholder="{{ t('code_browser.search.placeholder') }}">
+                <span id="codeSearchStatus" class="search-progress-pill state-ready">{{ t('code_browser.search.ready') }}</span>
+            </div>
+        </div>
+        <div class="card-body">
+            {% if codes %}
+            <div class="code-bubble-grid" id="codeBubbleGrid">
+                {% for code in codes %}
+                {% set ref_count = (code_refs.get(code.id) or []) | length %}
+                <article class="code-bubble" data-code-name="{{ code.name | lower }}">
+                    <div class="code-bubble-header">
+                        <span class="code-color-focus" style="background-color: {{ code.color or '#6366f1' }};"></span>
+                        <div>
+                            <div class="code-bubble-title">{{ code.name }}</div>
+                            <div class="code-bubble-meta small">{{ ref_count }} {{ t('code_browser.refs_label') }}</div>
+                        </div>
+                    </div>
+                    <div class="code-bubble-actions">
+                        <a href="{{ url_for('references.references_page') }}" class="btn btn-outline-light btn-sm">{{ t('code_browser.actions.reference') }}</a>
+                        <a href="{{ url_for('researcher.project_detail', project_id=project.id) }}" class="btn btn-outline-secondary btn-sm">{{ t('code_browser.actions.document') }}</a>
+                        <a href="{{ url_for('tasks.list_tasks', project_id=project.id) }}" class="btn btn-outline-secondary btn-sm">{{ t('code_browser.actions.task') }}</a>
+                    </div>
+                    {% if code.children %}
+                    <div class="code-bubble-children">
+                        {% for child in code.children %}
+                        {% set child_refs = (code_refs.get(child.id) or []) | length %}
+                        <span class="code-bubble-child">{{ child.name }} · {{ child_refs }} {{ t('code_browser.refs_label_short') }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </article>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="small mb-0">{{ t('code_browser.empty') }}</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="code-browser-helper">
+        <h5>{{ t('code_browser.helper.title') }}</h5>
+        <p class="small mb-3">{{ t('code_browser.helper.body') }}</p>
+        <div class="helper-card-actions flex-column gap-2">
+            <a href="{{ url_for('references.references_page') }}" class="btn btn-outline-light btn-sm w-100">{{ t('code_browser.helper.action.reference') }}</a>
+            <a href="{{ url_for('tasks.list_tasks', project_id=project.id) }}" class="btn btn-outline-secondary btn-sm w-100">{{ t('code_browser.helper.action.task') }}</a>
+            <a href="{{ url_for('researcher.project_detail', project_id=project.id) }}" class="btn btn-outline-secondary btn-sm w-100">{{ t('code_browser.helper.action.document') }}</a>
+        </div>
+    </div>
+</section>
+
+<script>
+const codeSearch = document.getElementById('codeSearch');
+const codeCards = document.querySelectorAll('.code-bubble');
+const codeStatus = document.getElementById('codeSearchStatus');
+const matchesLabel = "{{ t('code_browser.search.matches') }}";
+const noMatchesLabel = "{{ t('code_browser.search.no_matches') }}";
+
+function refreshCodeFilter() {
+    if (!codeCards.length || !codeSearch) return;
+    const term = codeSearch.value.trim().toLowerCase();
+    let visible = 0;
+    codeCards.forEach(card => {
+        const match = !term || (card.dataset.codeName || '').includes(term);
+        card.style.display = match ? '' : 'none';
+        if (match) visible += 1;
+    });
+    if (!codeStatus) return;
+    if (!term) {
+        codeStatus.textContent = "{{ t('code_browser.search.ready') }}";
+        codeStatus.classList.remove('state-error');
+        codeStatus.classList.toggle('state-results', visible > 0);
+        return;
+    }
+    if (visible) {
+        codeStatus.textContent = `${visible} ${matchesLabel}`;
+        codeStatus.classList.add('state-results');
+        codeStatus.classList.remove('state-error');
+    } else {
+        codeStatus.textContent = noMatchesLabel;
+        codeStatus.classList.remove('state-results');
+        codeStatus.classList.add('state-error');
+    }
+}
+
+codeSearch?.addEventListener('input', refreshCodeFilter);
+</script>
+{% endblock %}

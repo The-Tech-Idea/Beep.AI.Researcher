@@ -1,0 +1,1007 @@
+﻿{% extends "base.html" %}
+
+{% block title %}{{ t('settings.title') }} - Admin - Beep.AI.Researcher{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_settings_page.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page-header mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div>
+        <h1><i class="bi bi-gear me-2"></i>{{ t('settings.title') }}</h1>
+        <p class="mb-0 admin-settings-subtitle">{{ t('settings.subtitle') }}</p>
+    </div>
+    <a href="{{ url_for('admin.index') }}" class="btn admin-settings-secondary-button">
+        <i class="bi bi-arrow-left me-1"></i>{{ t('settings.back_to_admin') }}
+    </a>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+    <div class="admin-settings-message admin-settings-message--{{ 'error' if category == 'error' else category }}" role="alert">
+      {{ message }}
+    </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<form method="POST" action="{{ url_for('admin.settings_update') }}">
+
+<!-- ── Tab navigation ────────────────────────────────────────────────────── -->
+<ul class="nav nav-tabs mb-3" id="settingsTabs" role="tablist">
+    <li class="nav-item" role="presentation"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-general"    type="button" role="tab" aria-selected="true"><i class="bi bi-sliders me-1"></i>General</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link"        data-bs-toggle="tab" data-bs-target="#tab-email"     type="button" role="tab" aria-selected="false"><i class="bi bi-envelope me-1"></i>Email</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link"        data-bs-toggle="tab" data-bs-target="#tab-storage"   type="button" role="tab" aria-selected="false"><i class="bi bi-hdd me-1"></i>Storage</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link"        data-bs-toggle="tab" data-bs-target="#tab-quota"     type="button" role="tab" aria-selected="false"><i class="bi bi-pie-chart me-1"></i>Quota</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link"        data-bs-toggle="tab" data-bs-target="#tab-identity"  type="button" role="tab" aria-selected="false"><i class="bi bi-shield-lock me-1"></i>Identity / SSO</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link"        data-bs-toggle="tab" data-bs-target="#tab-reg"       type="button" role="tab" aria-selected="false"><i class="bi bi-person-plus me-1"></i>Registration</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link"        data-bs-toggle="tab" data-bs-target="#tab-password"  type="button" role="tab" aria-selected="false"><i class="bi bi-key me-1"></i>Password&nbsp;Policy</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link"        data-bs-toggle="tab" data-bs-target="#tab-mfa"       type="button" role="tab" aria-selected="false"><i class="bi bi-phone me-1"></i>MFA</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link"        data-bs-toggle="tab" data-bs-target="#tab-session"   type="button" role="tab" aria-selected="false"><i class="bi bi-clock me-1"></i>Session</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link"        data-bs-toggle="tab" data-bs-target="#tab-runtime"   type="button" role="tab" aria-selected="false"><i class="bi bi-cpu me-1"></i>Runtime</button></li>
+</ul>
+
+<div class="tab-content" id="settingsTabContent">
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     TAB: GENERAL
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="tab-pane fade show active" id="tab-general">
+
+    <div class="card mb-3">
+        <div class="card-header"><h5 class="mb-0"><i class="bi bi-cloud me-2"></i>{{ t('settings.section.beep.title') }}</h5></div>
+        <div class="card-body">
+            <p class="small">{{ t('settings.section.beep.description') }}</p>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">{{ t('settings.label.beep_url') }}</label>
+                    <input type="text" class="form-control" name="beep_ai_server_url"
+                           value="{{ values.get('beep_ai_server_url', '') }}"
+                           placeholder="{{ t('settings.placeholder.beep_url') }}">
+                    <small class="admin-settings-helper-text">{{ t('settings.helper.beep_url') }}</small>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">{{ t('settings.label.beep_token') }}</label>
+                    <input type="password" class="form-control" name="beep_ai_server_token"
+                           value="{{ values.get('beep_ai_server_token', '') }}"
+                           placeholder="{{ t('settings.placeholder.beep_token') }}">
+                    <small class="admin-settings-helper-text">{{ t('settings.helper.beep_token') }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header"><h5 class="mb-0"><i class="bi bi-sliders me-2"></i>{{ t('settings.section.application.title') }}</h5></div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">{{ t('settings.label.app_url') }}</label>
+                    <input type="text" class="form-control" name="app_url"
+                           value="{{ values.get('app_url', 'http://127.0.0.1:5005') }}"
+                           placeholder="{{ t('settings.placeholder.app_url') }}">
+                    <small class="admin-settings-helper-text">{{ t('settings.helper.app_url') }}</small>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label" for="server_port">{{ t('settings.label.server_port') }}</label>
+                    <input type="number" class="form-control" name="server_port" id="server_port"
+                           value="{{ values.get('server_port', 5005) }}">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">{{ t('settings.label.auth_mode') }}</label>
+                    <input type="text" class="form-control" name="auth_mode"
+                           value="{{ values.get('auth_mode', 'local') }}"
+                           placeholder="{{ t('settings.placeholder.auth_mode') }}">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header"><h5 class="mb-0"><i class="bi bi-list-ol me-2"></i>{{ t('settings.section.limits.title') }}</h5></div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label class="form-label" for="dashboard_project_limit">{{ t('settings.label.dashboard_project_limit') }}</label>
+                    <input type="number" class="form-control" name="dashboard_project_limit" id="dashboard_project_limit"
+                           value="{{ values.get('dashboard_project_limit', 20) }}">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label" for="search_result_limit">{{ t('settings.label.search_result_limit') }}</label>
+                    <input type="number" class="form-control" name="search_result_limit" id="search_result_limit"
+                           value="{{ values.get('search_result_limit', 50) }}">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label" for="project_list_limit">{{ t('settings.label.project_list_limit') }}</label>
+                    <input type="number" class="form-control" name="project_list_limit" id="project_list_limit"
+                           value="{{ values.get('project_list_limit', 50) }}">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label" for="related_docs_limit">{{ t('settings.label.related_docs_limit') }}</label>
+                    <input type="number" class="form-control" name="related_docs_limit" id="related_docs_limit"
+                           value="{{ values.get('related_docs_limit', 10) }}">
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div><!-- /tab-general -->
+
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     TAB: EMAIL
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="tab-pane fade" id="tab-email">
+
+    <div class="card mb-3">
+        <div class="card-header"><h5 class="mb-0"><i class="bi bi-envelope me-2"></i>Email Configuration</h5></div>
+        <div class="card-body">
+
+            <!-- Auth method selector -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">Send Method</label>
+                <div class="btn-group w-100" role="group">
+                    <input type="radio" class="btn-check" name="mail_auth_method" id="mailSMTP"     value="smtp"          {% if values.get('mail_auth_method','smtp')=='smtp' %}checked{% endif %} autocomplete="off">
+                    <label class="btn admin-settings-toggle-button" for="mailSMTP"><i class="bi bi-server me-1"></i>SMTP</label>
+                    <input type="radio" class="btn-check" name="mail_auth_method" id="mailMS365"    value="oauth2_ms365"  {% if values.get('mail_auth_method')=='oauth2_ms365' %}checked{% endif %} autocomplete="off">
+                    <label class="btn admin-settings-toggle-button" for="mailMS365"><i class="bi bi-microsoft me-1"></i>MS 365 Graph API</label>
+                    <input type="radio" class="btn-check" name="mail_auth_method" id="mailGoogle"   value="oauth2_google" {% if values.get('mail_auth_method')=='oauth2_google' %}checked{% endif %} autocomplete="off">
+                    <label class="btn admin-settings-toggle-button" for="mailGoogle"><i class="bi bi-google me-1"></i>Google Gmail OAuth2</label>
+                </div>
+            </div>
+
+            <!-- Sender address (common) -->
+            <div class="row mb-2">
+                <div class="col-md-6">
+                    <label class="form-label">{{ t('settings.label.mail_from') }}</label>
+                    <input type="email" class="form-control" name="mail_from"
+                           value="{{ values.get('mail_from', '') }}" placeholder="noreply@example.com">
+                </div>
+            </div>
+
+            <!-- SMTP -->
+            <div id="smtpFields">
+                <hr><h6 class="admin-settings-section-heading">SMTP Server</h6>
+                <div class="row">
+                    <div class="col-md-5 mb-3">
+                        <label class="form-label">{{ t('settings.label.smtp_host') }}</label>
+                        <input type="text" class="form-control" name="smtp_host"
+                               value="{{ values.get('smtp_host', '') }}" placeholder="smtp.example.com">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label" for="smtp_port">{{ t('settings.label.smtp_port') }}</label>
+                        <input type="number" class="form-control" name="smtp_port" id="smtp_port"
+                               value="{{ values.get('smtp_port', 587) }}">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">TLS</label>
+                        <select class="form-select" name="smtp_use_tls">
+                            <option value="true"  {% if values.get('smtp_use_tls', True) %}selected{% endif %}>Yes — STARTTLS (recommended)</option>
+                            <option value="false" {% if not values.get('smtp_use_tls', True) %}selected{% endif %}>No</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ t('settings.label.smtp_user') }}</label>
+                        <input type="text" class="form-control" name="smtp_user"
+                               value="{{ values.get('smtp_user', '') }}" placeholder="user@example.com">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ t('settings.label.smtp_password') }}</label>
+                        <input type="password" class="form-control" name="smtp_password"
+                               value="{{ values.get('smtp_password', '') }}" placeholder="App password or SMTP password">
+                    </div>
+                </div>
+            </div>
+
+            <!-- MS 365 Graph API -->
+            <div id="ms365Fields" {% if values.get('mail_auth_method', 'smtp') != 'oauth2_ms365' %}hidden{% endif %}>
+                <hr><h6 class="admin-settings-section-heading">Microsoft 365 — Graph API (Client Credentials Flow)</h6>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Tenant ID</label>
+                        <input type="text" class="form-control" name="mail_ms365_tenant_id"
+                               value="{{ values.get('mail_ms365_tenant_id', '') }}"
+                               placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Client (Application) ID</label>
+                        <input type="text" class="form-control" name="mail_ms365_client_id"
+                               value="{{ values.get('mail_ms365_client_id', '') }}"
+                               placeholder="App registration client ID">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Client Secret</label>
+                        <input type="password" class="form-control" name="mail_ms365_client_secret"
+                               value="{{ values.get('mail_ms365_client_secret', '') }}"
+                               placeholder="Client secret value">
+                    </div>
+                </div>
+                <div class="admin-settings-info-note small mb-0">Requires the <strong>Mail.Send</strong> application permission. The sender (<em>mail_from</em>) must be a licensed mailbox in the tenant.</div>
+            </div>
+
+            <!-- Google Gmail OAuth2 -->
+            <div id="googleFields" {% if values.get('mail_auth_method', 'smtp') != 'oauth2_google' %}hidden{% endif %}>
+                <hr><h6 class="admin-settings-section-heading">Google Gmail — OAuth2 (Refresh Token)</h6>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">OAuth2 Client ID</label>
+                        <input type="text" class="form-control" name="mail_google_client_id"
+                               value="{{ values.get('mail_google_client_id', '') }}"
+                               placeholder="123456789-abc.apps.googleusercontent.com">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Client Secret</label>
+                        <input type="password" class="form-control" name="mail_google_client_secret"
+                               value="{{ values.get('mail_google_client_secret', '') }}"
+                               placeholder="GOCSPX-...">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Refresh Token</label>
+                        <input type="password" class="form-control" name="mail_google_refresh_token"
+                               value="{{ values.get('mail_google_refresh_token', '') }}"
+                               placeholder="1//04...">
+                    </div>
+                </div>
+                <div class="admin-settings-info-note small mb-0">Use the <a href="https://developers.google.com/oauthplayground" target="_blank">OAuth2 Playground</a> with the <code>https://mail.google.com/</code> scope to obtain a refresh token.</div>
+            </div>
+
+            <div class="mt-3 d-flex gap-2 align-items-center">
+                <button type="button" class="btn btn-sm admin-settings-inline-action-button" id="testEmailBtn">
+                    <i class="bi bi-send me-1"></i>Send Test Email
+                </button>
+                <span class="small" id="testEmailResult"></span>
+            </div>
+        </div>
+    </div>
+
+</div><!-- /tab-email -->
+
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     TAB: STORAGE
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="tab-pane fade" id="tab-storage">
+
+    <div class="card mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="bi bi-hdd me-2"></i>Storage Backend</h5>
+            <button type="button" class="btn btn-sm admin-settings-secondary-button" id="testStorageBtn">
+                <i class="bi bi-plug me-1"></i>Test Connection
+            </button>
+        </div>
+        <div class="card-body">
+
+            <!-- Backend selector -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">Backend</label>
+                <div class="btn-group w-100" role="group">
+                    <input type="radio" class="btn-check" name="storage_backend" id="stLocal"  value="local"      {% if values.get('storage_backend','local')=='local' %}checked{% endif %} autocomplete="off">
+                    <label class="btn admin-settings-toggle-button" for="stLocal"><i class="bi bi-folder me-1"></i>Local Disk</label>
+                    <input type="radio" class="btn-check" name="storage_backend" id="stSMB"    value="smb"        {% if values.get('storage_backend')=='smb' %}checked{% endif %} autocomplete="off">
+                    <label class="btn admin-settings-toggle-button" for="stSMB"><i class="bi bi-share me-1"></i>SMB / Network Share</label>
+                    <input type="radio" class="btn-check" name="storage_backend" id="stS3"     value="s3"         {% if values.get('storage_backend')=='s3' %}checked{% endif %} autocomplete="off">
+                    <label class="btn admin-settings-toggle-button" for="stS3"><i class="bi bi-cloud me-1"></i>S3 / MinIO</label>
+                    <input type="radio" class="btn-check" name="storage_backend" id="stAzure"  value="azure_blob" {% if values.get('storage_backend')=='azure_blob' %}checked{% endif %} autocomplete="off">
+                    <label class="btn admin-settings-toggle-button" for="stAzure"><i class="bi bi-cloud-fill me-1"></i>Azure Blob</label>
+                </div>
+            </div>
+
+            <!-- Local Disk -->
+            <div id="stLocalFields" {% if values.get('storage_backend', 'local') != 'local' %}hidden{% endif %}>
+                <div class="row">
+                    <div class="col-md-8 mb-3">
+                        <label class="form-label">Upload Directory Path</label>
+                        <input type="text" class="form-control" name="storage_local_path"
+                               value="{{ values.get('storage_local_path', '') }}" placeholder="/var/data/uploads">
+                        <small class="admin-settings-helper-text">Leave blank to use the application default. Use an absolute path in production.</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SMB -->
+            <div id="stSMBFields" {% if values.get('storage_backend', 'local') != 'smb' %}hidden{% endif %}>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">SMB Server</label>
+                        <input type="text" class="form-control" name="storage_smb_server"
+                               value="{{ values.get('storage_smb_server', '') }}" placeholder="192.168.1.10">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Share Name</label>
+                        <input type="text" class="form-control" name="storage_smb_share"
+                               value="{{ values.get('storage_smb_share', '') }}" placeholder="uploads">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Domain</label>
+                        <input type="text" class="form-control" name="storage_smb_domain"
+                               value="{{ values.get('storage_smb_domain', '') }}" placeholder="WORKGROUP">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Username</label>
+                        <input type="text" class="form-control" name="storage_smb_username"
+                               value="{{ values.get('storage_smb_username', '') }}">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" name="storage_smb_password"
+                               value="{{ values.get('storage_smb_password', '') }}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- S3 / MinIO -->
+            <div id="stS3Fields" {% if values.get('storage_backend', 'local') != 's3' %}hidden{% endif %}>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Bucket Name</label>
+                        <input type="text" class="form-control" name="storage_s3_bucket"
+                               value="{{ values.get('storage_s3_bucket', '') }}" placeholder="my-upload-bucket">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Region</label>
+                        <input type="text" class="form-control" name="storage_s3_region"
+                               value="{{ values.get('storage_s3_region', '') }}" placeholder="us-east-1">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Endpoint URL <small class="admin-settings-helper-text">(MinIO / custom)</small></label>
+                        <input type="text" class="form-control" name="storage_s3_endpoint_url"
+                               value="{{ values.get('storage_s3_endpoint_url', '') }}" placeholder="http://minio:9000">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Access Key ID</label>
+                        <input type="text" class="form-control" name="storage_s3_access_key"
+                               value="{{ values.get('storage_s3_access_key', '') }}">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Secret Access Key</label>
+                        <input type="password" class="form-control" name="storage_s3_secret_key"
+                               value="{{ values.get('storage_s3_secret_key', '') }}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Azure Blob -->
+            <div id="stAzureFields" {% if values.get('storage_backend', 'local') != 'azure_blob' %}hidden{% endif %}>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Container Name</label>
+                        <input type="text" class="form-control" name="storage_azure_container"
+                               value="{{ values.get('storage_azure_container', '') }}" placeholder="uploads">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Storage Account Name</label>
+                        <input type="text" class="form-control" name="storage_azure_account_name"
+                               value="{{ values.get('storage_azure_account_name', '') }}"
+                               placeholder="mystorageaccount">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Account Key</label>
+                        <input type="password" class="form-control" name="storage_azure_account_key"
+                               value="{{ values.get('storage_azure_account_key', '') }}">
+                    </div>
+                    <div class="col-12 mb-3">
+                        <label class="form-label">Connection String <small class="admin-settings-helper-text">(overrides account/key above)</small></label>
+                        <input type="password" class="form-control" name="storage_azure_connection_string"
+                               value="{{ values.get('storage_azure_connection_string', '') }}"
+                               placeholder="DefaultEndpointsProtocol=https;AccountName=...">
+                    </div>
+                    <div class="col-12 mb-3">
+                        <label class="form-label">SAS Token <small class="admin-settings-helper-text">(optional — for pre-signed download URLs)</small></label>
+                        <input type="password" class="form-control" name="storage_azure_sas_token"
+                               value="{{ values.get('storage_azure_sas_token', '') }}">
+                    </div>
+                </div>
+            </div>
+
+            <div id="storageTestResult"></div>
+        </div>
+    </div>
+
+</div><!-- /tab-storage -->
+
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     TAB: QUOTA
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="tab-pane fade" id="tab-quota">
+
+    <div class="card mb-3">
+        <div class="card-header"><h5 class="mb-0"><i class="bi bi-pie-chart me-2"></i>Global Quota Defaults</h5></div>
+        <div class="card-body">
+            <p class="small admin-settings-helper-text">These are the fallback limits used when no per-user or per-tenant override exists.</p>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Default Storage per User <small class="admin-settings-helper-text">(bytes)</small></label>
+                    <input type="number" class="form-control" name="quota_default_storage_bytes"
+                           value="{{ values.get('quota_default_storage_bytes', 1073741824) }}" min="0">
+                    <small class="admin-settings-helper-text">1 GB = 1 073 741 824 &nbsp;|&nbsp; 10 GB = 10 737 418 240</small>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Default Document Count per User</label>
+                    <input type="number" class="form-control" name="quota_default_document_count"
+                           value="{{ values.get('quota_default_document_count', 1000) }}" min="0">
+                    <small class="admin-settings-helper-text">0 = unlimited</small>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Max Upload Size per File <small class="admin-settings-helper-text">(bytes)</small></label>
+                    <input type="number" class="form-control" name="quota_default_max_upload_bytes"
+                           value="{{ values.get('quota_default_max_upload_bytes', 104857600) }}" min="0">
+                    <small class="admin-settings-helper-text">100 MB = 104 857 600</small>
+                </div>
+            </div>
+            <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" role="switch" id="quotaEnforced"
+                       name="quota_enforcement_enabled" value="true"
+                       {% if values.get('quota_enforcement_enabled', True) %}checked{% endif %}>
+                <label class="form-check-label" for="quotaEnforced">
+                    <strong>Enable Quota Enforcement</strong>
+                    <span class="admin-settings-helper-text admin-settings-helper-block">Uploads are rejected when limits are exceeded. Disable to track-only mode.</span>
+                </label>
+            </div>
+            <div class="admin-settings-info-note small">
+                <i class="bi bi-info-circle me-1"></i>
+                Per-user and per-tenant overrides are managed on the
+                <a href="{{ url_for('admin.quota_management') }}">Quota Management</a> page.
+            </div>
+        </div>
+    </div>
+
+</div><!-- /tab-quota -->
+
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     TAB: IDENTITY / SSO
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="tab-pane fade" id="tab-identity">
+
+    <div class="card mb-3">
+        <div class="card-header"><h5 class="mb-0"><i class="bi bi-shield-lock me-2"></i>Identity &amp; Single Sign-On</h5></div>
+        <div class="card-body">
+            <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" role="switch" id="ssoEnabled"
+                       name="sso_enabled" value="true"
+                       {% if values.get('sso_enabled') %}checked{% endif %}>
+                <label class="form-check-label" for="ssoEnabled">
+                    <strong>Enable External Identity Provider</strong>
+                </label>
+            </div>
+            <div class="mb-4">
+                <label class="form-label fw-bold">SSO Provider</label>
+                <div class="btn-group flex-wrap" role="group">
+                    <input type="radio" class="btn-check" name="sso_provider" id="ssoNone" value="none"  {% if not values.get('sso_provider') or values.get('sso_provider')=='none' %}checked{% endif %} autocomplete="off">
+                    <label class="btn btn-sm admin-settings-toggle-button admin-settings-toggle-button--small" for="ssoNone">None (local auth)</label>
+                    <input type="radio" class="btn-check" name="sso_provider" id="ssoLDAP" value="ldap"  {% if values.get('sso_provider')=='ldap' %}checked{% endif %} autocomplete="off">
+                    <label class="btn btn-sm admin-settings-toggle-button admin-settings-toggle-button--small" for="ssoLDAP"><i class="bi bi-diagram-3 me-1"></i>LDAP / Active Directory</label>
+                    <input type="radio" class="btn-check" name="sso_provider" id="ssoOIDC" value="oidc"  {% if values.get('sso_provider')=='oidc' %}checked{% endif %} autocomplete="off">
+                    <label class="btn btn-sm admin-settings-toggle-button admin-settings-toggle-button--small" for="ssoOIDC">OIDC</label>
+                    <input type="radio" class="btn-check" name="sso_provider" id="ssoSAML" value="saml2" {% if values.get('sso_provider')=='saml2' %}checked{% endif %} autocomplete="off">
+                    <label class="btn btn-sm admin-settings-toggle-button admin-settings-toggle-button--small" for="ssoSAML">SAML 2.0</label>
+                </div>
+            </div>
+
+            <!-- LDAP -->
+            <div id="ldapFields" {% if values.get('sso_provider') != 'ldap' %}hidden{% endif %}>
+                <h6 class="admin-settings-section-heading">LDAP / Active Directory</h6>
+                <div class="row">
+                    <div class="col-md-5 mb-3">
+                        <label class="form-label">LDAP Server</label>
+                        <input type="text" class="form-control" name="ldap_server"
+                               value="{{ values.get('ldap_server', '') }}" placeholder="ldap.example.com">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Port</label>
+                        <input type="number" class="form-control" name="ldap_port"
+                               value="{{ values.get('ldap_port', 389) }}">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Use LDAPS (SSL)</label>
+                        <select class="form-select" name="ldap_use_ssl">
+                            <option value="false" {% if not values.get('ldap_use_ssl') %}selected{% endif %}>No (plain LDAP)</option>
+                            <option value="true"  {% if values.get('ldap_use_ssl') %}selected{% endif %}>Yes (LDAPS)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Base DN</label>
+                        <input type="text" class="form-control" name="ldap_base_dn"
+                               value="{{ values.get('ldap_base_dn', '') }}" placeholder="dc=example,dc=com">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Bind DN</label>
+                        <input type="text" class="form-control" name="ldap_bind_dn"
+                               value="{{ values.get('ldap_bind_dn', '') }}"
+                               placeholder="cn=svc-beep,dc=example,dc=com">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Bind Password</label>
+                        <input type="password" class="form-control" name="ldap_bind_password"
+                               value="{{ values.get('ldap_bind_password', '') }}">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">User Search Filter</label>
+                        <input type="text" class="form-control" name="ldap_user_search_filter"
+                               value="{{ values.get('ldap_user_search_filter', '(uid={username})') }}"
+                               placeholder="(uid={username})">
+                    </div>
+                </div>
+            </div>
+
+            <!-- OIDC -->
+            <div id="oidcFields" {% if values.get('sso_provider') != 'oidc' %}hidden{% endif %}>
+                <h6 class="admin-settings-section-heading">OpenID Connect</h6>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Discovery URL <small class="admin-settings-helper-text">(.well-known/openid-configuration)</small></label>
+                        <input type="text" class="form-control" name="oidc_discovery_url"
+                               value="{{ values.get('oidc_discovery_url', '') }}"
+                               placeholder="https://accounts.example.com/.well-known/openid-configuration">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Client ID</label>
+                        <input type="text" class="form-control" name="oidc_client_id"
+                               value="{{ values.get('oidc_client_id', '') }}">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Client Secret</label>
+                        <input type="password" class="form-control" name="oidc_client_secret"
+                               value="{{ values.get('oidc_client_secret', '') }}">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Redirect URI</label>
+                        <input type="text" class="form-control" name="oidc_redirect_uri"
+                               value="{{ values.get('oidc_redirect_uri', '') }}"
+                               placeholder="{{ values.get('app_url', '') }}/auth/oidc/callback">
+                    </div>
+                </div>
+            </div>
+
+            <!-- SAML 2.0 -->
+            <div id="samlFields" {% if values.get('sso_provider') != 'saml2' %}hidden{% endif %}>
+                <h6 class="admin-settings-section-heading">SAML 2.0</h6>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">IdP Metadata URL</label>
+                        <input type="text" class="form-control" name="saml2_idp_metadata_url"
+                               value="{{ values.get('saml2_idp_metadata_url', '') }}"
+                               placeholder="https://idp.example.com/federationmetadata.xml">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">SP Entity ID</label>
+                        <input type="text" class="form-control" name="saml2_sp_entity_id"
+                               value="{{ values.get('saml2_sp_entity_id', '') }}"
+                               placeholder="https://app.example.com/saml/metadata">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">SP ACS URL</label>
+                        <input type="text" class="form-control" name="saml2_sp_acs_url"
+                               value="{{ values.get('saml2_sp_acs_url', '') }}"
+                               placeholder="https://app.example.com/saml/acs">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div><!-- /tab-identity -->
+
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     TAB: REGISTRATION
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="tab-pane fade" id="tab-reg">
+
+    <div class="card mb-3">
+        <div class="card-header"><h5 class="mb-0"><i class="bi bi-person-plus me-2"></i>Registration Settings</h5></div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Registration Mode</label>
+                    <select class="form-select" name="registration_mode">
+                        <option value="open"     {% if values.get('registration_mode','open')=='open' %}selected{% endif %}>Open — anyone can register</option>
+                        <option value="invite"   {% if values.get('registration_mode')=='invite' %}selected{% endif %}>Invite-only</option>
+                        <option value="approval" {% if values.get('registration_mode')=='approval' %}selected{% endif %}>Admin approval required</option>
+                        <option value="disabled" {% if values.get('registration_mode')=='disabled' %}selected{% endif %}>Disabled</option>
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Auto-assign Role</label>
+                    <input type="text" class="form-control" name="registration_auto_assign_role"
+                           value="{{ values.get('registration_auto_assign_role', 'user') }}" placeholder="user">
+                    <small class="admin-settings-helper-text">Role name assigned on registration</small>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Auto-assign Tenant <small class="admin-settings-helper-text">(optional)</small></label>
+                    <input type="text" class="form-control" name="registration_auto_tenant"
+                           value="{{ values.get('registration_auto_tenant', '') }}" placeholder="default">
+                </div>
+                <div class="col-12 mb-3">
+                    <label class="form-label">Allowed Email Domains <small class="admin-settings-helper-text">(comma-separated, blank = any)</small></label>
+                    <input type="text" class="form-control" name="registration_allowed_domains"
+                           value="{{ values.get('registration_allowed_domains', '') }}"
+                           placeholder="example.com, corp.example.com">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="regEmailVerify"
+                               name="registration_require_email_verification" value="true"
+                               {% if values.get('registration_require_email_verification', True) %}checked{% endif %}>
+                        <label class="form-check-label" for="regEmailVerify">
+                            <strong>Require Email Verification</strong>
+                            <span class="admin-settings-helper-text admin-settings-helper-block">New users must verify their email before logging in</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="regCaptcha"
+                               name="registration_captcha_enabled" value="true"
+                               {% if values.get('registration_captcha_enabled') %}checked{% endif %}>
+                        <label class="form-check-label" for="regCaptcha">
+                            <strong>Enable CAPTCHA on Registration</strong>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div><!-- /tab-reg -->
+
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     TAB: PASSWORD POLICY
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="tab-pane fade" id="tab-password">
+
+    <div class="card mb-3">
+        <div class="card-header"><h5 class="mb-0"><i class="bi bi-key me-2"></i>Password Policy</h5></div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Minimum Length</label>
+                    <input type="number" class="form-control" name="password_min_length"
+                           value="{{ values.get('password_min_length', 8) }}" min="6" max="128">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Max Age <small class="admin-settings-helper-text">(days)</small></label>
+                    <input type="number" class="form-control" name="password_expiry_days"
+                           value="{{ values.get('password_expiry_days', 0) }}" min="0">
+                    <small class="admin-settings-helper-text">0 = never expires</small>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Password History</label>
+                    <input type="number" class="form-control" name="password_history_count"
+                           value="{{ values.get('password_history_count', 5) }}" min="0" max="24">
+                    <small class="admin-settings-helper-text">Prevent reuse of last N passwords</small>
+                </div>
+            </div>
+
+            <label class="form-label fw-bold">Complexity Requirements</label>
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="pwUpper"
+                               name="password_require_uppercase" value="true"
+                               {% if values.get('password_require_uppercase', True) %}checked{% endif %}>
+                        <label class="form-check-label" for="pwUpper">Uppercase letter</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="pwLower"
+                               name="password_require_lowercase" value="true"
+                               {% if values.get('password_require_lowercase', True) %}checked{% endif %}>
+                        <label class="form-check-label" for="pwLower">Lowercase letter</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="pwNumber"
+                               name="password_require_number" value="true"
+                               {% if values.get('password_require_number', True) %}checked{% endif %}>
+                        <label class="form-check-label" for="pwNumber">Number</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="pwSpecial"
+                               name="password_require_special" value="true"
+                               {% if values.get('password_require_special') %}checked{% endif %}>
+                        <label class="form-check-label" for="pwSpecial">Special character</label>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+            <h6>Account Lockout</h6>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Max Failed Attempts</label>
+                    <input type="number" class="form-control" name="password_max_failed_attempts"
+                           value="{{ values.get('password_max_failed_attempts', 5) }}" min="0">
+                    <small class="admin-settings-helper-text">0 = no lockout</small>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Lockout Duration <small class="admin-settings-helper-text">(minutes)</small></label>
+                    <input type="number" class="form-control" name="password_lockout_minutes"
+                           value="{{ values.get('password_lockout_minutes', 15) }}" min="1">
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div><!-- /tab-password -->
+
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     TAB: MFA
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="tab-pane fade" id="tab-mfa">
+
+    <div class="card mb-3">
+        <div class="card-header"><h5 class="mb-0"><i class="bi bi-phone me-2"></i>Multi-Factor Authentication</h5></div>
+        <div class="card-body">
+            <div class="form-check form-switch mb-4">
+                <input class="form-check-input" type="checkbox" role="switch" id="mfaEnabled"
+                       name="mfa_enabled" value="true"
+                       {% if values.get('mfa_enabled') %}checked{% endif %}>
+                <label class="form-check-label" for="mfaEnabled">
+                    <strong>Enable MFA</strong>
+                </label>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">MFA Enforcement</label>
+                    <select class="form-select" name="mfa_enforcement">
+                        <option value="optional"          {% if values.get('mfa_enforcement','optional')=='optional' %}selected{% endif %}>Optional (user opt-in)</option>
+                        <option value="required_by_role"  {% if values.get('mfa_enforcement')=='required_by_role' %}selected{% endif %}>Required for specific roles</option>
+                        <option value="required_all"       {% if values.get('mfa_enforcement')=='required_all' %}selected{% endif %}>Required for all users</option>
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Required Roles <small class="admin-settings-helper-text">(comma-separated)</small></label>
+                    <input type="text" class="form-control" name="mfa_required_roles"
+                           value="{{ values.get('mfa_required_roles', '') }}" placeholder="admin, power_user">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">OTP Validity <small class="admin-settings-helper-text">(minutes)</small></label>
+                    <input type="number" class="form-control" name="mfa_otp_validity_minutes"
+                           value="{{ values.get('mfa_otp_validity_minutes', 10) }}" min="1" max="60">
+                </div>
+            </div>
+
+            <label class="form-label fw-bold">Allowed Methods</label>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="mfaTOTP"
+                               name="mfa_totp_enabled" value="true"
+                               {% if values.get('mfa_totp_enabled', True) %}checked{% endif %}>
+                        <label class="form-check-label" for="mfaTOTP">
+                            <strong>TOTP</strong>
+                            <span class="admin-settings-helper-text admin-settings-helper-block">Authenticator apps (Google, Authy…)</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="mfaEmailOTP"
+                               name="mfa_email_otp_enabled" value="true"
+                               {% if values.get('mfa_email_otp_enabled', True) %}checked{% endif %}>
+                        <label class="form-check-label" for="mfaEmailOTP">
+                            <strong>Email OTP</strong>
+                            <span class="admin-settings-helper-text admin-settings-helper-block">One-time code sent to email</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="mfaSMSOTP"
+                               name="mfa_sms_otp_enabled" value="true"
+                               {% if values.get('mfa_sms_otp_enabled') %}checked{% endif %}>
+                        <label class="form-check-label" for="mfaSMSOTP">
+                            <strong>SMS OTP</strong>
+                            <span class="admin-settings-helper-text admin-settings-helper-block">One-time code via SMS</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">TOTP Issuer Name</label>
+                    <input type="text" class="form-control" name="mfa_totp_issuer"
+                           value="{{ values.get('mfa_totp_issuer', 'Beep.AI.Researcher') }}"
+                           placeholder="Beep.AI.Researcher">
+                    <small class="admin-settings-helper-text">Displayed in authenticator apps</small>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Backup Codes Count</label>
+                    <input type="number" class="form-control" name="mfa_backup_codes_count"
+                           value="{{ values.get('mfa_backup_codes_count', 10) }}" min="0" max="20">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">SMS Provider</label>
+                    <input type="text" class="form-control" name="mfa_sms_provider"
+                           value="{{ values.get('mfa_sms_provider', '') }}"
+                           placeholder="twilio, vonage, aws_sns">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">SMS Account SID / API Key</label>
+                    <input type="password" class="form-control" name="mfa_sms_account_sid"
+                           value="{{ values.get('mfa_sms_account_sid', '') }}">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">SMS Auth Token</label>
+                    <input type="password" class="form-control" name="mfa_sms_auth_token"
+                           value="{{ values.get('mfa_sms_auth_token', '') }}">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">SMS From Number</label>
+                    <input type="text" class="form-control" name="mfa_sms_from_number"
+                           value="{{ values.get('mfa_sms_from_number', '') }}" placeholder="+15551234567">
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div><!-- /tab-mfa -->
+
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     TAB: SESSION
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="tab-pane fade" id="tab-session">
+
+    <div class="card mb-3">
+        <div class="card-header"><h5 class="mb-0"><i class="bi bi-clock me-2"></i>Session Management</h5></div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Session Lifetime <small class="admin-settings-helper-text">(hours)</small></label>
+                    <input type="number" class="form-control" name="session_lifetime_hours"
+                           value="{{ values.get('session_lifetime_hours', 24) }}" min="1">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Idle Timeout <small class="admin-settings-helper-text">(minutes)</small></label>
+                    <input type="number" class="form-control" name="session_idle_timeout_minutes"
+                           value="{{ values.get('session_idle_timeout_minutes', 120) }}" min="5">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Max Concurrent Sessions</label>
+                    <input type="number" class="form-control" name="session_max_concurrent"
+                           value="{{ values.get('session_max_concurrent', 5) }}" min="1">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Remember-Me Duration <small class="admin-settings-helper-text">(days)</small></label>
+                    <input type="number" class="form-control" name="session_remember_duration_days"
+                           value="{{ values.get('session_remember_duration_days', 30) }}" min="1">
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div><!-- /tab-session -->
+
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     TAB: RUNTIME (Feature Flags + Queue/Cache)
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="tab-pane fade" id="tab-runtime">
+
+    <div class="card mb-3">
+        <div class="card-header"><h5 class="mb-0"><i class="bi bi-toggles me-2"></i>Feature Flags</h5></div>
+        <div class="card-body">
+            <p class="small admin-settings-helper-text">Enable or disable local services and feature modules at runtime.</p>
+            <div class="row">
+                {% for feature_name, feature in feature_flags.items() %}
+                <div class="col-md-6 mb-2">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch"
+                               id="feature_{{ feature_name }}" name="feature_{{ feature_name }}"
+                               {% if feature.enabled %}checked{% endif %}>
+                        <label class="form-check-label" for="feature_{{ feature_name }}">
+                            <strong>{{ feature_name }}</strong>
+                            <span class="admin-settings-helper-text admin-settings-helper-block">{{ feature.description }}</span>
+                        </label>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header"><h5 class="mb-0"><i class="bi bi-cpu me-2"></i>Runtime Tuning</h5></div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Queue Workers</label>
+                    <input type="number" min="1" class="form-control" name="queue_max_workers"
+                           value="{{ queue_config.get('max_workers', 4) }}">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Queue Retries</label>
+                    <input type="number" min="0" class="form-control" name="queue_max_retries"
+                           value="{{ queue_config.get('max_retries', 3) }}">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Job Timeout (sec)</label>
+                    <input type="number" min="1" class="form-control" name="queue_job_timeout_seconds"
+                           value="{{ queue_config.get('job_timeout_seconds', 3600) }}">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Cache TTL (sec)</label>
+                    <input type="number" min="60" class="form-control" name="cache_cache_ttl_seconds"
+                           value="{{ cache_config.get('cache_ttl_seconds', 86400) }}">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Max Cache Entries</label>
+                    <input type="number" min="100" class="form-control" name="cache_max_cache_entries"
+                           value="{{ cache_config.get('max_cache_entries', 10000) }}">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Max Cache Size (MB)</label>
+                    <input type="number" min="50" class="form-control" name="cache_max_cache_size_mb"
+                           value="{{ cache_config.get('max_cache_size_mb', 500) }}">
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div><!-- /tab-runtime -->
+
+</div><!-- /tab-content -->
+
+<div class="d-flex justify-content-end gap-2 mt-3">
+    <a href="{{ url_for('admin.index') }}" class="btn admin-settings-secondary-button">{{ t('settings.button.cancel') }}</a>
+    <button type="submit" class="btn btn-primary">
+        <i class="bi bi-save me-1"></i>{{ t('settings.button.save') }}
+    </button>
+</div>
+</form>
+
+<!-- Local Services Status -->
+<div class="card mt-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="bi bi-hdd-network me-2"></i>Local Services Status</h5>
+        <button type="button" class="btn btn-sm admin-settings-secondary-button" id="refresh-service-status">
+            <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+        </button>
+    </div>
+    <div class="card-body">
+        <div id="service-status-output" class="small admin-settings-service-status">Click refresh to check local service connectivity.</div>
+    </div>
+</div>
+<script id="admin-settings-config" type="application/json">
+{{ {
+    "emailTestUrl": url_for('admin.api_email_test'),
+    "storageTestUrl": url_for('admin.api_storage_test'),
+    "connectionStatusUrl": url_for('admin.api_connection_status'),
+    "storageTestingLabel": "Testing connection...",
+    "storageConnectedLabel": "Connected",
+    "storageFailedLabel": "Connection failed",
+    "emailSendingLabel": "Sending test email...",
+    "emailSentLabel": "Sent",
+    "emailFailedLabel": "Send failed",
+    "requestFailedLabel": "Request failed",
+    "serviceCheckingLabel": "Checking research service connectivity...",
+    "serviceStatusTemplate": "Service: {service} | Token: {token}",
+    "serviceReachableLabel": "reachable",
+    "serviceUnreachableLabel": "unreachable",
+    "tokenValidLabel": "valid",
+    "tokenInvalidLabel": "invalid",
+    "serviceCheckFailedLabel": "Failed to query local service status."
+} | tojson | safe }}
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/admin_settings_page.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,129 @@
+{% extends "project/_layout.html" %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/start.css') }}">
+{% endblock %}
+
+{% block header_actions %}
+<a href="/researcher/projects/{{ project.id }}/settings" class="btn btn-outline-secondary btn-sm">
+    <i class="bi bi-sliders me-1"></i>Open Full Settings
+</a>
+{% endblock %}
+
+{% block workspace_content %}
+<div
+    id="projectStartApp"
+    class="project-start"
+    data-project-id="{{ project.id }}"
+    data-project-name="{{ project.name }}"
+    data-project-api-base="/projects/{{ project.id }}"
+    data-collections-url="/projects/rag/collections"
+    data-template-mapping-url="/projects/rag/template-mapping-contract"
+    data-graph-reading-url="/projects/rag/graph-reading-contract"
+    data-chunk-templates-url="/projects/rag/chunk-templates?include_researcher=true"
+    data-overview-url="/researcher/projects/{{ project.id }}/overview"
+    data-settings-url="/researcher/projects/{{ project.id }}/settings"
+    data-initial-collection-id="{{ project.collection_id or '' }}"
+    data-initial-quality-mode="{{ project.rag_quality_mode or 'balanced' }}"
+>
+    <section class="project-start__hero">
+        <p class="project-start__kicker">First step</p>
+        <h2>Choose how this project should read your files</h2>
+        <p class="project-start__copy">
+            Start with a document library, answer style, main file type, and file connections.
+            The app will use those choices to set up the best starting point for this project.
+        </p>
+        <ol class="project-start__steps" aria-label="Project setup steps">
+            <li>Choose the document library this project should use.</li>
+            <li>Pick the answer style that fits the kind of work you are doing.</li>
+            <li>Tell the app what kind of files you mostly have.</li>
+            <li>Save and open the project.</li>
+        </ol>
+    </section>
+
+    <div class="project-start__status" id="projectStartStatus" aria-live="polite">
+        Loading setup choices...
+    </div>
+
+    <form id="projectStartForm" class="project-start__form">
+        <section class="project-start__panel" aria-labelledby="projectStartLibraryTitle">
+            <h3 id="projectStartLibraryTitle">Document library</h3>
+            <p class="project-start__panel-copy">
+                Pick the shared library this project should use when reading files and answering questions.
+            </p>
+            <label class="form-label" for="projectStartCollection">Choose document library</label>
+            <select class="form-select" id="projectStartCollection" required>
+                <option value="">Loading document libraries...</option>
+            </select>
+        </section>
+
+        <section class="project-start__panel" aria-labelledby="projectStartReadingTitle">
+            <h3 id="projectStartReadingTitle">Reading choices</h3>
+            <p class="project-start__panel-copy">
+                These choices set the starting behavior. You can fine-tune details later in full settings.
+            </p>
+            <div class="project-start__grid">
+                <div>
+                    <label class="form-label" for="projectStartQualityMode">Answer style</label>
+                    <select class="form-select" id="projectStartQualityMode">
+                        <option value="fast">Quick summaries</option>
+                        <option value="balanced" selected>Balanced help</option>
+                        <option value="deep">Careful reading</option>
+                    </select>
+                    <div class="form-text">Balanced help is the best starting point for most projects.</div>
+                </div>
+                <div>
+                    <label class="form-label" for="projectStartDocumentType">Most common file type</label>
+                    <select class="form-select" id="projectStartDocumentType">
+                        <option value="">Loading file types...</option>
+                    </select>
+                    <input
+                        type="text"
+                        class="form-control mt-2"
+                        id="projectStartDocumentTypeCustom"
+                        placeholder="Describe the main file type for this project"
+                        hidden
+                    >
+                    <div class="form-text" id="projectStartDocumentTypeHint">
+                        Choose the file type that best matches most of the material in this project.
+                    </div>
+                </div>
+                <div>
+                    <label class="form-label" for="projectStartGraphMode">How files connect</label>
+                    <select class="form-select" id="projectStartGraphMode">
+                        <option value="">Loading file connection options...</option>
+                    </select>
+                    <div class="form-text" id="projectStartGraphModeHint">
+                        Choose how much help the assistant should use when connecting related files.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="project-start__panel" aria-labelledby="projectStartSuggestedTitle">
+            <h3 id="projectStartSuggestedTitle">Suggested reading setup</h3>
+            <p class="project-start__panel-copy">
+                The app will try to apply this setup automatically when you save.
+            </p>
+            <div class="project-start__suggestion" id="projectStartSuggestion">
+                <strong id="projectStartSuggestionName">Loading suggested setup...</strong>
+                <span id="projectStartSuggestionDescription">The best reading setup depends on the file type you choose.</span>
+                <span class="project-start__suggestion-note" id="projectStartSuggestionNote"></span>
+            </div>
+        </section>
+
+        <div class="project-start__actions">
+            <button type="submit" class="btn btn-primary" id="projectStartSaveBtn">
+                <i class="bi bi-check2-circle me-1"></i>Save Setup And Open Project
+            </button>
+            <a href="/researcher/projects/{{ project.id }}/overview" class="btn btn-outline-secondary">
+                Open Project For Now
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script src="{{ url_for('static', filename='js/project/start.js') }}"></script>
+{% endblock %}

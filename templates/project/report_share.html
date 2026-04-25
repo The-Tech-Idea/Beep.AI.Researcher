@@ -1,0 +1,127 @@
+{% extends "project/_layout.html" %}
+
+{% block title %}Share & Export Report - {{ project.name }} | Beep.AI.Researcher{% endblock %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/library_setup_summary.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/report_share.css') }}">
+{% endblock %}
+
+{% block workspace_content %}
+<div class="container-fluid py-4 max-w-1200 mx-auto">
+    <div
+        data-library-setup-summary
+        data-project-api-base="/projects/{{ project.id }}"
+        data-collections-url="{{ url_for('projects.list_rag_collections_for_project') }}"
+        data-start-url="{{ url_for('project_start.project_start_page', project_id=project.id) }}"
+        data-settings-url="{{ url_for('researcher.project_settings', project_id=project.id) }}"
+        data-collection-id="{{ project.collection_id or '' }}"
+        data-quality-mode="{{ project.rag_quality_mode or 'balanced' }}"
+        data-quality-fast-label="{{ t('project_search.rag_mode.fast') }}"
+        data-quality-balanced-label="{{ t('project_search.rag_mode.balanced') }}"
+        data-quality-deep-label="{{ t('project_search.rag_mode.deep') }}"
+    ></div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-1">
+                    <li class="breadcrumb-item"><a href="{{ url_for('researcher.project_overview', project_id=project.id) }}" class="text-decoration-none">Project</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('researcher.project_report', project_id=project.id) }}" class="text-decoration-none">Report Editor</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Share &amp; Export</li>
+                </ol>
+            </nav>
+            <h3 class="fw-bold mb-0"><i class="bi bi-box-arrow-up-right text-primary me-2"></i>Share &amp; Export Report</h3>
+        </div>
+        <a href="{{ url_for('researcher.project_report', project_id=project.id) }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Back to Editor
+        </a>
+    </div>
+
+    <div class="share-guide-card">
+        <h5>Check the draft before sending or downloading it</h5>
+        <p class="mb-0">This page uses the latest saved draft for the project. If you changed the report a moment ago, return to the editor and save once before exporting.</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 mb-4 rounded-4 share-card" id="securePdfExportCard" role="button" tabindex="0">
+                <div class="card-body p-4 d-flex align-items-start gap-3">
+                    <div class="display-6 text-danger"><i class="bi bi-file-earmark-pdf-fill"></i></div>
+                    <div>
+                        <h5 class="mb-1">Download PDF</h5>
+                        <p class="small mb-0">Create a read-only PDF for sharing, submission, or archiving.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 mb-4 rounded-4 share-card" id="docxExportCard" role="button" tabindex="0">
+                <div class="card-body p-4 d-flex align-items-start gap-3">
+                    <div class="display-6 text-primary"><i class="bi bi-file-earmark-word-fill"></i></div>
+                    <div>
+                        <h5 class="mb-1">Download Word File</h5>
+                        <p class="small mb-0">Create an editable Word document for review or formatting changes.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 rounded-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-envelope-paper me-2 text-info"></i>Email this report</h5>
+                    <p class="text-muted small">Send the current draft directly to a colleague or reviewer.</p>
+
+                    <form id="emailForm">
+                        <div class="mb-3">
+                            <label class="form-label fw-medium" for="emailTo">Recipient email</label>
+                            <input type="email" class="form-control" id="emailTo" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-medium" for="emailSubject">Email subject</label>
+                            <input type="text" class="form-control" id="emailSubject" value="Research Report: {{ project.name }}">
+                        </div>
+                        <button type="submit" class="report-share-email-button" id="emailSubmitBtn">
+                            <span class="report-share-email-button__icon" aria-hidden="true"><i class="bi bi-send"></i></span>
+                            <span class="report-share-email-button__label">Send Report</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 rounded-4 h-100 report-share-preview-card">
+                <div class="card-body p-4">
+                    <h6 class="fw-bold text-uppercase mb-3 report-share-preview-title"><i class="bi bi-eye me-2"></i>Draft Preview</h6>
+                    <div class="preview-container" id="reportPreview">
+                        <div class="report-share-preview-state report-share-preview-state--loading" id="previewLoading">
+                            <span class="report-share-preview-spinner" aria-hidden="true"></span>
+                            <span class="report-share-preview-state__message">Loading saved draft...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script src="{{ url_for('static', filename='js/project/library_setup_summary.js') }}"></script>
+<script id="report-share-config" type="application/json">
+{
+    "projectId": {{ project.id | tojson }},
+    "draftKey": {{ ("beep_project_report_" ~ project.id) | tojson }},
+    "draftEndpoint": {{ ("/researcher/api/projects/" ~ project.id ~ "/report/draft") | tojson }},
+    "emailEndpoint": {{ ("/researcher/projects/" ~ project.id ~ "/report/email") | tojson }},
+    "pdfExportEndpoint": {{ ("/researcher/projects/" ~ project.id ~ "/report/export-pdf") | tojson }},
+    "emailSuccessLabel": {{ "Report emailed successfully." | tojson }},
+    "emailErrorLabel": {{ "Could not send the report." | tojson }},
+    "exportSaveRequiredLabel": {{ "Save the report before exporting it." | tojson }},
+    "sendSaveRequiredLabel": {{ "Save the report before sending it." | tojson }},
+    "sendingLabel": {{ "Sending..." | tojson }},
+    "draftEmptyLabel": {{ "No saved report draft is available yet." | tojson }},
+    "draftLoadErrorLabel": {{ "Could not load the saved report draft." | tojson }}
+}
+</script>
+<script src="{{ url_for('static', filename='js/project/report_share.js') }}"></script>
+{% endblock %}

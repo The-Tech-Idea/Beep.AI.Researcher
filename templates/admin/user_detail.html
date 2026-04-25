@@ -1,0 +1,410 @@
+{% extends "base.html" %}
+
+{% block title %}User: {{ u.username }} — Admin — Beep.AI.Researcher{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_user_detail_page.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div>
+        <h1><i class="bi bi-person-badge me-2"></i>{{ u.username }}</h1>
+        <p class="mb-0 admin-user-detail-subtitle">{{ u.email or 'No email set' }}</p>
+    </div>
+    <a href="{{ url_for('admin.users_list') }}" class="btn admin-user-detail-back-link">
+        <i class="bi bi-arrow-left me-1"></i>Back to Users
+    </a>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}{% for cat, msg in messages %}
+<div class="admin-user-detail-message admin-user-detail-message--{{ 'error' if cat == 'error' else cat }}" role="alert">
+    {{ msg }}
+</div>
+{% endfor %}{% endif %}
+{% endwith %}
+
+<!-- Status badges -->
+<div class="mb-4 d-flex flex-wrap gap-2">
+    {% if u.is_active %}
+    <span class="admin-user-detail-status-badge admin-user-detail-status-badge--active"><i class="bi bi-check-circle me-1"></i>Active</span>
+    {% else %}
+    <span class="admin-user-detail-status-badge admin-user-detail-status-badge--suspended"><i class="bi bi-x-circle me-1"></i>Suspended</span>
+    {% endif %}
+    {% if u.email_verified %}
+    <span class="admin-user-detail-status-badge admin-user-detail-status-badge--verified">Email Verified</span>
+    {% else %}
+    <span class="admin-user-detail-status-badge admin-user-detail-status-badge--unverified">Email Unverified</span>
+    {% endif %}
+    {% if u.mfa_enabled %}
+    <span class="admin-user-detail-status-badge admin-user-detail-status-badge--mfa-on"><i class="bi bi-shield-check me-1"></i>MFA On</span>
+    {% else %}
+    <span class="admin-user-detail-status-badge admin-user-detail-status-badge--mfa-off">MFA Off</span>
+    {% endif %}
+    {% if u.must_change_password %}
+    <span class="admin-user-detail-status-badge admin-user-detail-status-badge--warning"><i class="bi bi-key me-1"></i>Must Change Password</span>
+    {% endif %}
+    {% if u.locked_until and u.locked_until > now %}
+    <span class="admin-user-detail-status-badge admin-user-detail-status-badge--locked"><i class="bi bi-lock me-1"></i>Locked</span>
+    {% endif %}
+    {% if u.role %}
+    <span class="admin-user-detail-status-badge admin-user-detail-status-badge--role">{{ u.role.name }}</span>
+    {% endif %}
+</div>
+
+<!-- Nav tabs -->
+<ul class="nav nav-tabs mb-4" id="userDetailTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="tab-profile" data-bs-toggle="tab" data-bs-target="#tab-profile-pane"
+            type="button" role="tab" aria-selected="true" aria-controls="tab-profile-pane">Profile</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-quota" data-bs-toggle="tab" data-bs-target="#tab-quota-pane"
+            type="button" role="tab" aria-selected="false" aria-controls="tab-quota-pane">Quota</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-security" data-bs-toggle="tab" data-bs-target="#tab-security-pane"
+            type="button" role="tab" aria-selected="false" aria-controls="tab-security-pane">Security</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-sessions" data-bs-toggle="tab" data-bs-target="#tab-sessions-pane"
+            type="button" role="tab" aria-selected="false" aria-controls="tab-sessions-pane">
+            Sessions <span class="admin-user-detail-count-badge ms-1">{{ sessions|length }}</span>
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-audit" data-bs-toggle="tab" data-bs-target="#tab-audit-pane"
+            type="button" role="tab" aria-selected="false" aria-controls="tab-audit-pane">Audit log</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-danger" data-bs-toggle="tab" data-bs-target="#tab-danger-pane"
+            type="button" role="tab" aria-selected="false" aria-controls="tab-danger-pane">Danger zone</button>
+    </li>
+</ul>
+
+<div class="tab-content">
+
+    <!-- ── Profile tab ────────────────────────────────────────────────────── -->
+    <div class="tab-pane fade show active" id="tab-profile-pane" role="tabpanel" aria-labelledby="tab-profile">
+        <div class="card">
+            <div class="card-header"><strong>Edit Profile</strong></div>
+            <div class="card-body">
+                <form method="post" action="{{ url_for('admin.user_edit', user_id=u.id) }}">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email"
+                                value="{{ u.email or '' }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="display_name" class="form-label">Display name</label>
+                            <input type="text" class="form-control" id="display_name" name="display_name"
+                                value="{{ u.display_name if u.display_name is defined and u.display_name else '' }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="role_id" class="form-label">Role</label>
+                            <select class="form-select" id="role_id" name="role_id"
+                                {% if u.id == current_user.id %}disabled{% endif %}>
+                                <option value="">— No role —</option>
+                                {% for r in roles %}
+                                <option value="{{ r.id }}" {% if u.role_id == r.id %}selected{% endif %}>{{ r.name }}</option>
+                                {% endfor %}
+                            </select>
+                            {% if u.id == current_user.id %}
+                            <div class="form-text admin-user-detail-helper-text">Cannot change your own role.</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 d-flex align-items-end gap-3 pb-1">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active"
+                                    {% if u.is_active %}checked{% endif %}
+                                    {% if u.id == current_user.id %}disabled{% endif %}>
+                                <label class="form-check-label" for="is_active">Active</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="email_verified" name="email_verified"
+                                    {% if u.email_verified %}checked{% endif %}>
+                                <label class="form-check-label" for="email_verified">Email verified</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="must_change_password" name="must_change_password"
+                                    {% if u.must_change_password %}checked{% endif %}>
+                                <label class="form-check-label" for="must_change_password">Must change password</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <button type="submit" class="btn admin-user-detail-action-button admin-user-detail-action-button--primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Quota tab ───────────────────────────────────────────────────────── -->
+    <div class="tab-pane fade" id="tab-quota-pane" role="tabpanel" aria-labelledby="tab-quota">
+        <div class="card mb-3">
+            <div class="card-header"><strong>Storage & Quota</strong></div>
+            <div class="card-body">
+                {% if storage_stats %}
+                <div class="row g-3 mb-3">
+                    <div class="col-sm-4">
+                        <div class="card admin-user-detail-stat-card text-center p-3">
+                            <div class="fs-4 fw-bold">{{ (storage_stats.storage_used_bytes / 1048576) | round(1) }} MB</div>
+                            <div class="small admin-user-detail-helper-text">Storage used</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card admin-user-detail-stat-card text-center p-3">
+                            <div class="fs-4 fw-bold">{{ storage_stats.document_count }}</div>
+                            <div class="small admin-user-detail-helper-text">Documents</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card admin-user-detail-stat-card text-center p-3">
+                            <div class="fs-4 fw-bold">{{ storage_stats.last_recalculated_at.strftime('%Y-%m-%d') if storage_stats.last_recalculated_at else '—' }}</div>
+                            <div class="small admin-user-detail-helper-text">Last synced</div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <p class="admin-user-detail-empty-note">No storage stats recorded yet.</p>
+                {% endif %}
+
+                <form method="post" action="{{ url_for('admin.user_edit', user_id=u.id) }}">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label for="plan_tier_id" class="form-label">Plan tier</label>
+                            <select class="form-select" id="plan_tier_id" name="plan_tier_id">
+                                <option value="">— Use global default —</option>
+                                {% for pt in plan_tiers %}
+                                <option value="{{ pt.id }}"
+                                    {% if u.plan_tier_id == pt.id %}selected{% endif %}>
+                                    {{ pt.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="storage_quota_bytes" class="form-label">Storage override (bytes)</label>
+                            <input type="number" class="form-control" id="storage_quota_bytes"
+                                name="storage_quota_bytes" min="0"
+                                value="{{ u.storage_quota_bytes if u.storage_quota_bytes else '' }}"
+                                placeholder="Leave blank for tier default">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="document_quota" class="form-label">Document quota override</label>
+                            <input type="number" class="form-control" id="document_quota"
+                                name="document_quota" min="0"
+                                value="{{ u.document_quota if u.document_quota else '' }}"
+                                placeholder="Leave blank for tier default">
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <button type="submit" class="btn admin-user-detail-action-button admin-user-detail-action-button--primary">Save quota</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Security tab ────────────────────────────────────────────────────── -->
+    <div class="tab-pane fade" id="tab-security-pane" role="tabpanel" aria-labelledby="tab-security">
+        <div class="row g-3">
+            <!-- Password -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header"><strong>Set Password</strong></div>
+                    <div class="card-body">
+                        <form method="post" action="{{ url_for('admin.user_set_password', user_id=u.id) }}">
+                            <div class="mb-3">
+                                <label for="new_password" class="form-label">New password</label>
+                                <input type="password" class="form-control" id="new_password" name="new_password"
+                                    autocomplete="new-password" required>
+                            </div>
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="must_change" name="must_change" checked>
+                                <label class="form-check-label" for="must_change">Require change on next login</label>
+                            </div>
+                            <button type="submit" class="btn admin-user-detail-action-button admin-user-detail-action-button--warning">Set password</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Lockout -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header"><strong>Account Lockout</strong></div>
+                    <div class="card-body">
+                        <p class="small admin-user-detail-helper-text mb-1">Failed login attempts:
+                            <strong>{{ u.failed_login_attempts or 0 }}</strong></p>
+                        <p class="small admin-user-detail-helper-text mb-3">Locked until:
+                            <strong>{{ u.locked_until.strftime('%Y-%m-%d %H:%M') if u.locked_until else 'Not locked' }}</strong></p>
+                        <form method="post" action="{{ url_for('admin.user_unlock', user_id=u.id) }}">
+                            <button type="submit" class="btn admin-user-detail-action-button admin-user-detail-action-button--success">
+                                <i class="bi bi-unlock me-1"></i>Unlock account
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- MFA -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header"><strong>Multi-Factor Authentication</strong></div>
+                    <div class="card-body">
+                        <p class="small admin-user-detail-helper-text mb-1">Status:
+                            {% if u.mfa_enabled %}
+                            <span class="admin-user-detail-inline-badge admin-user-detail-inline-badge--mfa-on">Enabled</span>
+                            {% else %}
+                            <span class="admin-user-detail-inline-badge admin-user-detail-inline-badge--mfa-off">Disabled</span>
+                            {% endif %}
+                        </p>
+                        <p class="small admin-user-detail-helper-text mb-1">Methods: <strong>{{ u.mfa_methods or '—' }}</strong></p>
+                        <p class="small admin-user-detail-helper-text mb-3">Backup codes remaining:
+                            <strong>{{ u.mfa_backup_codes_remaining or 0 }}</strong></p>
+                        <form method="post" action="{{ url_for('admin.user_mfa_reset', user_id=u.id) }}"
+                            data-admin-confirm="Clear all MFA for {{ u.username }}? They will need to re-enroll.">
+                            <button type="submit" class="btn admin-user-detail-action-button admin-user-detail-action-button--outline-warning">
+                                <i class="bi bi-shield-x me-1"></i>Reset MFA
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Sessions tab ────────────────────────────────────────────────────── -->
+    <div class="tab-pane fade" id="tab-sessions-pane" role="tabpanel" aria-labelledby="tab-sessions">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <strong>Active Sessions ({{ sessions|length }})</strong>
+                {% if sessions %}
+                <form method="post" action="{{ url_for('admin.user_revoke_all_sessions', user_id=u.id) }}"
+                    data-admin-confirm="Revoke all sessions for {{ u.username }}?">
+                    <button type="submit" class="btn btn-sm admin-user-detail-action-button admin-user-detail-action-button--outline-danger">
+                        <i class="bi bi-box-arrow-right me-1"></i>Revoke all
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+            <div class="card-body p-0">
+                {% if sessions %}
+                <div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                        <thead>
+                            <tr>
+                                <th>Device</th>
+                                <th>IP</th>
+                                <th>Created</th>
+                                <th>Last seen</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for s in sessions %}
+                            <tr>
+                                <td>{{ s.device_label or s.user_agent or '—' }}</td>
+                                <td>{{ s.ip_address or '—' }}</td>
+                                <td>{{ s.created_at.strftime('%Y-%m-%d %H:%M') if s.created_at else '—' }}</td>
+                                <td>{{ s.last_seen_at.strftime('%Y-%m-%d %H:%M') if s.last_seen_at else '—' }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="p-3 mb-0 admin-user-detail-empty-state">No active sessions.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Audit tab ───────────────────────────────────────────────────────── -->
+    <div class="tab-pane fade" id="tab-audit-pane" role="tabpanel" aria-labelledby="tab-audit">
+        <div class="card">
+            <div class="card-header"><strong>Recent Activity (last 50)</strong></div>
+            <div class="card-body p-0">
+                {% if audit %}
+                <div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                        <thead>
+                            <tr><th>Timestamp</th><th>Action</th><th>Resource</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for a in audit %}
+                            <tr>
+                                <td class="text-nowrap">{{ a.created_at.strftime('%Y-%m-%d %H:%M') if a.created_at else '—' }}</td>
+                                <td>{{ a.action }}</td>
+                                <td>{{ a.resource or '—' }}{% if a.resource_id %} #{{ a.resource_id }}{% endif %}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="p-3 mb-0 admin-user-detail-empty-state">No audit entries yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Danger zone tab ─────────────────────────────────────────────────── -->
+    <div class="tab-pane fade" id="tab-danger-pane" role="tabpanel" aria-labelledby="tab-danger">
+        <div class="row g-3">
+            <!-- Impersonate -->
+            {% if u.id != current_user.id and u.is_active %}
+            <div class="col-md-6">
+                <div class="card admin-user-detail-danger-card admin-user-detail-danger-card--warning">
+                    <div class="card-header admin-user-detail-danger-card-header admin-user-detail-danger-card-header--warning"><strong>Impersonate User</strong></div>
+                    <div class="card-body">
+                        <p class="small">Log in as <strong>{{ u.username }}</strong> for support purposes.
+                            A banner will remind you that you are impersonating.</p>
+                        <form method="post" action="{{ url_for('admin.user_impersonate', user_id=u.id) }}"
+                            data-admin-confirm="Log in as {{ u.username }}?">
+                            <button type="submit" class="btn admin-user-detail-action-button admin-user-detail-action-button--warning">
+                                <i class="bi bi-person-fill me-1"></i>Impersonate
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            <!-- Delete -->
+            {% if u.id != current_user.id %}
+            <div class="col-md-6">
+                <div class="card admin-user-detail-danger-card admin-user-detail-danger-card--danger">
+                    <div class="card-header admin-user-detail-danger-card-header admin-user-detail-danger-card-header--danger"><strong>Delete User</strong></div>
+                    <div class="card-body">
+                        <p class="small">Permanently delete <strong>{{ u.username }}</strong> and all associated data.
+                            Optionally reassign their projects first.</p>
+                        <form method="post" action="{{ url_for('admin.user_delete', user_id=u.id) }}"
+                            data-admin-confirm="PERMANENTLY delete user {{ u.username }}? This cannot be undone.">
+                            <div class="mb-3">
+                                <label for="reassign_to_id" class="form-label">Reassign projects to (optional)</label>
+                                <select class="form-select form-select-sm" id="reassign_to_id" name="reassign_to_id">
+                                    <option value="">— Delete all their data —</option>
+                                    {% for other in all_users if other.id != u.id %}
+                                    <option value="{{ other.id }}">{{ other.username }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <button type="submit" class="btn admin-user-detail-action-button admin-user-detail-action-button--danger">
+                                <i class="bi bi-trash3 me-1"></i>Delete permanently
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div><!-- /tab-content -->
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/admin_user_management_page.js') }}"></script>
+{% endblock %}

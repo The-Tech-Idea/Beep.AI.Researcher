@@ -1,0 +1,19 @@
+.profile-email-status--warning {
+    color: var(--color-warning-strong);
+}
+
+.profile-email-status--success {
+    color: var(--color-success-strong);
+}
+
+.profile-status-badge--enabled {
+    color: var(--color-accent-strong);
+    background: color-mix(in srgb, var(--color-accent-strong) 12%, var(--surface-primary));
+    border: 1px solid color-mix(in srgb, var(--color-accent-strong) 24%, var(--surface-primary));
+}
+
+.profile-status-badge--disabled {
+    color: var(--text-muted);
+    background: color-mix(in srgb, var(--text-muted) 10%, var(--surface-primary));
+    border: 1px solid color-mix(in srgb, var(--text-muted) 20%, var(--surface-primary));
+}

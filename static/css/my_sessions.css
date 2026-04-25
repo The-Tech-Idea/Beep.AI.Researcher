@@ -1,0 +1,7 @@
+.my-sessions-container {
+    max-width: 780px;
+}
+
+.my-sessions-header-icon {
+    color: var(--color-accent-strong);
+}

@@ -1,0 +1,106 @@
+.admin-document-management-message {
+    margin-bottom: var(--space-md);
+    padding: var(--space-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.admin-document-management-message--success {
+    border-color: color-mix(in srgb, var(--color-success) 35%, var(--bg-secondary));
+    background: color-mix(in srgb, var(--color-success) 10%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-success) 74%, var(--text-primary));
+}
+
+.admin-document-management-message--warning {
+    border-color: color-mix(in srgb, var(--color-warning) 45%, var(--bg-secondary));
+    background: color-mix(in srgb, var(--color-warning) 14%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-warning) 76%, var(--text-primary));
+}
+
+.admin-document-management-message--danger,
+.admin-document-management-message--error {
+    border-color: color-mix(in srgb, var(--color-error) 40%, var(--bg-secondary));
+    background: color-mix(in srgb, var(--color-error) 10%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-error) 76%, var(--text-primary));
+}
+
+.admin-document-management-summary-card {
+    border: 1px solid var(--border-color);
+    background: color-mix(in srgb, var(--bg-tertiary) 76%, var(--bg-secondary));
+}
+
+.admin-document-management-summary-card--primary {
+    background: color-mix(in srgb, var(--color-primary) 14%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-primary) 78%, var(--text-primary));
+}
+
+.admin-document-management-summary-card--secondary {
+    background: color-mix(in srgb, var(--text-muted) 14%, var(--bg-secondary));
+    color: var(--text-primary);
+}
+
+.admin-document-management-summary-icon,
+.admin-document-management-summary-copy,
+.admin-document-management-file-icon,
+.admin-document-management-muted {
+    color: var(--text-muted);
+}
+
+.admin-document-management-table-head {
+    background: color-mix(in srgb, var(--text-primary) 90%, var(--bg-secondary));
+    color: var(--text-inverse);
+}
+
+.admin-document-management-size {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+}
+
+.admin-document-management-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.65rem;
+    border-radius: var(--radius-full);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.admin-document-management-badge--project {
+    background: color-mix(in srgb, var(--text-muted) 14%, var(--bg-secondary));
+    color: var(--text-secondary);
+}
+
+.admin-document-management-badge--file-type {
+    border: 1px solid color-mix(in srgb, var(--border-color) 85%, var(--bg-secondary));
+    background: color-mix(in srgb, var(--bg-secondary) 85%, var(--bg-tertiary));
+    color: var(--text-primary);
+}
+
+.admin-document-management-delete-button {
+    padding: 0 0.5rem;
+    border-radius: var(--radius-sm);
+    border-color: color-mix(in srgb, var(--color-error) 40%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-error) 78%, var(--text-primary));
+    background: transparent;
+}
+
+.admin-document-management-delete-button:hover,
+.admin-document-management-delete-button:focus-visible {
+    background: color-mix(in srgb, var(--color-error) 12%, var(--bg-secondary));
+    border-color: color-mix(in srgb, var(--color-error) 52%, var(--bg-secondary));
+}
+
+.admin-document-management-empty-state {
+    padding: var(--space-2xl);
+    text-align: center;
+    color: var(--text-muted);
+}
+
+.admin-document-management-empty-icon {
+    color: var(--text-muted);
+}

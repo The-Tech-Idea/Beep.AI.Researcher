@@ -1,0 +1,74 @@
+<svg width="1200" height="800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#f8fafc"/>
+  
+  <!-- Header -->
+  <rect width="1200" height="60" fill="#1E40AF"/>
+  <text x="20" y="38" font-family="Arial" font-size="20" fill="white" font-weight="bold">Beep.AI.Researcher Dashboard</text>
+  
+  <!-- Sidebar -->
+  <rect width="250" height="740" y="60" fill="#f1f5f9"/>
+  
+  <!-- Project Cards -->
+  <g id="card1" transform="translate(280, 90)">
+    <rect width="280" height="200" rx="12" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+    <rect width="280" height="50" rx="12" fill="#3B82F6" opacity="0.1"/>
+    <circle cx="30" cy="25" r="8" fill="#3B82F6"/>
+    <text x="50" y="30" font-family="Arial" font-size="16" fill="#1e293b" font-weight="bold">Research Project 1</text>
+    <text x="20" y="80" font-family="Arial" font-size="14" fill="#64748b">Documents: 45</text>
+    <text x="20" y="105" font-family="Arial" font-size="14" fill="#64748b">Team: 3 members</text>
+    <text x="20" y="130" font-family="Arial" font-size="14" fill="#64748b">Updated: Today</text>
+    <rect x="20" y="150" width="100" height="30" rx="6" fill="#F59E0B"/>
+    <text x="40" y="170" font-family="Arial" font-size="12" fill="white" font-weight="bold">Open</text>
+  </g>
+  
+  <g id="card2" transform="translate(590, 90)">
+    <rect width="280" height="200" rx="12" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+    <rect width="280" height="50" rx="12" fill="#10B981" opacity="0.1"/>
+    <circle cx="30" cy="25" r="8" fill="#10B981"/>
+    <text x="50" y="30" font-family="Arial" font-size="16" fill="#1e293b" font-weight="bold">Qualitative Study</text>
+    <text x="20" y="80" font-family="Arial" font-size="14" fill="#64748b">Documents: 28</text>
+    <text x="20" y="105" font-family="Arial" font-size="14" fill="#64748b">Team: 5 members</text>
+    <text x="20" y="130" font-family="Arial" font-size="14" fill="#64748b">Updated: Yesterday</text>
+    <rect x="20" y="150" width="100" height="30" rx="6" fill="#F59E0B"/>
+    <text x="40" y="170" font-family="Arial" font-size="12" fill="white" font-weight="bold">Open</text>
+  </g>
+  
+  <!-- AI Feature Cards -->
+  <g id="ai-card1" transform="translate(280, 320)">
+    <rect width="180" height="150" rx="12" fill="white" stroke="#1E40AF" stroke-width="2"/>
+    <circle cx="90" cy="40" r="20" fill="#1E40AF" opacity="0.2"/>
+    <text x="90" y="45" font-family="Arial" font-size="24" text-anchor="middle">✨</text>
+    <text x="90" y="80" font-family="Arial" font-size="14" fill="#1e293b" font-weight="bold" text-anchor="middle">AI Writing</text>
+    <text x="90" y="105" font-family="Arial" font-size="12" fill="#64748b" text-anchor="middle">Generate content</text>
+  </g>
+  
+  <g id="ai-card2" transform="translate(490, 320)">
+    <rect width="180" height="150" rx="12" fill="white" stroke="#1E40AF" stroke-width="2"/>
+    <circle cx="90" cy="40" r="20" fill="#1E40AF" opacity="0.2"/>
+    <text x="90" y="45" font-family="Arial" font-size="24" text-anchor="middle">🎤</text>
+    <text x="90" y="80" font-family="Arial" font-size="14" fill="#1e293b" font-weight="bold" text-anchor="middle">Transcription</text>
+    <text x="90" y="105" font-family="Arial" font-size="12" fill="#64748b" text-anchor="middle">Audio to text</text>
+  </g>
+  
+  <g id="ai-card3" transform="translate(700, 320)">
+    <rect width="180" height="150" rx="12" fill="white" stroke="#1E40AF" stroke-width="2"/>
+    <circle cx="90" cy="40" r="20" fill="#1E40AF" opacity="0.2"/>
+    <text x="90" y="45" font-family="Arial" font-size="24" text-anchor="middle">📊</text>
+    <text x="90" y="80" font-family="Arial" font-size="14" fill="#1e293b" font-weight="bold" text-anchor="middle">Analytics</text>
+    <text x="90" y="105" font-family="Arial" font-size="12" fill="#64748b" text-anchor="middle">Data insights</text>
+  </g>
+  
+  <!-- Stats -->
+  <g id="stats" transform="translate(280, 500)">
+    <rect width="600" height="100" rx="12" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+    <text x="50" y="30" font-family="Arial" font-size="28" fill="#1E40AF" font-weight="bold">245</text>
+    <text x="50" y="55" font-family="Arial" font-size="12" fill="#64748b">Documents</text>
+    
+    <text x="230" y="30" font-family="Arial" font-size="28" fill="#10B981" font-weight="bold">1,456</text>
+    <text x="230" y="55" font-family="Arial" font-size="12" fill="#64748b">Codes Applied</text>
+    
+    <text x="430" y="30" font-family="Arial" font-size="28" fill="#F59E0B" font-weight="bold">98%</text>
+    <text x="430" y="55" font-family="Arial" font-size="12" fill="#64748b">Completion</text>
+  </g>
+</svg>

@@ -1,0 +1,291 @@
+.documents-upload-title {
+    margin-bottom: var(--space-1);
+    font-size: var(--font-size-section-title);
+    font-weight: 600;
+}
+
+.documents-upload-button,
+.documents-filter-button,
+.documents-action-button,
+.documents-bulk-button {
+    align-items: center;
+    border-radius: var(--border-radius-pill);
+    display: inline-flex;
+    gap: var(--space-2);
+    justify-content: center;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.documents-button-icon {
+    flex-shrink: 0;
+}
+
+.documents-upload-button,
+.documents-bulk-button {
+    border: 1px solid transparent;
+    color: var(--color-text);
+    font-weight: 600;
+    padding: 0.5rem 0.85rem;
+}
+
+.documents-upload-button {
+    background: color-mix(in srgb, var(--color-accent-primary) 18%, var(--color-surface));
+    border-color: color-mix(in srgb, var(--color-accent-primary) 28%, var(--color-border-muted));
+}
+
+.documents-upload-button:hover,
+.documents-upload-button:focus-visible {
+    background: color-mix(in srgb, var(--color-accent-primary) 26%, var(--color-surface));
+    border-color: color-mix(in srgb, var(--color-accent-primary) 38%, var(--color-border-muted));
+    color: var(--color-text);
+}
+
+.documents-upload-button--empty {
+    margin-top: var(--space-3);
+}
+
+.documents-upload-description {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-small-note);
+}
+
+.documents-upload-formats {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-meta);
+}
+
+.documents-upload-progress {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.documents-upload-spinner {
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 0.25rem solid color-mix(in srgb, var(--color-border) 82%, transparent);
+    border-top-color: var(--color-accent);
+    border-radius: 50%;
+    animation: documents-upload-spin 0.85s linear infinite;
+}
+
+.documents-upload-progress-text {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-small-note);
+}
+
+.documents-sort-select {
+    width: auto;
+}
+
+.documents-filter-group {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.documents-filter-button {
+    background: color-mix(in srgb, var(--color-surface-secondary) 90%, var(--color-accent-primary) 10%);
+    border: 1px solid color-mix(in srgb, var(--color-accent-primary) 14%, var(--color-border-muted));
+    color: var(--color-text);
+    font-size: var(--font-size-badge);
+    font-weight: 600;
+    padding: 0.45rem 0.75rem;
+}
+
+.documents-filter-button:hover,
+.documents-filter-button:focus-visible {
+    background: color-mix(in srgb, var(--color-surface-secondary) 80%, var(--color-accent-primary) 20%);
+    border-color: color-mix(in srgb, var(--color-accent-primary) 24%, var(--color-border-muted));
+    color: var(--color-text);
+}
+
+.documents-filter-button--active {
+    background: color-mix(in srgb, var(--color-accent-primary) 18%, var(--color-surface));
+    border-color: color-mix(in srgb, var(--color-accent-primary) 28%, var(--color-border-muted));
+}
+
+.documents-select-column {
+    width: 2rem;
+}
+
+.documents-name-cell {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.documents-file-name {
+    font-weight: 500;
+}
+
+.documents-file-meta {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-meta);
+}
+
+.documents-muted-cell {
+    color: var(--color-text-muted);
+}
+
+.documents-activity-badge {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--color-border-muted);
+    border-radius: var(--border-radius-pill);
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--font-size-badge);
+}
+
+.documents-activity-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+}
+
+.documents-activity-icon {
+    flex-shrink: 0;
+}
+
+.documents-activity-badge-codes {
+    background: color-mix(in srgb, var(--color-surface) 82%, var(--color-text-muted) 18%);
+    color: var(--color-text-muted);
+}
+
+.documents-activity-badge-extractions {
+    background: color-mix(in srgb, var(--color-surface) 84%, var(--color-accent-info) 16%);
+    color: var(--color-accent-info);
+}
+
+.documents-activity-badge-flashcards {
+    background: color-mix(in srgb, var(--color-surface) 82%, var(--color-accent-secondary) 18%);
+    color: var(--color-accent-secondary);
+}
+
+.documents-actions-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+}
+
+.documents-action-button {
+    background: color-mix(in srgb, var(--color-surface-secondary) 90%, var(--color-text-muted) 10%);
+    border: 1px solid color-mix(in srgb, var(--color-text-muted) 16%, var(--color-border-muted));
+    color: var(--color-text);
+    min-height: 2rem;
+    min-width: 2rem;
+    padding: 0.35rem 0.55rem;
+    text-decoration: none;
+}
+
+.documents-action-button:hover,
+.documents-action-button:focus-visible {
+    color: var(--color-text);
+}
+
+.documents-action-button--neutral:hover,
+.documents-action-button--neutral:focus-visible {
+    background: color-mix(in srgb, var(--color-surface-secondary) 78%, var(--color-text-muted) 22%);
+    border-color: color-mix(in srgb, var(--color-text-muted) 24%, var(--color-border-muted));
+}
+
+.documents-action-button--info {
+    background: color-mix(in srgb, var(--color-surface) 84%, var(--color-accent-info) 16%);
+    border-color: color-mix(in srgb, var(--color-accent-info) 24%, var(--color-border-muted));
+    color: var(--color-accent-info);
+}
+
+.documents-action-button--info:hover,
+.documents-action-button--info:focus-visible {
+    background: color-mix(in srgb, var(--color-surface) 74%, var(--color-accent-info) 26%);
+    border-color: color-mix(in srgb, var(--color-accent-info) 34%, var(--color-border-muted));
+    color: var(--color-accent-info);
+}
+
+.documents-action-button--primary {
+    background: color-mix(in srgb, var(--color-surface) 84%, var(--color-accent-primary) 16%);
+    border-color: color-mix(in srgb, var(--color-accent-primary) 24%, var(--color-border-muted));
+    color: var(--color-accent-primary);
+}
+
+.documents-action-button--primary:hover,
+.documents-action-button--primary:focus-visible {
+    background: color-mix(in srgb, var(--color-surface) 74%, var(--color-accent-primary) 26%);
+    border-color: color-mix(in srgb, var(--color-accent-primary) 34%, var(--color-border-muted));
+    color: var(--color-accent-primary);
+}
+
+.documents-action-button--danger {
+    background: color-mix(in srgb, var(--color-surface) 88%, var(--color-danger-strong) 12%);
+    border-color: color-mix(in srgb, var(--color-danger-strong) 20%, var(--color-border-muted));
+    color: var(--color-danger-strong);
+}
+
+.documents-action-button--danger:hover,
+.documents-action-button--danger:focus-visible {
+    background: color-mix(in srgb, var(--color-surface) 78%, var(--color-danger-strong) 22%);
+    border-color: color-mix(in srgb, var(--color-danger-strong) 30%, var(--color-border-muted));
+    color: var(--color-danger-strong);
+}
+
+.documents-bulk-bar {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-soft);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-md);
+    transform: translateX(-50%);
+}
+
+.documents-bulk-count {
+    font-size: var(--font-size-small-note);
+}
+
+.documents-bulk-button {
+    border: 1px solid transparent;
+    font-size: var(--font-size-badge);
+}
+
+.documents-bulk-button--neutral {
+    background: color-mix(in srgb, var(--color-surface-secondary) 90%, var(--color-text-muted) 10%);
+    border-color: color-mix(in srgb, var(--color-text-muted) 16%, var(--color-border-muted));
+}
+
+.documents-bulk-button--neutral:hover,
+.documents-bulk-button--neutral:focus-visible {
+    background: color-mix(in srgb, var(--color-surface-secondary) 80%, var(--color-text-muted) 20%);
+    border-color: color-mix(in srgb, var(--color-text-muted) 24%, var(--color-border-muted));
+    color: var(--color-text);
+}
+
+.documents-bulk-button--danger {
+    background: color-mix(in srgb, var(--color-surface) 88%, var(--color-danger-strong) 12%);
+    border-color: color-mix(in srgb, var(--color-danger-strong) 20%, var(--color-border-muted));
+    color: var(--color-danger-strong);
+}
+
+.documents-bulk-button--danger:hover,
+.documents-bulk-button--danger:focus-visible {
+    background: color-mix(in srgb, var(--color-surface) 78%, var(--color-danger-strong) 22%);
+    border-color: color-mix(in srgb, var(--color-danger-strong) 30%, var(--color-border-muted));
+    color: var(--color-danger-strong);
+}
+
+@keyframes documents-upload-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

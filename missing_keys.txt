@@ -1,0 +1,279 @@
+ALL FRENCH MISSING KEYS (278):
+base.chat.title: AI Assistant
+base.collapse_sidebar: Collapse sidebar
+base.nav.admin: Admin
+base.nav.ai_assistant: AI Assistant
+base.nav.codes: Codes
+base.nav.data_charts: Data & Charts
+base.nav.documents: Documents
+base.nav.extraction: Extraction
+base.nav.flashcards: Flashcards
+base.nav.login: Login
+base.nav.logout: Logout
+base.nav.members: Members
+base.nav.overview: Overview
+base.nav.profile: Profile
+base.nav.quizzes: Quizzes
+base.nav.report: Report
+base.nav.search_chat: Search & Chat
+base.nav.settings: Settings
+base.nav.tasks: Tasks
+base.nav.tenants: Tenants
+base.new_project: New Project
+base.projects.title: Projects
+base.topbar.dark: Dark
+base.topbar.home: Home
+base.topbar.language: Language
+base.topbar.light: Light
+base.topbar.menu: Menu
+base.topbar.system: System
+codes.action.delete: Delete
+codes.action.edit: Edit
+codes.confirm.delete: Delete this code and all its excerpts?
+codes.detail.edit: Edit
+codes.detail.no_description: No description
+codes.detail.select_code: Select a code
+codes.empty.create_button: Create Code
+codes.empty.create_first: Create your first code to start qualitative analysis
+codes.empty.desc: Create codes to start analyzing
+codes.empty.title: No codes yet
+codes.excerpts.empty.desc: Select text in your documents and apply this code
+codes.excerpts.empty.title: No excerpts coded
+codes.excerpts_label: excerpts
+codes.export: Export
+codes.form.add: Add
+codes.form.cancel: Cancel
+codes.form.placeholder: Code name...
+codes.sidebar.title: Codes
+codes.subtitle: Qualitative coding and thematic analysis
+codes.title: Codes & Themes
+dashboard.activity.title: Recent Activity
+dashboard.errors.create_failed: Failed to create project.
+dashboard.feature.ai_writing.desc: Write faster with contextual text suggestions.
+dashboard.feature.ai_writing.title: AI Writing Assistant
+dashboard.feature.chat_pdfs.desc: Extract insights, summaries, and related papers.
+dashboard.feature.chat_pdfs.title: Chat with PDFs
+dashboard.feature.codes_themes.desc: Qualitative coding and thematic analysis.
+dashboard.feature.codes_themes.title: Codes & Themes
+dashboard.feature.data_extraction.desc: Extract structured data from documents.
+dashboard.feature.data_extraction.title: Data Extraction
+dashboard.feature.flashcards.desc: Create study cards from your research.
+dashboard.feature.flashcards.title: Flashcards
+dashboard.feature.research_cite.desc: Find and cite references from research sources.
+dashboard.feature.research_cite.title: Research & Cite
+dashboard.feature.title: AI Research Tools
+dashboard.stat.projects: Projects
+data.chart.type.bar: Bar
+data.chart.type.line: Line
+data.chart.type.pie: Pie
+documents.action.delete: Delete
+documents.action.download: Download
+documents.action.view: View
+documents.bulk.delete: Delete
+documents.bulk.download: Download
+documents.bulk.selected: selected
+documents.button.upload: Upload
+documents.confirm.delete: Delete this document?
+documents.empty.desc: Upload PDF, Word, or text files to start analyzing.
+documents.empty.title: No documents yet
+documents.empty.upload: Upload Documents
+documents.filter.all: All
+documents.filter.indexed: Indexed
+documents.filter.pending: Pending
+documents.filter.search: Search documents...
+documents.sort.name_asc: Name A-Z
+documents.sort.name_desc: Name Z-A
+documents.sort.newest: Newest first
+documents.sort.oldest: Oldest first
+documents.status.failed: Failed
+documents.status.indexed: Indexed
+documents.status.processing: Processing
+documents.table.name: Name
+documents.table.size: Size
+documents.table.status: Status
+documents.upload.browse: or click to browse
+documents.upload.drag: Drag & drop files here
+documents.upload.formats: PDF, Word, Text, Markdown, CSV, Excel (max 50MB)
+extraction.back: Back
+extraction.modal.cancel: Cancel
+extraction.modal.create: Create
+extraction.modal.fields_placeholder: Schema fields JSON
+extraction.modal.name_placeholder: Schema name
+extraction.modal.title: New extraction schema
+extraction.new: New
+extraction.no_schemas: No schemas
+extraction.run: Run
+extraction.schemas: Schemas
+extraction.subtitle: Elicit-style structured extraction
+extraction.title: Extraction
+flashcards.answer: A:
+flashcards.empty: No flashcards. Click Generate.
+flashcards.generate: Generate
+flashcards.question: Q:
+flashcards.subtitle: Study with AI-generated flashcards
+flashcards.title: Flashcards
+layout.default_title: Project
+members.add: Add
+members.confirm_remove: Remove this member?
+members.modal.add: Add
+members.modal.cancel: Cancel
+members.modal.role.admin: Admin
+members.modal.role.contributor: Contributor
+members.modal.role.viewer: Viewer
+members.modal.select_user: Select user
+members.modal.title: Add member
+members.owner: owner
+members.project_members: Project members
+members.remove: Remove
+members.title: Members
+overview.action.ask_ai: Ask AI
+overview.action.code_data: Code Data
+overview.action.flashcards: Flashcards
+overview.action.new_task: New Task
+overview.action.upload: Upload Document
+overview.action.write_report: Write Report
+overview.activity.empty.desc: Start by uploading documents or creating tasks.
+overview.activity.empty.title: No recent activity
+overview.activity.title: Recent Activity
+overview.export: Export
+overview.stat.codes: Codes
+overview.stat.conversations: Conversations
+overview.stat.documents: Documents
+overview.stat.tasks: Tasks
+overview.subtitle: Project overview and recent activity
+overview.title: Overview
+project_search.chip.compare: Compare different perspectives
+project_search.chip.contradictions: Find contradictions
+project_search.chip.summarize: Summarize the main findings
+project_search.chip.themes: What are the key themes?
+project_search.clear: Clear
+project_search.confirm.clear: Clear all chat history?
+project_search.error.generic: Sorry, something went wrong. Please try again.
+project_search.placeholder: Ask a question about your documents...
+project_search.sources: Sources
+project_search.subtitle: Ask questions about your research
+project_search.title: Search & Chat
+project_search.welcome.desc: I can help you find information, summarize documents, compare ideas, and more.
+project_search.welcome.title: Ask anything about your research
+project_settings.ai.creative: Creative (1)
+project_settings.ai.model: AI Model
+project_settings.ai.precise: Precise (0)
+project_settings.ai.temperature: Temperature
+project_settings.ai.title: AI & RAG Settings
+project_settings.alerts.archive_confirm: Archive this project? It will be hidden from your active projects.
+project_settings.alerts.delete_confirm: Type "DELETE" to confirm deletion:
+project_settings.alerts.disconnect_confirm: Disconnect from RAG collection? AI chat features will be limited.
+project_settings.alerts.saved: Settings saved!
+project_settings.category: Category
+project_settings.category.other: Other
+project_settings.category.paper: Paper
+project_settings.category.research: Research
+project_settings.category.review: Literature Review
+project_settings.category.select: Select category...
+project_settings.category.thesis: Thesis
+project_settings.danger.archive: Archive Project
+project_settings.danger.delete: Delete Project
+project_settings.danger.desc: These actions are irreversible.
+project_settings.danger.title: Danger Zone
+project_settings.description: Description
+project_settings.export.desc: Download a complete backup of your project data.
+project_settings.export.json: Export JSON
+project_settings.export.title: Export & Backup
+project_settings.export.zip: Export ZIP
+project_settings.general: General
+project_settings.info.created: Created
+project_settings.info.documents: Documents
+project_settings.info.files: files
+project_settings.info.modified: Last Modified
+project_settings.info.storage: Storage Used
+project_settings.info.title: Project Info
+project_settings.project_name: Project Name
+project_settings.rag.collection_id: Collection ID:
+project_settings.rag.connect: Connect to RAG Collection
+project_settings.rag.connected: Connected
+project_settings.rag.disconnect: Disconnect
+project_settings.rag.label: RAG Collection
+project_settings.rag.warning: No RAG collection connected. AI chat features will be limited.
+project_settings.save: Save Changes
+project_settings.status: Status
+project_settings.status.active: Active
+project_settings.status.archived: Archived
+project_settings.status.completed: Completed
+project_settings.status.paused: Paused
+project_settings.subtitle: Configure your project
+project_settings.tags: Tags
+project_settings.tags.placeholder: Separate tags with commas
+project_settings.title: Settings
+project_tasks.add_task: Add Task
+project_tasks.column.done: Done
+project_tasks.column.in_progress: In Progress
+project_tasks.column.todo: To Do
+project_tasks.drop_here: Drop tasks here
+project_tasks.modal.cancel: Cancel
+project_tasks.modal.save: Save Task
+project_tasks.modal.title: Add Task
+project_tasks.subtitle: Manage your research workflow
+project_tasks.title: Tasks
+quizzes.empty: No quizzes. Click Generate Quiz.
+quizzes.generate: Generate Quiz
+quizzes.questions_suffix: questions
+quizzes.subtitle: MCQ quizzes from your research
+quizzes.title: Quizzes
+report.ai.citations.desc: Suggest relevant citations
+report.ai.citations.title: Find Citations
+report.ai.expand.desc: Add more detail to text
+report.ai.expand.title: Expand Selection
+report.ai.grammar.desc: Fix grammar and spelling
+report.ai.grammar.title: Check Grammar
+report.ai.improve.desc: Enhance clarity and style
+report.ai.improve.title: Improve Writing
+report.ai.paraphrase.desc: Rewrite to avoid plagiarism
+report.ai.paraphrase.title: Paraphrase
+report.ai.summarize.desc: Generate summary from documents
+report.ai.summarize.title: Summarize Sources
+report.ai.title: AI Assistant
+report.alerts.enter_url: Enter URL:
+report.alerts.saved: Report saved!
+report.alerts.select_text: Please select some text first.
+report.editor.abstract_placeholder: Write your abstract here...
+report.editor.conclusion_placeholder: Summarize your key conclusions...
+report.editor.discussion_placeholder: Analyze and interpret your results...
+report.editor.intro_placeholder: Start writing your introduction...
+report.editor.methods_placeholder: Describe your research methodology...
+report.editor.results_placeholder: Present your findings...
+report.editor.untitled: Untitled Report
+report.export.markdown: Export as Markdown
+report.export.pdf: Export as PDF
+report.export.word: Export as Word
+report.outline: Outline
+report.save: Save
+report.section.background: Background
+report.section.conclusion: Conclusion
+report.section.discussion: Discussion
+report.section.introduction: Introduction
+report.section.methods: Methods
+report.section.objectives: Objectives
+report.section.references: References
+report.section.results: Results
+report.section.title_abstract: Title & Abstract
+report.subtitle: Create and export your research report
+report.title: Report Builder
+report.wordcount: words
+sidebar.back_to_projects: Back to Projects
+sidebar.nav.codes: Codes
+sidebar.nav.dashboard: Dashboard
+sidebar.nav.data_charts: Data & Charts
+sidebar.nav.documents: Documents
+sidebar.nav.flashcards: Flashcards
+sidebar.nav.quizzes: Quizzes
+sidebar.nav.report: Report Writer
+sidebar.nav.search_chat: Search & Chat
+sidebar.nav.settings: Settings
+sidebar.nav.tasks: Tasks
+sidebar.section.analysis: Analysis
+sidebar.section.learning: Learning
+sidebar.section.overview: Overview
+sidebar.section.productivity: Productivity
+sidebar.section.research: Research
+sidebar.toggle: Toggle Sidebar
+tasks.form.due_date: Due Date

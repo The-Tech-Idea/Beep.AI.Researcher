@@ -1,0 +1,468 @@
+FFFFFFFFFFFFFFEEEEEEEEEEEEEEFEEEE....................................... [ 12%]
+....EEEEEEEEEEEEEEEEEEEEEEEE...............................EE.E......... [ 25%]
+........................................................................ [ 38%]
+........................................................................ [ 50%]
+..............................................................FF.FFFFFFF [ 63%]
+FFFFFFF..EEEEEEEEEEEEEFEEEEEEE..............................FFFFFFFFFFFF [ 76%]
+FFFFFFFFFFFFFFFFFFFFFFFFFFFFF...F....................................... [ 89%]
+....EEEEEEEEEEEEE.EEEE.E.....................................            [100%]
+============================== warnings summary ===============================
+.venv\Lib\site-packages\_pytest\config\__init__.py:1428
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\.venv\Lib\site-packages\_pytest\config\__init__.py:1428: PytestConfigWarning: Unknown config option: asyncio_fixture_scope
+  
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+
+tests/test_app.py: 4 warnings
+tests/test_event_bus_integration.py: 28 warnings
+tests/test_extraction_validation.py: 64 warnings
+tests/test_monitoring.py: 4 warnings
+tests/test_plugin_system.py: 60 warnings
+tests/test_rbac_api.py: 4 warnings
+tests/test_references.py: 68 warnings
+tests/test_search_caching.py: 76 warnings
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\scripts\seed_roles.py:42: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    created_at=datetime.utcnow()
+
+tests/test_app.py: 4 warnings
+tests/test_debug_routes.py: 12 warnings
+tests/test_event_bus_integration.py: 28 warnings
+tests/test_extraction_validation.py: 249 warnings
+tests/test_monitoring.py: 95 warnings
+tests/test_permission_service.py: 28 warnings
+tests/test_plugin_system.py: 101 warnings
+tests/test_rbac_api.py: 30 warnings
+tests/test_rbac_e2e.py: 25 warnings
+tests/test_rbac_models.py: 37 warnings
+tests/test_references.py: 181 warnings
+tests/test_search_caching.py: 112 warnings
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\.venv\Lib\site-packages\sqlalchemy\sql\schema.py:3624: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    return util.wrap_callable(lambda ctx: fn(), fn)  # type: ignore
+
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_estimated_time
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\models\researcher\batch_operations.py:119: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    self.started_at = datetime.utcnow()
+
+tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_estimated_time
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_batch_operations.py:93: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    job.started_at = datetime.utcnow() - timedelta(seconds=10)
+
+tests/test_extended_search.py: 1 warning
+tests/test_search_caching.py: 1 warning
+tests/test_search_system.py: 17 warnings
+  <string>:22: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+
+tests/test_extraction_validation.py::TestExtractionValidationService::test_extracted_field_value_status_tracking
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_extraction_validation.py:303: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    retrieved = db.session.query(ExtractedFieldValue).get(field_value.id)
+
+tests/test_extraction_validation.py::TestExtractionValidationService::test_extraction_validation_result_model
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_extraction_validation.py:436: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    retrieved = db.session.query(ExtractionValidationResult).get(val_result.id)
+
+tests/test_extraction_validation.py::TestExtractionValidationService::test_schema_field_relationship
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_extraction_validation.py:453: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    retrieved_schema = db.session.query(ExtractionSchema).get(test_schema.id)
+
+tests/test_monitoring.py::TestPerformanceAlertModel::test_alert_acknowledge
+tests/test_monitoring.py::TestMonitoringService::test_acknowledge_alert
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\models\researcher\monitoring.py:273: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    self.acknowledged_at = datetime.utcnow()
+
+tests/test_monitoring.py::TestPerformanceAlertModel::test_alert_resolve
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\models\researcher\monitoring.py:278: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    self.resolved_at = datetime.utcnow()
+
+tests/test_monitoring.py::TestMonitoringService::test_record_job_metric
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_monitoring.py:302: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    metric = db.session.query(JobMetrics).get(metric_id)
+
+tests/test_monitoring.py::TestMonitoringService::test_calculate_job_performance
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\services\monitoring.py:127: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    'recorded_at': datetime.utcnow().isoformat()
+
+tests/test_monitoring.py::TestMonitoringService::test_analyze_trends
+tests/test_monitoring.py::TestMonitoringService::test_get_plugin_performance_report
+tests/test_monitoring.py::TestErrorHandling::test_empty_trend_analysis
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\services\monitoring.py:145: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    since_date = datetime.utcnow() - timedelta(days=days)
+
+tests/test_monitoring.py::TestMonitoringService::test_analyze_trends
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\services\monitoring.py:201: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    'calculated_at': datetime.utcnow().isoformat()
+
+tests/test_monitoring.py::TestMonitoringService::test_create_performance_benchmark
+tests/test_monitoring.py::TestMonitoringIntegration::test_metric_recording_to_benchmark_pipeline
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\services\monitoring.py:219: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    recent_date = datetime.utcnow() - timedelta(days=30)
+
+tests/test_monitoring.py::TestMonitoringService::test_update_system_health
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\services\monitoring.py:302: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    today = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+
+tests/test_monitoring.py::TestMonitoringService::test_update_system_health
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\services\monitoring.py:325: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    JobMetrics.recorded_at >= (datetime.utcnow() - timedelta(hours=1))
+
+tests/test_monitoring.py::TestMonitoringService::test_get_system_health
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\services\monitoring.py:379: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    since = datetime.utcnow() - timedelta(hours=hours)
+
+tests/test_monitoring.py::TestMonitoringService::test_check_performance_alerts
+tests/test_monitoring.py::TestMonitoringService::test_check_performance_alerts
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\services\monitoring.py:429: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    since = datetime.utcnow() - timedelta(hours=1)
+
+tests/test_monitoring.py::TestMonitoringService::test_acknowledge_alert
+tests/test_monitoring.py::TestErrorHandling::test_invalid_alert_acknowledge
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\services\monitoring.py:576: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    alert = PerformanceAlert.query.get(alert_id)
+
+tests/test_monitoring.py::TestMonitoringService::test_acknowledge_alert
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_monitoring.py:488: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    updated = db.session.query(PerformanceAlert).get(alert.id)
+
+tests/test_monitoring.py::TestMonitoringService::test_get_dashboard_metrics
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\services\monitoring.py:630: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    since = datetime.utcnow() - delta
+
+tests/test_monitoring.py::TestMonitoringService::test_get_dashboard_metrics
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\services\monitoring.py:674: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    'calculated_at': datetime.utcnow().isoformat()
+
+tests/test_monitoring.py::TestMonitoringService::test_get_plugin_performance_report
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\services\monitoring.py:691: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    since = datetime.utcnow() - timedelta(days=days)
+
+tests/test_monitoring.py::TestMonitoringService::test_get_plugin_performance_report
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\services\monitoring.py:717: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    'report_date': datetime.utcnow().isoformat()
+
+tests/test_monitoring.py::TestMonitoringIntegration::test_metric_recording_to_benchmark_pipeline
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_monitoring.py:708: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    benchmark = db.session.query(PerformanceBenchmark).get(benchmark_id)
+
+tests/test_permission_service.py::TestPermissionServiceScopes::test_project_scope_permission
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_permission_service.py:122: SAWarning: Column 'user_roles.id' is marked as a member of the primary key for table 'user_roles', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_permission_service.py::TestPermissionServiceExpiry::test_expired_permission_not_granted
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_permission_service.py:200: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    past = datetime.utcnow() - timedelta(days=1)
+
+tests/test_permission_service.py::TestPermissionServiceExpiry::test_expired_permission_not_granted
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_permission_service.py:208: SAWarning: Column 'user_roles.id' is marked as a member of the primary key for table 'user_roles', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_permission_service.py::TestDocumentAccess::test_owner_can_access_document
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_permission_service.py:258: SAWarning: Column 'document_access.id' is marked as a member of the primary key for table 'document_access', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_permission_service.py::TestDocumentAccess::test_non_owner_cannot_access_private_document
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_permission_service.py:278: SAWarning: Column 'document_access.id' is marked as a member of the primary key for table 'document_access', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_permission_service.py::TestDocumentAccess::test_can_access_public_document
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_permission_service.py:298: SAWarning: Column 'document_access.id' is marked as a member of the primary key for table 'document_access', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_permission_service.py::TestDocumentAccess::test_can_access_shared_document
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_permission_service.py:318: SAWarning: Column 'document_access.id' is marked as a member of the primary key for table 'document_access', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_plugin_system.py::TestHookContext::test_context_creation
+tests/test_plugin_system.py::TestHookContext::test_context_to_dict
+tests/test_plugin_system.py::TestPluginBase::test_plugin_hook_execution
+tests/test_plugin_system.py::TestPluginManager::test_execute_hook_no_plugins
+tests/test_plugin_system.py::TestPluginIntegration::test_hook_context_flow
+  <string>:8: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+
+tests/test_rbac_api.py::TestRoleAdminAPI::test_list_roles
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_api.py:20: SAWarning: Column 'rbac_roles.id' is marked as a member of the primary key for table 'rbac_roles', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_api.py::TestRoleAdminAPI::test_create_role_with_permission
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_api.py:54: SAWarning: Column 'rbac_roles.id' is marked as a member of the primary key for table 'rbac_roles', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_api.py::TestRoleAdminAPI::test_get_role_details
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_api.py:89: SAWarning: Column 'rbac_roles.id' is marked as a member of the primary key for table 'rbac_roles', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_api.py::TestRoleAdminAPI::test_delete_role_forbidden_for_builtin
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_api.py:111: SAWarning: Column 'rbac_roles.id' is marked as a member of the primary key for table 'rbac_roles', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_api.py::TestUserRoleAdminAPI::test_list_user_roles
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_api.py:134: SAWarning: Column 'rbac_roles.id' is marked as a member of the primary key for table 'rbac_roles', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_api.py::TestUserRoleAdminAPI::test_assign_role_to_user
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_api.py:164: SAWarning: Column 'rbac_roles.id' is marked as a member of the primary key for table 'rbac_roles', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_api.py::TestUserRoleAdminAPI::test_cannot_assign_nonexistent_role
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_api.py:204: SAWarning: Column 'rbac_roles.id' is marked as a member of the primary key for table 'rbac_roles', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_api.py::TestDocumentAccessAPI::test_get_document_access
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_api.py:245: SAWarning: Column 'document_access.id' is marked as a member of the primary key for table 'document_access', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_api.py::TestDocumentAccessAPI::test_make_document_public
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_api.py:272: SAWarning: Column 'document_access.id' is marked as a member of the primary key for table 'document_access', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_api.py::TestDocumentAccessAPI::test_make_document_private
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_api.py:298: SAWarning: Column 'document_access.id' is marked as a member of the primary key for table 'document_access', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_api.py::TestDocumentAccessAPI::test_share_document_with_user
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_api.py:325: SAWarning: Column 'document_access.id' is marked as a member of the primary key for table 'document_access', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_api.py::TestDocumentAccessAPI::test_can_only_share_own_document
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_api.py:356: SAWarning: Column 'document_access.id' is marked as a member of the primary key for table 'document_access', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_api.py::TestDecoratorIntegration::test_decorator_allows_authorized_access
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_api.py:396: SAWarning: Column 'rbac_roles.id' is marked as a member of the primary key for table 'rbac_roles', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_e2e.py::TestCompleteWorkflows::test_workflow_admin_creates_role_assigns_user_grants_permission
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_e2e.py:46: SAWarning: Column 'user_roles.id' is marked as a member of the primary key for table 'user_roles', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_e2e.py::TestCompleteWorkflows::test_workflow_share_document_with_group_group_members_access
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_e2e.py:87: SAWarning: Column 'document_access.id' is marked as a member of the primary key for table 'document_access', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_e2e.py::TestCompleteWorkflows::test_workflow_temporary_access_expires_revoked
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_e2e.py:140: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    future = datetime.utcnow() + timedelta(days=7)
+
+tests/test_rbac_e2e.py::TestCompleteWorkflows::test_workflow_temporary_access_expires_revoked
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_e2e.py:148: SAWarning: Column 'user_roles.id' is marked as a member of the primary key for table 'user_roles', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_e2e.py::TestCompleteWorkflows::test_workflow_update_role_permissions_affects_all_users
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_e2e.py:197: SAWarning: Column 'user_roles.id' is marked as a member of the primary key for table 'user_roles', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_e2e.py::TestCompleteWorkflows::test_workflow_project_level_permissions_scoped_access
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_e2e.py:250: SAWarning: Column 'user_roles.id' is marked as a member of the primary key for table 'user_roles', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_e2e.py::TestFailureScenarios::test_deleted_role_prevents_permission_check
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_e2e.py:311: SAWarning: Column 'user_roles.id' is marked as a member of the primary key for table 'user_roles', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_models.py::TestUserRoleModel::test_user_role_with_expiry
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_models.py:154: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    future = datetime.utcnow() + timedelta(days=7)
+
+tests/test_rbac_models.py::TestUserRoleModel::test_user_role_with_expiry
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_models.py:162: SAWarning: Column 'user_roles.id' is marked as a member of the primary key for table 'user_roles', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_models.py::TestUserRoleModel::test_user_role_is_expired
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_models.py:179: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    past = datetime.utcnow() - timedelta(days=1)
+
+tests/test_rbac_models.py::TestUserRoleModel::test_user_role_is_expired
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_models.py:187: SAWarning: Column 'user_roles.id' is marked as a member of the primary key for table 'user_roles', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_models.py::TestUserRoleModel::test_user_role_project_scope
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_models.py:211: SAWarning: Column 'user_roles.id' is marked as a member of the primary key for table 'user_roles', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_models.py::TestDocumentAccessModel::test_create_document_access
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_models.py:236: SAWarning: Column 'document_access.id' is marked as a member of the primary key for table 'document_access', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_models.py::TestDocumentAccessModel::test_document_access_share_with_user
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_models.py:257: SAWarning: Column 'document_access.id' is marked as a member of the primary key for table 'document_access', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_models.py::TestDocumentAccessModel::test_document_access_make_private
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_models.py:280: SAWarning: Column 'document_access.id' is marked as a member of the primary key for table 'document_access', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_models.py::TestDocumentAccessModel::test_document_access_make_public
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_models.py:303: SAWarning: Column 'document_access.id' is marked as a member of the primary key for table 'document_access', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_models.py::TestUserGroupModel::test_create_user_group
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_models.py:326: SAWarning: Column 'user_groups.id' is marked as a member of the primary key for table 'user_groups', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_models.py::TestUserGroupModel::test_group_add_member
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_models.py:340: SAWarning: Column 'user_groups.id' is marked as a member of the primary key for table 'user_groups', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_rbac_models.py::TestUserGroupModel::test_group_has_member
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_rbac_models.py:359: SAWarning: Column 'user_groups.id' is marked as a member of the primary key for table 'user_groups', but has no Python-side or server-side default generator indicated, nor does it indicate 'autoincrement=True' or 'nullable=True', and no explicit value is passed.  Primary key columns typically may not store NULL.
+    db.session.commit()
+
+tests/test_search_caching.py::TestCachePerformance::test_lru_cache_efficiency
+tests/test_search_caching.py::TestCachePerformance::test_lru_cache_efficiency
+tests/test_search_caching.py::TestCachePerformance::test_lru_cache_efficiency
+tests/test_search_caching.py::TestCachePerformance::test_lru_cache_efficiency
+tests/test_search_caching.py::TestCachePerformance::test_lru_cache_efficiency
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\services\search_cache_manager.py:192: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    'cached_at': datetime.utcnow()
+
+tests/test_search_system.py::TestAbstractSearchProvider::test_record_request_success
+tests/test_search_system.py::TestAbstractSearchProvider::test_record_request_failure
+tests/test_search_system.py::TestAbstractSearchProvider::test_provider_stats
+tests/test_search_system.py::TestAbstractSearchProvider::test_provider_stats
+tests/test_search_system.py::TestSearchManagerSearching::test_search_default_sources
+tests/test_search_system.py::TestSearchManagerSearching::test_search_default_sources
+tests/test_search_system.py::TestSearchIntegration::test_complete_search_workflow
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\integrations\search\base.py:207: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    self.last_request = datetime.utcnow()
+
+tests/test_search_system.py::TestSearchManagerSearching::test_search_default_sources
+tests/test_search_system.py::TestSearchManagerSearching::test_search_specific_sources
+tests/test_search_system.py::TestSearchManagerSearching::test_search_caching
+tests/test_search_system.py::TestSearchIntegration::test_complete_search_workflow
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\integrations\search\search_manager.py:209: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    'time': datetime.utcnow(),
+
+tests/test_search_system.py::TestSearchManagerSearching::test_search_caching
+tests/test_search_system.py::TestSearchManagerSearching::test_search_cache_ttl
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\integrations\search\search_manager.py:198: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    age = (datetime.utcnow() - cached['time']).total_seconds()
+
+tests/test_search_system.py::TestSearchManagerSearching::test_search_clear_cache
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_search_system.py:451: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    manager.result_cache['test_key'] = {'time': datetime.utcnow(), 'results': []}
+
+tests/test_search_system.py::TestSearchManagerSearching::test_search_cache_ttl
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_search_system.py:472: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    'time': datetime.utcnow() - timedelta(seconds=10),
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_app.py::test_index_redirects - AssertionError: assert 'rese...
+FAILED tests/test_app.py::test_researcher_dashboard - assert 302 == 200
+FAILED tests/test_app.py::test_projects_list - assert 302 == 200
+FAILED tests/test_app.py::test_projects_create_no_name - assert 302 == 400
+FAILED tests/test_app.py::test_projects_create_with_name - assert 302 in (201...
+FAILED tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_creation
+FAILED tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_status_transitions
+FAILED tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_pause
+FAILED tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_failure
+FAILED tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_estimated_time
+FAILED tests/test_batch_operations.py::TestBatchJobModel::test_batch_job_to_dict
+FAILED tests/test_batch_operations.py::TestBatchJobResultModel::test_batch_result_creation
+FAILED tests/test_batch_operations.py::TestBatchJobResultModel::test_batch_result_failure
+FAILED tests/test_batch_operations.py::TestBatchJobLogModel::test_batch_log_creation
+FAILED tests/test_batch_operations.py::TestBatchOperationPermissions::test_batch_job_user_isolation
+FAILED tests/test_permission_service.py::TestPermissionServiceBasic::test_user_has_permission_global_scope
+FAILED tests/test_permission_service.py::TestPermissionServiceBasic::test_user_lacks_permission
+FAILED tests/test_permission_service.py::TestPermissionServiceBasic::test_permission_wildcard
+FAILED tests/test_permission_service.py::TestPermissionServiceScopes::test_project_scope_permission
+FAILED tests/test_permission_service.py::TestPermissionServiceScopes::test_multiple_roles_different_scopes
+FAILED tests/test_permission_service.py::TestPermissionServiceExpiry::test_expired_permission_not_granted
+FAILED tests/test_permission_service.py::TestPermissionServiceExpiry::test_future_expiry_permission_granted
+FAILED tests/test_permission_service.py::TestDocumentAccess::test_owner_can_access_document
+FAILED tests/test_permission_service.py::TestDocumentAccess::test_non_owner_cannot_access_private_document
+FAILED tests/test_permission_service.py::TestDocumentAccess::test_can_access_public_document
+FAILED tests/test_permission_service.py::TestDocumentAccess::test_can_access_shared_document
+FAILED tests/test_permission_service.py::TestGetUserRoles::test_get_user_roles_global
+FAILED tests/test_permission_service.py::TestGetUserRoles::test_get_user_roles_project_scope
+FAILED tests/test_permission_service.py::TestGetUserRoles::test_get_user_roles_includes_non_expired_only
+FAILED tests/test_permission_service.py::TestGetAllPermissions::test_get_all_permissions_from_single_role
+FAILED tests/test_permission_service.py::TestGetAllPermissions::test_get_all_permissions_from_multiple_roles
+FAILED tests/test_plugin_permissions.py::TestPluginPermissionService::test_grant_permission_invalid_plugin
+FAILED tests/test_rbac_api.py::TestRoleAdminAPI::test_list_roles - sqlalchemy...
+FAILED tests/test_rbac_api.py::TestRoleAdminAPI::test_create_role_requires_auth
+FAILED tests/test_rbac_api.py::TestRoleAdminAPI::test_create_role_with_permission
+FAILED tests/test_rbac_api.py::TestRoleAdminAPI::test_get_role_details - sqla...
+FAILED tests/test_rbac_api.py::TestRoleAdminAPI::test_delete_role_forbidden_for_builtin
+FAILED tests/test_rbac_api.py::TestUserRoleAdminAPI::test_list_user_roles - s...
+FAILED tests/test_rbac_api.py::TestUserRoleAdminAPI::test_assign_role_to_user
+FAILED tests/test_rbac_api.py::TestUserRoleAdminAPI::test_cannot_assign_nonexistent_role
+FAILED tests/test_rbac_api.py::TestDocumentAccessAPI::test_get_document_access
+FAILED tests/test_rbac_api.py::TestDocumentAccessAPI::test_make_document_public
+FAILED tests/test_rbac_api.py::TestDocumentAccessAPI::test_make_document_private
+FAILED tests/test_rbac_api.py::TestDocumentAccessAPI::test_share_document_with_user
+FAILED tests/test_rbac_api.py::TestDocumentAccessAPI::test_can_only_share_own_document
+FAILED tests/test_rbac_api.py::TestDecoratorIntegration::test_decorator_blocks_unauthorized_access
+FAILED tests/test_rbac_api.py::TestDecoratorIntegration::test_decorator_allows_authorized_access
+FAILED tests/test_rbac_e2e.py::TestCompleteWorkflows::test_workflow_admin_creates_role_assigns_user_grants_permission
+FAILED tests/test_rbac_e2e.py::TestCompleteWorkflows::test_workflow_share_document_with_group_group_members_access
+FAILED tests/test_rbac_e2e.py::TestCompleteWorkflows::test_workflow_temporary_access_expires_revoked
+FAILED tests/test_rbac_e2e.py::TestCompleteWorkflows::test_workflow_update_role_permissions_affects_all_users
+FAILED tests/test_rbac_e2e.py::TestCompleteWorkflows::test_workflow_project_level_permissions_scoped_access
+FAILED tests/test_rbac_e2e.py::TestFailureScenarios::test_deleted_role_prevents_permission_check
+FAILED tests/test_rbac_e2e.py::TestFailureScenarios::test_nonexistent_document_cannot_be_shared
+FAILED tests/test_rbac_e2e.py::TestFailureScenarios::test_invalid_permission_string_not_granted
+FAILED tests/test_rbac_e2e.py::TestConcurrentAccess::test_multiple_users_multiple_roles
+FAILED tests/test_rbac_models.py::TestRoleModel::test_create_role - sqlalchem...
+FAILED tests/test_rbac_models.py::TestRoleModel::test_role_has_permission - s...
+FAILED tests/test_rbac_models.py::TestRoleModel::test_role_wildcard_permission
+FAILED tests/test_rbac_models.py::TestRoleModel::test_role_add_permission - s...
+FAILED tests/test_rbac_models.py::TestRoleModel::test_role_add_duplicate_permission
+FAILED tests/test_rbac_models.py::TestRoleModel::test_role_remove_permission
+FAILED tests/test_rbac_models.py::TestUserRoleModel::test_create_user_role - ...
+FAILED tests/test_rbac_models.py::TestUserRoleModel::test_user_role_with_expiry
+FAILED tests/test_rbac_models.py::TestUserRoleModel::test_user_role_is_expired
+FAILED tests/test_rbac_models.py::TestUserRoleModel::test_user_role_project_scope
+FAILED tests/test_rbac_models.py::TestDocumentAccessModel::test_create_document_access
+FAILED tests/test_rbac_models.py::TestDocumentAccessModel::test_document_access_share_with_user
+FAILED tests/test_rbac_models.py::TestDocumentAccessModel::test_document_access_make_private
+FAILED tests/test_rbac_models.py::TestDocumentAccessModel::test_document_access_make_public
+FAILED tests/test_rbac_models.py::TestUserGroupModel::test_create_user_group
+FAILED tests/test_rbac_models.py::TestUserGroupModel::test_group_add_member
+FAILED tests/test_rbac_models.py::TestUserGroupModel::test_group_has_member
+FAILED tests/test_rbac_models.py::TestPermissionConstants::test_permission_constants_exist
+ERROR tests/test_batch_operations.py::TestBatchOperationService::test_create_batch_job
+ERROR tests/test_batch_operations.py::TestBatchOperationService::test_create_batch_job_without_permissions
+ERROR tests/test_batch_operations.py::TestBatchOperationService::test_start_batch_job
+ERROR tests/test_batch_operations.py::TestBatchOperationService::test_pause_batch_job
+ERROR tests/test_batch_operations.py::TestBatchOperationService::test_cancel_batch_job
+ERROR tests/test_batch_operations.py::TestBatchOperationService::test_cannot_cancel_completed_job
+ERROR tests/test_batch_operations.py::TestBatchOperationService::test_get_batch_status
+ERROR tests/test_batch_operations.py::TestBatchOperationService::test_export_to_csv
+ERROR tests/test_batch_operations.py::TestBatchOperationService::test_export_to_json
+ERROR tests/test_batch_operations.py::TestBatchOperationService::test_get_batch_results_pagination
+ERROR tests/test_batch_operations.py::TestBatchOperationService::test_get_batch_results_filter_success
+ERROR tests/test_batch_operations.py::TestBatchOperationService::test_add_batch_log
+ERROR tests/test_batch_operations.py::TestBatchOperationService::test_get_batch_logs_filtering
+ERROR tests/test_batch_operations.py::TestBatchOperationService::test_cleanup_old_jobs
+ERROR tests/test_batch_operations.py::TestBatchOperationPermissions::test_batch_execution_respects_plugin_permissions
+ERROR tests/test_batch_operations.py::TestBatchOperationPermissions::test_batch_results_user_isolation
+ERROR tests/test_batch_operations.py::TestBatchExportFormats::test_csv_export_format
+ERROR tests/test_batch_operations.py::TestBatchExportFormats::test_json_export_structure
+ERROR tests/test_debug_routes.py::TestDebugPluginTracing::test_get_latest_executions
+ERROR tests/test_debug_routes.py::TestDebugPluginTracing::test_get_latest_executions_with_limit
+ERROR tests/test_debug_routes.py::TestDebugPluginTracing::test_get_execution_trace_detail
+ERROR tests/test_debug_routes.py::TestDebugPluginTracing::test_get_plugin_trace_history
+ERROR tests/test_debug_routes.py::TestDebugPluginTracing::test_get_plugin_trace_with_pagination
+ERROR tests/test_debug_routes.py::TestDebugPerformanceAnalytics::test_get_performance_analytics
+ERROR tests/test_debug_routes.py::TestDebugPerformanceAnalytics::test_get_performance_analytics_with_days
+ERROR tests/test_debug_routes.py::TestDebugPerformanceAnalytics::test_get_plugin_analytics
+ERROR tests/test_debug_routes.py::TestDebugPerformanceAnalytics::test_get_plugin_analytics_with_days
+ERROR tests/test_debug_routes.py::TestDebugPerformanceAnalytics::test_compare_plugin_analytics
+ERROR tests/test_debug_routes.py::TestDebugPerformanceAnalytics::test_compare_analytics_by_errors
+ERROR tests/test_debug_routes.py::TestDebugPerformanceAnalytics::test_compare_analytics_by_success_rate
+ERROR tests/test_debug_routes.py::TestDebugValidationAnalytics::test_get_validation_history
+ERROR tests/test_debug_routes.py::TestDebugValidationAnalytics::test_get_validation_history_with_filters
+ERROR tests/test_debug_routes.py::TestDebugValidationAnalytics::test_get_validation_summary
+ERROR tests/test_debug_routes.py::TestDebugValidationAnalytics::test_get_validation_summary_custom_period
+ERROR tests/test_debug_routes.py::TestDebugHealth::test_get_debug_health - At...
+ERROR tests/test_debug_routes.py::TestDebugHealth::test_health_includes_required_fields
+ERROR tests/test_debug_routes.py::TestDebugDataStructures::test_execution_log_model_creation
+ERROR tests/test_debug_routes.py::TestDebugDataStructures::test_execution_log_error_tracking
+ERROR tests/test_debug_routes.py::TestDebugDataStructures::test_validation_result_suggestions
+ERROR tests/test_debug_routes.py::TestDebugTimeSeriesData::test_execution_logs_with_dates
+ERROR tests/test_debug_routes.py::TestDebugTimeSeriesData::test_validation_results_with_dates
+ERROR tests/test_debug_routes.py::TestDebugPercentileCalculations::test_percentile_calculation_from_times
+ERROR tests/test_event_bus_integration.py::TestEventBusWithRoutes::test_document_upload_publishes_event
+ERROR tests/test_event_bus_integration.py::TestEventBusWithRoutes::test_multiple_event_handlers_execution
+ERROR tests/test_event_bus_integration.py::TestEventBusWithRoutes::test_event_handler_with_database_updates
+ERROR tests/test_plugin_permissions.py::TestPluginPermissionModel::test_create_permission
+ERROR tests/test_plugin_permissions.py::TestPluginPermissionModel::test_permission_to_dict
+ERROR tests/test_plugin_permissions.py::TestPluginRoleAssignment::test_create_assignment

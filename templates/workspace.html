@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Workspace - Beep.AI.Researcher{% endblock %}
+{% block page_title %}Workspace{% endblock %}
+{% block page_subtitle %}All tools in one integrated view{% endblock %}
+
+{% block content %}
+<div class="jenni-card p-3 mb-3">
+    <div class="d-flex flex-wrap align-items-center gap-3">
+        <div class="btn-group" role="group" aria-label="Workspace Tabs">
+            <a class="btn btn-sm btn-outline-primary {% if tab == 'dashboard' %}active{% endif %}" href="/researcher/workspace?tab=dashboard">Dashboard</a>
+            <a class="btn btn-sm btn-outline-primary {% if tab == 'library' %}active{% endif %}" href="/researcher/workspace?tab=library">Library</a>
+            <a class="btn btn-sm btn-outline-primary {% if tab == 'documents' %}active{% endif %}" href="/researcher/workspace?tab=documents&project_id={{ project_id }}">Documents</a>
+            <a class="btn btn-sm btn-outline-primary {% if tab == 'search' %}active{% endif %}" href="/researcher/workspace?tab=search&project_id={{ project_id }}">Search</a>
+            <a class="btn btn-sm btn-outline-primary {% if tab == 'analysis' %}active{% endif %}" href="/researcher/workspace?tab=analysis&project_id={{ project_id }}">Data & Charts</a>
+        </div>
+        <div class="ms-auto d-flex align-items-center gap-2">
+            <label for="workspaceProject" class="small text-muted mb-0">Project</label>
+            <select id="workspaceProject" class="form-select form-select-sm" style="min-width:200px;">
+                {% for p in projects %}
+                <option value="{{ p.id }}" {% if p.id == project_id %}selected{% endif %}>{{ p.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="jenni-card p-0" style="min-height:70vh; overflow:hidden;">
+    {% set iframe_src = '' %}
+    {% if tab == 'dashboard' %}
+        {% set iframe_src = '/researcher/?embed=1' %}
+    {% elif tab == 'library' %}
+        {% set iframe_src = '/references?embed=1' %}
+    {% elif tab == 'documents' and project_id %}
+        {% set iframe_src = '/researcher/projects/' ~ project_id ~ '/documents?embed=1' %}
+    {% elif tab == 'search' and project_id %}
+        {% set iframe_src = '/researcher/projects/' ~ project_id ~ '/search?embed=1' %}
+    {% elif tab == 'analysis' and project_id %}
+        {% set iframe_src = '/researcher/projects/' ~ project_id ~ '/data?embed=1' %}
+    {% else %}
+        {% set iframe_src = '/researcher/?embed=1' %}
+    {% endif %}
+
+    <iframe
+        id="workspaceFrame"
+        src="{{ iframe_src }}"
+        class="w-100 border-0"
+        style="min-height:70vh;"
+        title="Workspace Content"
+    ></iframe>
+</div>
+{% endblock %}
+<script>
+(function() {
+    const projectSelect = document.getElementById('workspaceProject');
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get('tab') || 'dashboard';
+    if (projectSelect) {
+        projectSelect.addEventListener('change', () => {
+            const projectId = projectSelect.value;
+            const next = new URLSearchParams({ tab, project_id: projectId });
+            window.location.href = `/researcher/workspace?${next.toString()}`;
+        });
+    }
+})();
+</script>

@@ -1,0 +1,97 @@
+.retention-policy-copy,
+.retention-days-hint,
+.retention-policy-summary-text,
+.retention-empty-state,
+.retention-document-date {
+    color: var(--text-muted);
+}
+
+.retention-save-button {
+    background: color-mix(in srgb, var(--color-accent-primary) 18%, var(--surface-primary));
+    border: 1px solid color-mix(in srgb, var(--color-accent-primary) 26%, var(--surface-primary));
+    border-radius: var(--border-radius-pill);
+    color: var(--text-primary);
+}
+
+.retention-save-button:hover,
+.retention-save-button:focus-visible {
+    background: color-mix(in srgb, var(--color-accent-primary) 26%, var(--surface-primary));
+    border-color: color-mix(in srgb, var(--color-accent-primary) 34%, var(--surface-primary));
+    color: var(--text-primary);
+}
+
+.retention-delete-warning {
+    color: var(--color-danger-strong);
+    background: color-mix(in srgb, var(--color-danger-strong) 10%, var(--surface-primary));
+    border: 1px solid color-mix(in srgb, var(--color-danger-strong) 18%, var(--surface-primary));
+    border-radius: var(--border-radius-soft);
+}
+
+.retention-policy-summary {
+    border: 1px solid color-mix(in srgb, var(--text-muted) 18%, var(--surface-primary));
+    border-radius: var(--border-radius-soft);
+    background: color-mix(in srgb, var(--surface-primary) 90%, var(--text-muted) 10%);
+}
+
+.retention-summary-icon {
+    color: var(--color-accent-strong);
+}
+
+.retention-affected-count {
+    align-items: center;
+    color: var(--color-warning-strong);
+    background: color-mix(in srgb, var(--color-warning-strong) 12%, var(--surface-primary));
+    border: 1px solid color-mix(in srgb, var(--color-warning-strong) 20%, var(--surface-primary));
+    border-radius: var(--border-radius-pill);
+    display: inline-flex;
+    font-size: var(--font-size-badge);
+    font-weight: 700;
+    line-height: 1;
+    padding: 0.35rem 0.55rem;
+}
+
+.retention-message {
+    padding: 1rem;
+    text-align: center;
+}
+
+.retention-message--muted {
+    color: var(--text-muted);
+}
+
+.retention-message--success {
+    color: var(--color-success-strong);
+}
+
+.retention-message--error {
+    color: var(--color-danger-strong);
+}
+
+.retention-document-icon {
+    color: var(--text-muted);
+}
+
+.retention-affected-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.retention-affected-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.retention-age-badge {
+    align-items: center;
+    color: var(--color-danger-strong);
+    background: color-mix(in srgb, var(--color-danger-strong) 10%, var(--surface-primary));
+    border: 1px solid color-mix(in srgb, var(--color-danger-strong) 18%, var(--surface-primary));
+    border-radius: var(--border-radius-pill);
+    display: inline-flex;
+    font-size: var(--font-size-badge);
+    font-weight: 600;
+    line-height: 1;
+    padding: 0.32rem 0.5rem;
+}

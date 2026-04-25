@@ -1,0 +1,121 @@
+{% extends "project/_layout.html" %}
+{% set page_title = t('data.title') %}
+{% set page_subtitle = t('data.subtitle') %}
+{% set page_icon = 'bar-chart' %}
+{% set active_page = 'data' %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/data.css') }}">
+{% endblock %}
+
+{% block header_actions %}
+<input type="file" id="dataFileInput" accept=".csv,.xlsx" class="d-none">
+<button type="button" class="btn btn-primary btn-sm" id="dataUploadBtn">
+    <i class="bi bi-upload me-1"></i>{{ t('data.actions.upload') }}
+</button>
+{% endblock %}
+
+{% block workspace_content %}
+<div class="flow-panel">
+    {# 12a: Connection banner to Statistics page #}
+    <div class="data-stats-banner d-flex align-items-center gap-2 mb-0 fade show" role="alert" id="dataStatsBanner">
+        <i class="bi bi-calculator flex-shrink-0 data-stats-banner-icon"></i>
+        <span>{{ t('data.stats_banner') }} <a href="{{ url_for('researcher.stats_page', project_id=project.id) }}" class="data-stats-banner-link">{{ t('data.stats_banner_link') }}</a>.</span>
+        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div class="flow-panel-body">
+        <div class="flow-status" id="dataStatus" aria-live="polite">{{ t('data.status.idle') }}</div>
+        <div class="flow-progress mt-2"><span class="flow-progress-bar" id="dataUploadBar"></span></div>
+        <div class="row g-4 mt-4">
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">{{ t('data.sources') }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="sourcesList" class="list-group list-group-flush">
+                            {% for s in sources %}
+                            <button type="button" class="list-group-item list-group-item-action data-source-button"
+                                data-source-id="{{ s.id }}">{{ s.name }}</button>
+                            {% else %}
+                            <p class="small mb-0 py-2">{{ t('data.empty_sources') }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h6 class="mb-0">{{ t('data.chart.saved_charts') }}</h6>
+                    </div>
+                    <div class="card-body">
+                        {% if charts %}
+                        <ul class="list-group list-group-flush">
+                            {% for chart in charts %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span>{{ chart.name }}</span>
+                                <div class="d-flex align-items-center gap-1">
+                                    <span class="data-chart-type-badge">{{ chart.chart_type }}</span>
+                                    {# 12b: Add to Report shortcut #}
+                                    <a href="{{ url_for('researcher.project_report', project_id=project.id) }}"
+                                       class="btn btn-sm py-0 px-1 ms-1 data-report-shortcut"
+                                       title="{{ t('data.chart.add_to_report') }}">
+                                        <i class="bi bi-plus"></i>
+                                    </a>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        <p class="small mb-0 data-empty-charts">{{ t('data.empty_charts') }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header d-flex gap-2 flex-wrap align-items-center">
+                        <select id="chartSource" class="form-select form-select-sm data-control-select">
+                            <option value="">{{ t('data.chart.select_source') }}</option>
+                            {% for s in sources %}
+                            <option value="{{ s.id }}">{{ s.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <select id="chartType" class="form-select form-select-sm data-control-select">
+                            <option value="bar">{{ t('data.chart.type.bar') }}</option>
+                            <option value="line">{{ t('data.chart.type.line') }}</option>
+                            <option value="pie">{{ t('data.chart.type.pie') }}</option>
+                        </select>
+                        <button type="button" class="btn btn-primary btn-sm" id="refreshChartBtn">{{
+                            t('data.actions.refresh') }}</button>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="chartCanvas" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script src="{{ url_for('static', filename='vendor/chart.umd.min.js') }}"></script>
+<script id="data-page-config" type="application/json">
+{{ {
+    "projectId": project.id,
+    "uploadUrl": url_for('data_analyst.upload_data', project_id=project.id),
+    "chartUrl": url_for('data_analyst.generate_chart', project_id=project.id),
+    "initialSourceId": sources[0].id if sources else None,
+    "strings": {
+        "invalidType": t('data.upload.invalid_type'),
+        "uploadSuccess": t('data.upload.success'),
+        "uploadFailed": t('data.upload.failed'),
+        "uploading": t('data.status.uploading'),
+        "loadingChart": t('data.status.loading_chart'),
+        "chartReady": t('data.status.chart_ready'),
+        "chartFailed": t('data.status.chart_failed')
+    }
+} | tojson | safe }}
+</script>
+<script src="{{ url_for('static', filename='js/project/data.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,188 @@
+.admin-user-detail-message {
+    margin-bottom: var(--space-md);
+    padding: var(--space-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.admin-user-detail-message--success {
+    border-color: color-mix(in srgb, var(--color-success) 35%, var(--bg-secondary));
+    background: color-mix(in srgb, var(--color-success) 10%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-success) 74%, var(--text-primary));
+}
+
+.admin-user-detail-message--warning {
+    border-color: color-mix(in srgb, var(--color-warning) 45%, var(--bg-secondary));
+    background: color-mix(in srgb, var(--color-warning) 14%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-warning) 72%, var(--text-primary));
+}
+
+.admin-user-detail-message--danger,
+.admin-user-detail-message--error {
+    border-color: color-mix(in srgb, var(--color-error) 40%, var(--bg-secondary));
+    background: color-mix(in srgb, var(--color-error) 10%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-error) 74%, var(--text-primary));
+}
+
+.admin-user-detail-subtitle,
+.admin-user-detail-helper-text,
+.admin-user-detail-empty-state {
+    color: var(--text-muted);
+}
+
+.admin-user-detail-back-link {
+    border-width: 1px;
+    border-style: solid;
+    border-color: color-mix(in srgb, var(--border-color) 88%, var(--surface-primary));
+    color: var(--text-secondary);
+    background: transparent;
+}
+
+.admin-user-detail-back-link:hover,
+.admin-user-detail-back-link:focus-visible {
+    background: color-mix(in srgb, var(--text-muted) 10%, var(--surface-primary));
+    border-color: color-mix(in srgb, var(--text-muted) 28%, var(--surface-primary));
+    color: var(--text-primary);
+}
+
+.admin-user-detail-status-badge,
+.admin-user-detail-inline-badge,
+.admin-user-detail-count-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.3rem 0.7rem;
+    border-radius: var(--radius-full);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.admin-user-detail-status-badge--active,
+.admin-user-detail-inline-badge--mfa-on {
+    background: color-mix(in srgb, var(--color-success) 16%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-success) 78%, var(--text-primary));
+}
+
+.admin-user-detail-status-badge--suspended,
+.admin-user-detail-status-badge--locked {
+    background: color-mix(in srgb, var(--color-error) 12%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-error) 76%, var(--text-primary));
+}
+
+.admin-user-detail-status-badge--verified {
+    background: color-mix(in srgb, var(--color-info) 14%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-info) 76%, var(--text-primary));
+}
+
+.admin-user-detail-status-badge--unverified,
+.admin-user-detail-status-badge--warning {
+    background: color-mix(in srgb, var(--color-warning) 18%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-warning) 76%, var(--text-primary));
+}
+
+.admin-user-detail-status-badge--mfa-on {
+    background: color-mix(in srgb, var(--color-primary) 15%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-primary) 78%, var(--text-primary));
+}
+
+.admin-user-detail-status-badge--mfa-off,
+.admin-user-detail-inline-badge--mfa-off,
+.admin-user-detail-count-badge,
+.admin-user-detail-status-badge--role {
+    background: color-mix(in srgb, var(--text-muted) 14%, var(--bg-secondary));
+    color: var(--text-secondary);
+}
+
+.admin-user-detail-stat-card {
+    border: 1px solid var(--border-color);
+    background: color-mix(in srgb, var(--bg-tertiary) 72%, var(--bg-secondary));
+}
+
+.admin-user-detail-empty-note {
+    color: var(--text-muted);
+}
+
+.admin-user-detail-action-button {
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+}
+
+.admin-user-detail-action-button--primary {
+    border-color: color-mix(in srgb, var(--color-primary) 40%, var(--bg-secondary));
+    background: color-mix(in srgb, var(--color-primary) 86%, var(--bg-secondary));
+    color: var(--text-inverse);
+}
+
+.admin-user-detail-action-button--warning {
+    border-color: color-mix(in srgb, var(--color-warning) 45%, var(--bg-secondary));
+    background: color-mix(in srgb, var(--color-warning) 88%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-warning) 90%, var(--text-primary));
+}
+
+.admin-user-detail-action-button--success {
+    border-color: color-mix(in srgb, var(--color-success) 40%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-success) 78%, var(--text-primary));
+    background: transparent;
+}
+
+.admin-user-detail-action-button--success:hover,
+.admin-user-detail-action-button--success:focus-visible {
+    background: color-mix(in srgb, var(--color-success) 12%, var(--bg-secondary));
+}
+
+.admin-user-detail-action-button--outline-warning {
+    border-color: color-mix(in srgb, var(--color-warning) 45%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-warning) 76%, var(--text-primary));
+    background: transparent;
+}
+
+.admin-user-detail-action-button--outline-warning:hover,
+.admin-user-detail-action-button--outline-warning:focus-visible {
+    background: color-mix(in srgb, var(--color-warning) 14%, var(--bg-secondary));
+}
+
+.admin-user-detail-action-button--outline-danger,
+.admin-user-detail-action-button--danger {
+    border-color: color-mix(in srgb, var(--color-error) 42%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-error) 78%, var(--text-primary));
+    background: transparent;
+}
+
+.admin-user-detail-action-button--outline-danger:hover,
+.admin-user-detail-action-button--outline-danger:focus-visible,
+.admin-user-detail-action-button--danger:hover,
+.admin-user-detail-action-button--danger:focus-visible {
+    background: color-mix(in srgb, var(--color-error) 12%, var(--bg-secondary));
+}
+
+.admin-user-detail-danger-card {
+    border-width: 1px;
+}
+
+.admin-user-detail-danger-card--warning {
+    border-color: color-mix(in srgb, var(--color-warning) 40%, var(--bg-secondary));
+}
+
+.admin-user-detail-danger-card--danger {
+    border-color: color-mix(in srgb, var(--color-error) 40%, var(--bg-secondary));
+}
+
+.admin-user-detail-danger-card-header {
+    border-bottom: 1px solid transparent;
+}
+
+.admin-user-detail-danger-card-header--warning {
+    background: color-mix(in srgb, var(--color-warning) 16%, var(--bg-secondary));
+    border-bottom-color: color-mix(in srgb, var(--color-warning) 30%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-warning) 80%, var(--text-primary));
+}
+
+.admin-user-detail-danger-card-header--danger {
+    background: color-mix(in srgb, var(--color-error) 14%, var(--bg-secondary));
+    border-bottom-color: color-mix(in srgb, var(--color-error) 30%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--color-error) 82%, var(--text-primary));
+}

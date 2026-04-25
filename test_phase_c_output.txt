@@ -1,0 +1,130 @@
+....................FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF.......            [100%]
+================================== FAILURES ===================================
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:226: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:226: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:226: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:226: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:226: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:226: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:226: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:226: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:292: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:292: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:292: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:292: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:292: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:292: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:292: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:292: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:292: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:292: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:292: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:292: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:292: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:292: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:393: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:393: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:393: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:393: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:393: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:393: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:393: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:393: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:393: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:393: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:393: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+E   TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:393: TypeError: PluginMetadata.__init__() missing 1 required positional argument: 'display_name'
+============================== warnings summary ===============================
+tests/test_phase_c.py: 11 warnings
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\.venv\Lib\site-packages\flask_sqlalchemy\query.py:30: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    rv = self.get(ident)
+
+tests/test_phase_c.py::TestPhiRoutes::test_phi_report_does_not_modify_document
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:152: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    doc = ResearcherDocument.query.get(doc_id)
+
+tests/test_phase_c.py::TestPhiRoutes::test_redact_document_removes_phi
+tests/test_phase_c.py::TestPhiRoutes::test_redact_document_prevents_double_redaction
+tests/test_phase_c.py::TestPhiRoutes::test_restore_after_redaction
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\app\routes\phi_routes.py:68: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    'redacted_at': datetime.utcnow().isoformat(),
+
+tests/test_phase_c.py: 13 warnings
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\.venv\Lib\site-packages\sqlalchemy\sql\schema.py:3624: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    return util.wrap_callable(lambda ctx: fn(), fn)  # type: ignore
+
+tests/test_phase_c.py::TestSectorModels::test_delete_hypothesis_cascade
+  C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\tests\test_phase_c.py:698: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    assert Hypothesis.query.get(hyp_id) is None
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_phase_c.py::TestRealEstatePlugin::test_classify_zoning_known_code
+FAILED tests/test_phase_c.py::TestRealEstatePlugin::test_classify_zoning_unknown_code
+FAILED tests/test_phase_c.py::TestRealEstatePlugin::test_calculate_cap_rate
+FAILED tests/test_phase_c.py::TestRealEstatePlugin::test_calculate_cap_rate_zero_value
+FAILED tests/test_phase_c.py::TestRealEstatePlugin::test_detect_title_defects_found
+FAILED tests/test_phase_c.py::TestRealEstatePlugin::test_detect_title_defects_none
+FAILED tests/test_phase_c.py::TestRealEstatePlugin::test_extract_lease_terms_monthly
+FAILED tests/test_phase_c.py::TestRealEstatePlugin::test_normalize_address - ...
+FAILED tests/test_phase_c.py::TestEducationPlugin::test_detect_citation_style_apa
+FAILED tests/test_phase_c.py::TestEducationPlugin::test_detect_citation_style_mla
+FAILED tests/test_phase_c.py::TestEducationPlugin::test_detect_citation_style_chicago
+FAILED tests/test_phase_c.py::TestEducationPlugin::test_detect_citation_style_none
+FAILED tests/test_phase_c.py::TestEducationPlugin::test_format_citation_apa
+FAILED tests/test_phase_c.py::TestEducationPlugin::test_detect_ferpa_terms_found
+FAILED tests/test_phase_c.py::TestEducationPlugin::test_detect_ferpa_terms_none
+FAILED tests/test_phase_c.py::TestEducationPlugin::test_classify_methodology_qualitative
+FAILED tests/test_phase_c.py::TestEducationPlugin::test_classify_methodology_quantitative
+FAILED tests/test_phase_c.py::TestEducationPlugin::test_classify_methodology_systematic_review
+FAILED tests/test_phase_c.py::TestEducationPlugin::test_classify_methodology_none
+FAILED tests/test_phase_c.py::TestEducationPlugin::test_tag_blooms_level_remember
+FAILED tests/test_phase_c.py::TestEducationPlugin::test_tag_blooms_level_analyze
+FAILED tests/test_phase_c.py::TestEducationPlugin::test_tag_blooms_level_none
+FAILED tests/test_phase_c.py::TestGovernmentPlugin::test_parse_cfr_citations
+FAILED tests/test_phase_c.py::TestGovernmentPlugin::test_parse_cfr_citations_none
+FAILED tests/test_phase_c.py::TestGovernmentPlugin::test_parse_usc_citations
+FAILED tests/test_phase_c.py::TestGovernmentPlugin::test_extract_agency_mentions
+FAILED tests/test_phase_c.py::TestGovernmentPlugin::test_extract_agency_mentions_none
+FAILED tests/test_phase_c.py::TestGovernmentPlugin::test_match_agency_known
+FAILED tests/test_phase_c.py::TestGovernmentPlugin::test_match_agency_unknown
+FAILED tests/test_phase_c.py::TestGovernmentPlugin::test_detect_foia_exemptions
+FAILED tests/test_phase_c.py::TestGovernmentPlugin::test_detect_foia_exemptions_none
+FAILED tests/test_phase_c.py::TestGovernmentPlugin::test_classify_sentiment_support
+FAILED tests/test_phase_c.py::TestGovernmentPlugin::test_classify_sentiment_oppose
+FAILED tests/test_phase_c.py::TestGovernmentPlugin::test_classify_sentiment_neutral
+34 failed, 27 passed, 29 warnings in 100.07s (0:01:40)

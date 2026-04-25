@@ -1,0 +1,32 @@
+Flask>=3.0.0
+requests>=2.31.0
+Flask-SQLAlchemy>=3.1.0
+Flask-Login>=0.6.0
+Werkzeug>=3.0.0
+Jinja2>=3.1.2
+
+openpyxl>=3.1.0
+python-docx>=0.8.11
+xhtml2pdf>=0.2.14
+markdown>=3.4.0
+
+psutil>=5.9.0
+alembic>=1.12.0
+cryptography>=41.0.0
+
+# MFA
+pyotp>=2.9.0
+qrcode[pil]>=7.4.2
+
+# Storage backends (optional — only needed for non-local storage)
+boto3>=1.34.0                   # S3-compatible / MinIO backend
+azure-storage-blob>=12.19.0     # Azure Blob Storage backend
+smbprotocol>=1.13.0             # SMB / NAS backend
+
+# OAuth2 email (optional — only needed when email auth method is ms365 or google)
+msal>=1.26.0                    # Microsoft 365 / Entra ID mail via Graph API
+google-api-python-client>=2.100.0  # Google Gmail API
+google-auth>=2.22.0             # Google OAuth2 credentials
+google-auth-httplib2>=0.1.1     # httplib2 transport for google-auth
+
+pytest>=7.0.0

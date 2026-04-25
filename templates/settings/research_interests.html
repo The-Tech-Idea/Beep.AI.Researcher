@@ -1,0 +1,113 @@
+{% extends base_template or "base.html" %}
+{% block title %}Research Interests{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/settings/research_interests.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="spa-page-header">
+    <div class="spa-page-header-left">
+        <div class="spa-page-icon"><i class="bi bi-sliders"></i></div>
+        <div>
+            <div class="spa-page-title">Research Interests</div>
+            <div class="spa-page-subtitle">Personalise your feed by declaring your research topics</div>
+        </div>
+    </div>
+</div>
+
+<div id="ri-status" class="alert d-none mb-3" role="alert"></div>
+
+<div class="row g-3">
+    <!-- Declared topics -->
+    <div class="col-12 col-lg-7">
+        <div class="spa-card">
+            <div class="spa-card-header">
+                <div class="spa-card-title">Declared Topics</div>
+            </div>
+            <div class="spa-card-body">
+                <p class="text-muted small mb-3">
+                    Add topics you actively research. These directly drive your feed and alerts.
+                </p>
+                <div id="ri-topics-container" class="ri-chips-container mb-3">
+                    {% for topic in profile.declared_topics or [] %}
+                    <span class="ri-chip" data-topic="{{ topic|e }}">
+                        {{ topic|e }}
+                        <button type="button" class="ri-chip-remove" aria-label="Remove {{ topic|e }}">
+                            <i class="bi bi-x"></i>
+                        </button>
+                    </span>
+                    {% endfor %}
+                </div>
+                <div class="d-flex gap-2">
+                    <input type="text" id="ri-topic-input" class="form-control form-control-sm"
+                           placeholder="Add a topic…" maxlength="80">
+                    <button class="btn btn-outline-primary btn-sm text-nowrap" id="ri-topic-add-btn">Add</button>
+                </div>
+            </div>
+            <div class="spa-card-footer d-flex justify-content-between align-items-center">
+                <button class="btn btn-primary btn-sm" id="ri-save-btn">Save interests</button>
+                <button class="btn btn-outline-secondary btn-sm" id="ri-infer-btn">
+                    <i class="bi bi-cpu me-1"></i>Re-infer from library
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inferred topics + sources -->
+    <div class="col-12 col-lg-5">
+        <div class="spa-card mb-3">
+            <div class="spa-card-header">
+                <div class="spa-card-title">Inferred Topics</div>
+            </div>
+            <div class="spa-card-body">
+                <p class="text-muted small mb-2">
+                    Automatically detected from your document library.
+                </p>
+                {% if profile.inferred_topics %}
+                <ul class="list-unstyled mb-0">
+                    {% for item in profile.inferred_topics[:10] %}
+                    <li class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="small">{{ item.topic }}</span>
+                        <span class="badge bg-secondary ri-score-badge">{{ "%.0f"|format(item.score * 100) }}%</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted small mb-0">No inferred topics yet. Click "Re-infer from library" to generate them.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="spa-card">
+            <div class="spa-card-header">
+                <div class="spa-card-title">Preferred Sources</div>
+            </div>
+            <div class="spa-card-body">
+                <p class="text-muted small mb-3">Choose which sources to prioritise in your feed.</p>
+                {% set active_sources = profile.preferred_sources or ['semantic_scholar','pubmed','arxiv','crossref'] %}
+                {% for source_key, source_label in [
+                    ('semantic_scholar', 'Semantic Scholar'),
+                    ('pubmed', 'PubMed'),
+                    ('arxiv', 'arXiv'),
+                    ('crossref', 'CrossRef'),
+                ] %}
+                <div class="form-check mb-2">
+                    <input class="form-check-input ri-source-check" type="checkbox"
+                           id="ri-source-{{ source_key }}" value="{{ source_key }}"
+                           {% if source_key in active_sources %}checked{% endif %}>
+                    <label class="form-check-label small" for="ri-source-{{ source_key }}">
+                        {{ source_label }}
+                    </label>
+                </div>
+                {% endfor %}
+                <button class="btn btn-outline-primary btn-sm mt-2" id="ri-sources-save-btn">Save sources</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/settings/research_interests.js') }}"></script>
+{% endblock %}

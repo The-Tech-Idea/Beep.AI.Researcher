@@ -1,0 +1,126 @@
+.take-quiz-progress {
+    width: 150px;
+    height: 6px;
+}
+
+.take-quiz-progress-bar {
+    width: 0%;
+}
+
+.take-quiz-option-badge {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--spa-border) 82%, var(--spa-surface));
+    color: var(--spa-text);
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.take-quiz-empty {
+    margin: 0;
+    padding: 1rem 0;
+    text-align: center;
+    color: var(--spa-text-secondary);
+}
+
+.take-quiz-message {
+    border-radius: var(--spa-radius-md);
+    border: 1px solid var(--spa-border);
+    padding: 0.85rem 1rem;
+    box-shadow: var(--spa-shadow-sm);
+}
+
+.take-quiz-message--error {
+    border-color: color-mix(in srgb, var(--spa-danger) 40%, var(--spa-border));
+    background: color-mix(in srgb, var(--spa-danger) 10%, var(--spa-surface));
+    color: color-mix(in srgb, var(--spa-danger) 72%, var(--spa-text));
+}
+
+.take-quiz-option-button {
+    justify-content: flex-start;
+    border-color: var(--spa-border);
+    background: var(--spa-surface);
+    color: var(--spa-text);
+}
+
+.take-quiz-option-button:hover,
+.take-quiz-option-button:focus-visible {
+    border-color: color-mix(in srgb, var(--spa-primary) 38%, var(--spa-border));
+    background: color-mix(in srgb, var(--spa-primary) 10%, var(--spa-surface));
+    color: var(--spa-text);
+}
+
+.take-quiz-option-button.is-correct {
+    border-color: color-mix(in srgb, var(--spa-success) 40%, var(--spa-border));
+    background: color-mix(in srgb, var(--spa-success) 16%, var(--spa-surface));
+    color: color-mix(in srgb, var(--spa-success) 78%, var(--spa-text));
+}
+
+.take-quiz-option-button.is-incorrect {
+    border-color: color-mix(in srgb, var(--spa-danger) 40%, var(--spa-border));
+    background: color-mix(in srgb, var(--spa-danger) 16%, var(--spa-surface));
+    color: color-mix(in srgb, var(--spa-danger) 78%, var(--spa-text));
+}
+
+.take-quiz-option-button.is-muted {
+    opacity: 0.55;
+}
+
+.take-quiz-option-state {
+    color: currentColor;
+}
+
+.take-quiz-finish-button {
+    border-color: color-mix(in srgb, var(--spa-success) 40%, var(--spa-border));
+    background: color-mix(in srgb, var(--spa-success) 16%, var(--spa-surface));
+    color: color-mix(in srgb, var(--spa-success) 82%, var(--spa-text));
+}
+
+.take-quiz-finish-button:hover,
+.take-quiz-finish-button:focus-visible {
+    border-color: color-mix(in srgb, var(--spa-success) 54%, var(--spa-border));
+    background: color-mix(in srgb, var(--spa-success) 22%, var(--spa-surface));
+    color: color-mix(in srgb, var(--spa-success) 88%, var(--spa-text));
+}
+
+.take-quiz-score--success {
+    color: color-mix(in srgb, var(--spa-success) 82%, var(--spa-text));
+}
+
+.take-quiz-score--warning {
+    color: color-mix(in srgb, var(--spa-warning) 82%, var(--spa-text));
+}
+
+.take-quiz-score--danger {
+    color: color-mix(in srgb, var(--spa-danger) 82%, var(--spa-text));
+}
+
+.take-quiz-results-progress {
+    max-width: 300px;
+    height: 10px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--spa-border) 84%, var(--spa-surface));
+    overflow: hidden;
+}
+
+.take-quiz-results-progress-bar {
+    height: 100%;
+    transition: width 0.25s ease;
+}
+
+.take-quiz-results-progress-bar--success {
+    background: color-mix(in srgb, var(--spa-success) 74%, var(--spa-primary));
+}
+
+.take-quiz-results-progress-bar--warning {
+    background: color-mix(in srgb, var(--spa-warning) 78%, var(--spa-primary));
+}
+
+.take-quiz-results-progress-bar--danger {
+    background: color-mix(in srgb, var(--spa-danger) 78%, var(--spa-primary));
+}

@@ -1,0 +1,39 @@
+.scheduled-report-primary-action,
+.scheduled-report-secondary-action,
+.scheduled-report-preview-btn {
+    border-radius: var(--border-radius-pill);
+}
+
+.scheduled-report-primary-action {
+    background: color-mix(in srgb, var(--color-accent-primary) 18%, var(--color-surface));
+    border: 1px solid color-mix(in srgb, var(--color-accent-primary) 26%, var(--color-border-muted));
+    color: var(--color-text);
+}
+
+.scheduled-report-primary-action:hover,
+.scheduled-report-primary-action:focus-visible {
+    background: color-mix(in srgb, var(--color-accent-primary) 26%, var(--color-surface));
+    border-color: color-mix(in srgb, var(--color-accent-primary) 34%, var(--color-border-muted));
+    color: var(--color-text);
+}
+
+.scheduled-report-secondary-action,
+.scheduled-report-preview-btn {
+    background: color-mix(in srgb, var(--color-surface-secondary) 90%, var(--color-accent-primary) 10%);
+    border: 1px solid color-mix(in srgb, var(--color-accent-primary) 18%, var(--color-border-muted));
+    color: var(--color-text);
+    font-size: 0.75rem;
+}
+
+.scheduled-report-secondary-action:hover,
+.scheduled-report-secondary-action:focus-visible,
+.scheduled-report-preview-btn:hover,
+.scheduled-report-preview-btn:focus-visible {
+    background: color-mix(in srgb, var(--color-surface-secondary) 78%, var(--color-accent-primary) 22%);
+    border-color: color-mix(in srgb, var(--color-accent-primary) 28%, var(--color-border-muted));
+    color: var(--color-text);
+}
+
+.scheduled-report-meta {
+    color: var(--color-text-muted);
+}

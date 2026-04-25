@@ -1,0 +1,200 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.5, pytest-9.0.2, pluggy-1.6.0 -- C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\f_ald\source\repos\The-Tech-Idea\Beep.AI.Server\Beep.AI.Researcher
+collecting ... collected 34 items
+
+tests/test_monitoring.py::TestJobMetricsModel::test_create_job_metric ERROR [  2%]
+tests/test_monitoring.py::TestJobMetricsModel::test_metric_with_error ERROR [  5%]
+tests/test_monitoring.py::TestJobMetricsModel::test_job_metric_serialization ERROR [  8%]
+tests/test_monitoring.py::TestPerformanceBenchmarkModel::test_create_benchmark ERROR [ 11%]
+tests/test_monitoring.py::TestPerformanceBenchmarkModel::test_benchmark_serialization ERROR [ 14%]
+tests/test_monitoring.py::TestSystemHealthModel::test_create_health_record ERROR [ 17%]
+tests/test_monitoring.py::TestSystemHealthModel::test_health_status_degraded ERROR [ 20%]
+tests/test_monitoring.py::TestPerformanceAlertModel::test_create_alert ERROR [ 23%]
+tests/test_monitoring.py::TestPerformanceAlertModel::test_alert_acknowledge ERROR [ 26%]
+tests/test_monitoring.py::TestPerformanceAlertModel::test_alert_resolve ERROR [ 29%]
+tests/test_monitoring.py::TestAlertConfigurationModel::test_create_alert_config ERROR [ 32%]
+tests/test_monitoring.py::TestMonitoringService::test_record_job_metric ERROR [ 35%]
+tests/test_monitoring.py::TestMonitoringService::test_calculate_job_performance ERROR [ 38%]
+tests/test_monitoring.py::TestMonitoringService::test_analyze_trends ERROR [ 41%]
+tests/test_monitoring.py::TestMonitoringService::test_create_performance_benchmark ERROR [ 44%]
+tests/test_monitoring.py::TestMonitoringService::test_update_system_health ERROR [ 47%]
+tests/test_monitoring.py::TestMonitoringService::test_get_system_health ERROR [ 50%]
+tests/test_monitoring.py::TestMonitoringService::test_check_performance_alerts ERROR [ 52%]
+tests/test_monitoring.py::TestMonitoringService::test_get_performance_alerts ERROR [ 55%]
+tests/test_monitoring.py::TestMonitoringService::test_acknowledge_alert ERROR [ 58%]
+tests/test_monitoring.py::TestMonitoringService::test_get_dashboard_metrics ERROR [ 61%]
+tests/test_monitoring.py::TestMonitoringService::test_get_plugin_performance_report ERROR [ 64%]
+tests/test_monitoring.py::TestMonitoringAPI::test_get_system_health_endpoint ERROR [ 67%]
+tests/test_monitoring.py::TestMonitoringAPI::test_get_health_history_endpoint ERROR [ 70%]
+tests/test_monitoring.py::TestMonitoringAPI::test_get_job_metrics_endpoint ERROR [ 73%]
+tests/test_monitoring.py::TestMonitoringAPI::test_get_alerts_endpoint ERROR [ 76%]
+tests/test_monitoring.py::TestMonitoringAPI::test_create_alert_config_endpoint ERROR [ 79%]
+tests/test_monitoring.py::TestMonitoringAPI::test_get_dashboard_endpoint ERROR [ 82%]
+tests/test_monitoring.py::TestMonitoringAPI::test_get_plugin_report_endpoint ERROR [ 85%]
+tests/test_monitoring.py::TestMonitoringIntegration::test_metric_recording_to_benchmark_pipeline ERROR [ 88%]
+tests/test_monitoring.py::TestMonitoringIntegration::test_health_monitoring_with_alerts ERROR [ 91%]
+tests/test_monitoring.py::TestErrorHandling::test_nonexistent_job_metrics ERROR [ 94%]
+tests/test_monitoring.py::TestErrorHandling::test_invalid_alert_acknowledge ERROR [ 97%]
+tests/test_monitoring.py::TestErrorHandling::test_empty_trend_analysis ERROR [100%]
+
+=================================== ERRORS ====================================
+________ ERROR at setup of TestJobMetricsModel.test_create_job_metric _________
+
+    @pytest.fixture
+    def app():
+        from app import create_app
+>       app = create_app()
+              ^^^^^^^^^^^^
+
+tests\conftest.py:14: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\__init__.py:82: in create_app
+    db.create_all()
+.venv\Lib\site-packages\flask_sqlalchemy\extension.py:900: in create_all
+    self._call_for_binds(bind_key, "create_all")
+.venv\Lib\site-packages\flask_sqlalchemy\extension.py:881: in _call_for_binds
+    getattr(metadata, op_name)(bind=engine)
+.venv\Lib\site-packages\sqlalchemy\sql\schema.py:5928: in create_all
+    bind._run_ddl_visitor(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:3260: in _run_ddl_visitor
+    conn._run_ddl_visitor(visitorcallable, element, **kwargs)
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2467: in _run_ddl_visitor
+    ).traverse_single(element)
+      ^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\visitors.py:661: in traverse_single
+    return meth(obj, **kw)
+           ^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:962: in visit_metadata
+    collection = sort_tables_and_constraints(
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:1394: in sort_tables_and_constraints
+    dependent_on = fkc.referred_table
+                   ^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\schema.py:4799: in referred_table
+    return self.elements[0].column.table
+           ^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:1226: in __get__
+    obj.__dict__[self.__name__] = result = self.fget(obj)
+                                           ^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\schema.py:3199: in column
+    return self._resolve_column()
+           ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = ForeignKey('plugin.id')
+
+    def _resolve_column(
+        self, *, raiseerr: bool = True
+    ) -> Optional[Column[Any]]:
+        _column: Column[Any]
+    
+        if isinstance(self._colspec, str):
+            parenttable, tablekey, colname = self._resolve_col_tokens()
+    
+            if self._unresolvable or tablekey not in parenttable.metadata:
+                if not raiseerr:
+                    return None
+>               raise exc.NoReferencedTableError(
+                    f"Foreign key associated with column "
+                    f"'{self.parent}' could not find "
+                    f"table '{tablekey}' with which to generate a "
+                    f"foreign key to target column '{colname}'",
+                    tablekey,
+E                   sqlalchemy.exc.NoReferencedTableError: Foreign key associated with column 'plugin_permission.plugin_id' could not find table 'plugin' with which to generate a foreign key to target column 'id'
+
+.venv\Lib\site-packages\sqlalchemy\sql\schema.py:3222: NoReferencedTableError
+________ ERROR at setup of TestJobMetricsModel.test_metric_with_error _________
+
+    @pytest.fixture
+    def app():
+        from app import create_app
+>       app = create_app()
+              ^^^^^^^^^^^^
+
+tests\conftest.py:14: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\__init__.py:82: in create_app
+    db.create_all()
+.venv\Lib\site-packages\flask_sqlalchemy\extension.py:900: in create_all
+    self._call_for_binds(bind_key, "create_all")
+.venv\Lib\site-packages\flask_sqlalchemy\extension.py:881: in _call_for_binds
+    getattr(metadata, op_name)(bind=engine)
+.venv\Lib\site-packages\sqlalchemy\sql\schema.py:5928: in create_all
+    bind._run_ddl_visitor(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:3260: in _run_ddl_visitor
+    conn._run_ddl_visitor(visitorcallable, element, **kwargs)
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2467: in _run_ddl_visitor
+    ).traverse_single(element)
+      ^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\visitors.py:661: in traverse_single
+    return meth(obj, **kw)
+           ^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:962: in visit_metadata
+    collection = sort_tables_and_constraints(
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:1394: in sort_tables_and_constraints
+    dependent_on = fkc.referred_table
+                   ^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\schema.py:4799: in referred_table
+    return self.elements[0].column.table
+           ^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:1226: in __get__
+    obj.__dict__[self.__name__] = result = self.fget(obj)
+                                           ^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\schema.py:3199: in column
+    return self._resolve_column()
+           ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = ForeignKey('plugin.id')
+
+    def _resolve_column(
+        self, *, raiseerr: bool = True
+    ) -> Optional[Column[Any]]:
+        _column: Column[Any]
+    
+        if isinstance(self._colspec, str):
+            parenttable, tablekey, colname = self._resolve_col_tokens()
+    
+            if self._unresolvable or tablekey not in parenttable.metadata:
+                if not raiseerr:
+                    return None
+>               raise exc.NoReferencedTableError(
+                    f"Foreign key associated with column "
+                    f"'{self.parent}' could not find "
+                    f"table '{tablekey}' with which to generate a "
+                    f"foreign key to target column '{colname}'",
+                    tablekey,
+E                   sqlalchemy.exc.NoReferencedTableError: Foreign key associated with column 'plugin_permission.plugin_id' could not find table 'plugin' with which to generate a foreign key to target column 'id'
+
+.venv\Lib\site-packages\sqlalchemy\sql\schema.py:3222: NoReferencedTableError
+_____ ERROR at setup of TestJobMetricsModel.test_job_metric_serialization _____
+
+    @pytest.fixture
+    def app():
+        from app import create_app
+>       app = create_app()
+              ^^^^^^^^^^^^
+
+tests\conftest.py:14: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\__init__.py:82: in create_app
+    db.create_all()
+.venv\Lib\site-packages\flask_sqlalchemy\extension.py:900: in create_all
+    self._call_for_binds(bind_key, "create_all")
+.venv\Lib\site-packages\flask_sqlalchemy\extension.py:881: in _call_for_binds
+    getattr(metadata, op_name)(bind=engine)
+.venv\Lib\site-packages\sqlalchemy\sql\schema.py:5928: in create_all
+    bind._run_ddl_visitor(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:3260: in _run_ddl_visitor
+    conn._run_ddl_visitor(visitorcallable, element, **kwargs)
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2467: in _run_ddl_visitor
+    ).traverse_single(element)
+      ^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\visitors.py:661: in traverse_single
+    return meth(obj, **kw)
+           ^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:962: in visit_metadata
+    collection = sort_tables_and_constraints(
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:1394: in sort_tables_and_constraints
+    dependent_on = fkc.referred_table

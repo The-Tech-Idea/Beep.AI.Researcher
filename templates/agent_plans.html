@@ -1,0 +1,152 @@
+{% block title %}{{ t('agent_plans.page_title') }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/agent_plans_page.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+    <div>
+        <h2 class="mb-1">{{ t('agent_plans.title') }}</h2>
+        <p class="text-muted mb-0">{{ t('agent_plans.subtitle') }}</p>
+    </div>
+    <button type="button" class="btn btn-outline-secondary btn-sm" id="plansRefreshBtn">
+        <i class="bi bi-arrow-clockwise me-1"></i>{{ t('agent_plans.refresh') }}
+    </button>
+</div>
+
+<div class="alert alert-info py-2 mb-3">
+    <strong>{{ t('agent_plans.how_to_label') }}</strong> {{ t('agent_plans.how_to_steps') }}
+</div>
+
+{% if load_error %}
+<div class="alert alert-warning py-2">
+    {{ t('agent_plans.load_error') }} {{ load_error }}
+</div>
+{% endif %}
+
+<div class="row g-3">
+    <div class="col-12 col-xl-5">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ t('agent_plans.create_title') }}</h5>
+                <label for="planObjective" class="form-label small text-muted">{{ t('agent_plans.objective_label') }}</label>
+                <textarea id="planObjective" class="form-control mb-2" rows="4" placeholder="{{ t('agent_plans.objective_placeholder') }}"></textarea>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="includeSelectedProject" checked>
+                    <label class="form-check-label" for="includeSelectedProject">{{ t('agent_plans.include_project') }}</label>
+                </div>
+                <button type="button" class="btn btn-primary w-100" id="createPlanBtn">
+                    <i class="bi bi-magic me-1"></i>{{ t('agent_plans.create_btn') }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-xl-7">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="card-title mb-0">{{ t('agent_plans.status_title') }}</h5>
+                    <span id="statusBadge" class="badge agent-plans-status-badge agent-plans-status-badge-default">{{ t('agent_plans.no_session_badge') }}</span>
+                </div>
+                <div class="small text-muted mb-2" id="sessionMeta">{{ t('agent_plans.select_session') }}</div>
+                <div id="approvalHint" class="alert alert-warning py-2 d-none">
+                    {{ t('agent_plans.approval_hint') }}
+                </div>
+                <div class="border rounded p-2 mb-2 bg-body-tertiary">
+                    <div class="small text-muted">{{ t('agent_plans.happening_now') }}</div>
+                    <div id="friendlySummary" class="fw-semibold">{{ t('agent_plans.no_session_summary') }}</div>
+                </div>
+                <div class="d-flex flex-wrap gap-2 mb-2">
+                    <button type="button" class="btn btn-success btn-sm" id="runPlanBtn" disabled>
+                        <i class="bi bi-play-fill me-1"></i>{{ t('agent_plans.run_btn') }}
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm" id="approveBtn" disabled>
+                        <i class="bi bi-check2 me-1"></i>{{ t('agent_plans.approve_btn') }}
+                    </button>
+                    <button type="button" class="btn btn-outline-danger btn-sm" id="rejectBtn" disabled>
+                        <i class="bi bi-x-lg me-1"></i>{{ t('agent_plans.reject_btn') }}
+                    </button>
+                </div>
+                <div class="mb-2">
+                    <div class="small text-muted mb-1">{{ t('agent_plans.step_timeline') }}</div>
+                    <ul id="planTimeline" class="list-group list-group-flush border rounded">
+                        <li class="list-group-item small text-muted">{{ t('agent_plans.no_steps') }}</li>
+                    </ul>
+                </div>
+                <details>
+                    <summary class="small text-muted agent-plans-details-summary">{{ t('agent_plans.raw_details') }}</summary>
+                    <pre id="planStatusJson" class="bg-body-tertiary p-2 rounded small mt-2 mb-0 agent-plans-status-json">{}</pre>
+                </details>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-3">
+    <div class="card-body">
+        <h5 class="card-title">{{ t('agent_plans.recent_sessions') }}</h5>
+        <div class="table-responsive">
+            <table class="table table-sm align-middle mb-0">
+                <thead>
+                <tr>
+                    <th>{{ t('agent_plans.col_session') }}</th>
+                    <th>{{ t('agent_plans.col_status') }}</th>
+                    <th>{{ t('agent_plans.col_objective') }}</th>
+                    <th>{{ t('agent_plans.col_updated') }}</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody id="plansTableBody">
+                {% if sessions %}
+                    {% for s in sessions %}
+                    <tr data-session-id="{{ s.session_id }}">
+                        <td class="small">{{ s.session_id }}</td>
+                        <td><span class="badge agent-plans-status-badge agent-plans-status-badge-light">{{ s.status or 'unknown' }}</span></td>
+                        <td class="small">{{ s.objective or '-' }}</td>
+                        <td class="small">{{ s.updated_at or s.created_at or '-' }}</td>
+                        <td class="text-end">
+                            <button class="btn btn-outline-primary btn-sm plan-open-btn" data-session-id="{{ s.session_id }}">{{ t('agent_plans.open_btn') }}</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="5" class="text-muted small">{{ t('agent_plans.no_sessions') }}</td></tr>
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script id="agent-plans-i18n" type="application/json">
+{{ {
+    "no_sessions": t('agent_plans.no_sessions'),
+    "open_btn": t('agent_plans.open_btn'),
+    "no_steps": t('agent_plans.no_steps'),
+    "status_completed": t('agent_plans.status_completed'),
+    "status_waiting": t('agent_plans.status_waiting'),
+    "status_running": t('agent_plans.status_running'),
+    "status_failed": t('agent_plans.status_failed'),
+    "status_unknown": t('agent_plans.status_unknown'),
+    "summary_waiting_reason": t('agent_plans.summary_waiting_reason'),
+    "summary_waiting": t('agent_plans.summary_waiting'),
+    "summary_completed": t('agent_plans.summary_completed'),
+    "summary_completed_nototal": t('agent_plans.summary_completed_nototal'),
+    "summary_running_type": t('agent_plans.summary_running_type'),
+    "summary_running": t('agent_plans.summary_running'),
+    "summary_failed": t('agent_plans.summary_failed'),
+    "summary_default": t('agent_plans.summary_default'),
+    "approve_prompt": t('agent_plans.approve_prompt'),
+    "reject_prompt": t('agent_plans.reject_prompt'),
+    "alert_no_objective": t('agent_plans.alert_no_objective'),
+    "session_meta": t('agent_plans.session_meta'),
+    "step_label": t('agent_plans.step_label'),
+    "no_session_badge": t('agent_plans.no_session_badge'),
+    "select_session": t('agent_plans.select_session'),
+    "no_session_summary": t('agent_plans.no_session_summary')
+} | tojson | safe }}
+</script>
+<script src="{{ url_for('static', filename='js/agent_plans_page.js') }}"></script>
+{% endblock %}

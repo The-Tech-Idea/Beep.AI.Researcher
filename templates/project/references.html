@@ -1,0 +1,453 @@
+{# References — extends project layout #}
+{% extends "project/_layout.html" %}
+{% set page_title = t('references.title') %}
+{% set page_subtitle = t('references.project.subtitle') %}
+{% set page_icon = 'book' %}
+{% set active_page = 'references' %}
+{% set reference_page_url = url_for('researcher.project_references_page', project_id=project.id) %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/library_setup_summary.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/references.css') }}">
+{% endblock %}
+
+{% block header_actions %}
+<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addRefModal">
+    <i class="bi bi-plus-circle me-1"></i>{{ t('references.actions.new') }}
+</button>
+{% endblock %}
+
+{% block workspace_content %}
+<div
+    data-library-setup-summary
+    data-project-api-base="/projects/{{ project.id }}"
+    data-collections-url="{{ url_for('projects.list_rag_collections_for_project') }}"
+    data-start-url="{{ url_for('project_start.project_start_page', project_id=project.id) }}"
+    data-settings-url="{{ url_for('researcher.project_settings', project_id=project.id) }}"
+    data-collection-id="{{ project.collection_id or '' }}"
+    data-quality-mode="{{ project.rag_quality_mode or 'balanced' }}"
+    data-quality-fast-label="{{ t('project_search.rag_mode.fast') }}"
+    data-quality-balanced-label="{{ t('project_search.rag_mode.balanced') }}"
+    data-quality-deep-label="{{ t('project_search.rag_mode.deep') }}"
+></div>
+
+<section class="references-library-controls" aria-label="{{ t('references.project.collections_title') }}">
+    <div class="references-library-head">
+        <div>
+            <h2 class="references-library-title">{{ t('references.project.collections_title') }}</h2>
+            <p class="references-library-copy">{{ t('references.project.collections_body') }}</p>
+        </div>
+        <div class="references-results-summary">
+            <span class="references-results-count">{{ reference_result_count }}</span>
+            <span class="references-results-label">{{ t('references.project.results_label') }}</span>
+        </div>
+    </div>
+
+    <div class="references-collection-grid">
+        {% for collection in reference_collections %}
+        <a
+            href="{{ url_for('researcher.project_references_page', project_id=project.id, collection=collection.key, tag=selected_reference_tag or None, q=reference_search_query or None) }}"
+            class="references-collection-card{% if selected_reference_collection == collection.key %} is-active{% endif %}"
+        >
+            <span class="references-collection-label">{{ t('references.project.collection.' ~ collection.key) }}</span>
+            <span class="references-collection-count">{{ collection.count }}</span>
+        </a>
+        {% endfor %}
+    </div>
+
+    <form class="references-search-form" method="get" action="{{ reference_page_url }}">
+        <input type="hidden" name="collection" value="{{ selected_reference_collection }}">
+        {% if selected_reference_tag %}
+        <input type="hidden" name="tag" value="{{ selected_reference_tag }}">
+        {% endif %}
+        <input
+            type="search"
+            name="q"
+            value="{{ reference_search_query }}"
+            class="references-search-input"
+            placeholder="{{ t('references.project.search_placeholder') }}"
+        >
+        <button type="submit" class="references-search-submit">{{ t('references.project.search_button') }}</button>
+        {% if reference_has_active_filters %}
+        <a href="{{ reference_page_url }}" class="references-clear-link">{{ t('references.project.clear_filters') }}</a>
+        {% endif %}
+    </form>
+
+    <div class="references-tag-panel">
+        <div class="references-tag-panel-title">{{ t('references.project.tags_title') }}</div>
+        {% if reference_tags %}
+        <div class="references-tag-list">
+            {% for tag in reference_tags %}
+            <a
+                href="{{ url_for('researcher.project_references_page', project_id=project.id, collection=selected_reference_collection, tag=tag.name, q=reference_search_query or None) }}"
+                class="reference-tag-chip{% if selected_reference_tag == tag.name %} is-active{% endif %}"
+            >
+                <span>{{ tag.name }}</span>
+                <span class="reference-tag-chip-count">{{ tag.count }}</span>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="references-tag-empty">{{ t('references.project.tags_empty') }}</p>
+        {% endif %}
+    </div>
+</section>
+
+<section class="references-bibliography-panel" aria-label="{{ t('references.project.bibliography.title') }}">
+    <div class="references-bibliography-panel__head">
+        <div>
+            <h2 class="references-bibliography-panel__title">{{ t('references.project.bibliography.title') }}</h2>
+            <p class="references-bibliography-panel__copy">{{ t('references.project.bibliography.body') }}</p>
+            <p class="references-bibliography-panel__status" id="bibliographyStatusText">
+                {{ t('references.project.bibliography.ready') }}
+            </p>
+        </div>
+        <a
+            href="{{ url_for('references.export_project_references', project_id=project.id, style='apa') }}"
+            class="references-bibliography-panel__download"
+            id="bibliographyDownloadLink"
+        >
+            {{ t('references.project.bibliography.download_button') }}
+        </a>
+    </div>
+
+    <div class="references-bibliography-panel__controls">
+        <label class="references-bibliography-panel__label" for="bibliographyStyleSelect">
+            {{ t('references.project.bibliography.style_label') }}
+        </label>
+        <div class="references-bibliography-panel__actions">
+            <select class="references-bibliography-panel__select" id="bibliographyStyleSelect">
+                {% for option in bibliography_style_options %}
+                <option value="{{ option.key }}"{% if option.key == 'apa' %} selected{% endif %}>
+                    {{ option.label }}
+                </option>
+                {% endfor %}
+            </select>
+            <button type="button" class="references-bibliography-panel__button" id="bibliographyPreviewBtn">
+                {{ t('references.project.bibliography.preview_button') }}
+            </button>
+            <button type="button" class="references-bibliography-panel__button is-secondary" id="bibliographyCopyBtn">
+                {{ t('references.project.bibliography.copy_button') }}
+            </button>
+        </div>
+    </div>
+
+    <p class="references-bibliography-panel__truncated" id="bibliographyTruncatedNote" hidden>
+        {{ t('references.project.bibliography.truncated') }}
+    </p>
+
+    <div class="references-bibliography-panel__empty" id="bibliographyPreviewEmpty">
+        {{ t('references.project.bibliography.empty') }}
+    </div>
+
+    <ol class="references-bibliography-panel__list" id="bibliographyPreviewList" hidden></ol>
+    <pre class="references-bibliography-panel__raw" id="bibliographyPreviewRaw" hidden></pre>
+</section>
+
+<section class="references-import-panel" aria-label="{{ t('references.project.import.title') }}">
+    <div class="references-import-panel__head">
+        <div>
+            <h2 class="references-import-panel__title">{{ t('references.project.import.title') }}</h2>
+            <p class="references-import-panel__copy">{{ t('references.project.import.body') }}</p>
+        </div>
+    </div>
+
+    <div class="references-import-panel__grid">
+        <div class="references-import-panel__field">
+            <label class="references-import-panel__label" for="referenceImportFormat">
+                {{ t('references.project.import.format_label') }}
+            </label>
+            <select class="references-import-panel__select" id="referenceImportFormat">
+                <option value="bibtex">BibTeX</option>
+                <option value="ris">RIS</option>
+                <option value="json">JSON</option>
+            </select>
+        </div>
+        <div class="references-import-panel__field">
+            <label class="references-import-panel__label" for="referenceImportFile">
+                {{ t('references.project.import.file_label') }}
+            </label>
+            <input class="references-import-panel__file" id="referenceImportFile" type="file" accept=".bib,.ris,.json,.txt">
+        </div>
+    </div>
+
+    <div class="references-import-panel__field">
+        <label class="references-import-panel__label" for="referenceImportContent">
+            {{ t('references.project.import.paste_label') }}
+        </label>
+        <textarea
+            class="references-import-panel__textarea"
+            id="referenceImportContent"
+            placeholder="{{ t('references.project.import.paste_placeholder') }}"
+        ></textarea>
+    </div>
+
+    <div class="references-import-panel__actions">
+        <button type="button" class="references-import-panel__button" id="referenceImportBtn">
+            {{ t('references.project.import.button') }}
+        </button>
+        <button type="button" class="references-import-panel__button is-secondary" id="referenceImportRefreshBtn" hidden>
+            {{ t('references.project.import.refresh_button') }}
+        </button>
+    </div>
+
+    <div class="references-import-panel__summary" id="referenceImportSummary" hidden></div>
+</section>
+
+<section class="references-zotero-panel" data-zotero-panel aria-label="{{ t('references.project.zotero.title') }}">
+    <div class="references-zotero-panel__head">
+        <div>
+            <h2 class="references-zotero-panel__title">{{ t('references.project.zotero.title') }}</h2>
+            <p class="references-zotero-panel__copy">{{ t('references.project.zotero.body') }}</p>
+        </div>
+        <a href="{{ url_for('user_integrations.my_integrations') }}" class="references-zotero-panel__manage-link">
+            {{ t('references.project.zotero.manage_link') }}
+        </a>
+    </div>
+
+    <p class="references-zotero-panel__status" id="zoteroStatusText">
+        {{ t('references.project.zotero.loading') }}
+    </p>
+
+    <div class="references-zotero-panel__controls" id="zoteroControls" hidden>
+        <label class="references-zotero-panel__label" for="zoteroCollectionSelect">
+            {{ t('references.project.zotero.collection_label') }}
+        </label>
+        <div class="references-zotero-panel__actions">
+            <select class="references-zotero-panel__select" id="zoteroCollectionSelect">
+                <option value="">{{ t('references.project.zotero.collection_all') }}</option>
+            </select>
+            <button type="button" class="references-zotero-panel__sync-button" id="zoteroSyncBtn">
+                {{ t('references.project.zotero.sync_button') }}
+            </button>
+        </div>
+    </div>
+</section>
+
+<div class="reference-banner d-flex align-items-center gap-2 mb-3" role="note">
+    <i class="bi bi-file-earmark-richtext flex-shrink-0"></i>
+    <span>{{ t('references.project.report_banner') }}
+        <a href="{{ url_for('researcher.project_report', project_id=project.id) }}" class="alert-link ms-1">
+            {{ t('references.project.report_link') }} →
+        </a>
+    </span>
+</div>
+
+{% if not references %}
+{# Empty state #}
+<div class="text-center py-5">
+    <i class="bi bi-book text-muted references-empty-icon"></i>
+    <h6 class="mt-3 mb-1 text-muted">{{ t('references.table.empty') }}</h6>
+    <p class="text-muted small mb-3">
+        {% if reference_has_active_filters %}
+        {{ t('references.project.filtered_empty_desc') }}
+        {% else %}
+        {{ t('references.project.empty_desc') }}
+        {% endif %}
+    </p>
+    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addRefModal">
+        <i class="bi bi-plus-circle me-1"></i>{{ t('references.actions.new') }}
+    </button>
+</div>
+{% else %}
+<div class="reference-table-card">
+    <div class="p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>{{ t('references.table.header.title') }}</th>
+                    <th>{{ t('references.table.header.authors') }}</th>
+                    <th class="references-year-column">{{ t('references.table.header.year') }}</th>
+                    <th>
+                        DOI
+                        {# 16a: DOI explanation tooltip #}
+                        <i class="bi bi-info-circle text-muted ms-1"
+                           data-bs-toggle="tooltip"
+                           data-bs-placement="top"
+                           title="{{ t('references.project.doi_tip') }}"></i>
+                    </th>
+                    <th class="references-actions-column"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ref in references %}
+                <tr>
+                    <td>
+                        <a
+                            href="{{ url_for('references.reference_detail_page', project_id=project.id, reference_id=ref.id) }}"
+                            class="reference-row-title-link"
+                        >
+                            {{ ref.title }}
+                        </a>
+                        {% if ref.publication or ref.source %}
+                        <div class="reference-row-title-meta">{{ ref.publication or ref.source }}</div>
+                        {% endif %}
+                        {% set ref_tags = reference_tags_by_id.get(ref.id, []) %}
+                        {% if ref_tags %}
+                        <div class="reference-row-tags">
+                            {% for tag in ref_tags %}
+                            <a
+                                href="{{ url_for('researcher.project_references_page', project_id=project.id, collection=selected_reference_collection, tag=tag, q=reference_search_query or None) }}"
+                                class="reference-row-tag"
+                            >{{ tag }}</a>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </td>
+                    <td class="small text-muted">
+                        {{ ref.get_authors() | join(', ') if ref.get_authors() else '—' }}
+                    </td>
+                    <td class="small">{{ ref.year or '—' }}</td>
+                    <td>
+                        {% if ref.doi %}
+                        <a href="https://doi.org/{{ ref.doi }}" target="_blank" rel="noopener"
+                           class="badge text-bg-success text-decoration-none">
+                            <i class="bi bi-check-circle me-1"></i>{{ ref.doi[:22] }}{% if ref.doi | length > 22 %}…{% endif %}
+                        </a>
+                        {% else %}
+                        <span class="badge text-bg-secondary">{{ t('references.project.no_doi') }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        <div class="references-actions-group">
+                            <a
+                                href="{{ url_for('references.reference_detail_page', project_id=project.id, reference_id=ref.id) }}"
+                                class="reference-row-action-link is-secondary"
+                            >
+                                {{ t('references.project.open_details') }}
+                            </a>
+                            <a
+                                href="{{ url_for('researcher.project_report', project_id=project.id) }}?ref_id={{ ref.id }}"
+                                class="reference-row-action-link"
+                                title="{{ t('references.project.add_to_report') }}"
+                            >
+                                {{ t('references.project.add_to_report') }}
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{# Add Reference Modal #}
+<div class="modal fade" id="addRefModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-plus-circle me-2"></i>{{ t('references.form.title') }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="addRefForm">
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label small fw-medium">
+                                {{ t('references.table.header.title') }} <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control form-control-sm" id="refTitle"
+                                   placeholder="{{ t('references.form.title_placeholder') }}" required>
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label small fw-medium">{{ t('references.table.header.authors') }}</label>
+                            <input type="text" class="form-control form-control-sm" id="refAuthors"
+                                   placeholder="{{ t('references.project.authors_example') }}">
+                            <small class="text-muted">{{ t('references.project.authors_hint') }}</small>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-medium">{{ t('references.table.header.year') }}</label>
+                            <input type="number" class="form-control form-control-sm" id="refYear"
+                                   placeholder="{{ t('references.project.year_example') }}" min="1900" max="2099">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-medium">
+                                DOI
+                                <i class="bi bi-info-circle text-muted ms-1"
+                                   data-bs-toggle="tooltip"
+                                   title="{{ t('references.project.doi_tip') }}"></i>
+                            </label>
+                            <input type="text" class="form-control form-control-sm" id="refDoi"
+                                   placeholder="{{ t('references.project.doi_example') }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-medium">{{ t('references.table.header.publication') }}</label>
+                            <input type="text" class="form-control form-control-sm" id="refPublication"
+                                   placeholder="{{ t('references.project.publication_example') }}">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-medium">{{ t('references.project.tags_label') }}</label>
+                            <input type="text" class="form-control form-control-sm" id="refTags"
+                                   placeholder="{{ t('references.project.tags_example') }}">
+                            <small class="text-muted">{{ t('references.project.tags_hint') }}</small>
+                        </div>
+                        {% if documents %}
+                        <div class="col-12">
+                            <label class="form-label small fw-medium">{{ t('references.form.document') }}</label>
+                            <select class="form-select form-select-sm" id="refDocument">
+                                <option value="">{{ t('references.form.document_placeholder') }}</option>
+                                {% for doc in documents %}
+                                <option value="{{ doc.id }}">{{ doc.filename }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                        {{ t('common.cancel')|default('Cancel', true) }}
+                    </button>
+                    <button type="submit" class="btn btn-primary btn-sm" id="saveRefBtn">
+                        <i class="bi bi-save me-1"></i>{{ t('references.form.save') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script src="{{ url_for('static', filename='js/project/library_setup_summary.js') }}"></script>
+<script id="references-config" type="application/json">
+{
+    "projectId": {{ project.id | tojson }},
+    "loadingLabel": {{ t("base.loading") | tojson }},
+    "saveFailedLabel": {{ t("references.project.save_failed") | tojson }},
+    "networkErrorLabel": {{ t("references.project.network_error") | tojson }},
+    "bibliographyPreviewUrl": {{ url_for("references.preview_project_bibliography", project_id=project.id) | tojson }},
+    "bibliographyExportUrl": {{ url_for("references.export_project_references", project_id=project.id) | tojson }},
+    "selectedCollection": {{ selected_reference_collection | tojson }},
+    "selectedTag": {{ selected_reference_tag | tojson }},
+    "searchQuery": {{ reference_search_query | tojson }},
+    "bibliographyLoadingLabel": {{ t("references.project.bibliography.loading") | tojson }},
+    "bibliographyReadyLabel": {{ t("references.project.bibliography.ready") | tojson }},
+    "bibliographyEmptyLabel": {{ t("references.project.bibliography.empty") | tojson }},
+    "bibliographyTruncatedLabel": {{ t("references.project.bibliography.truncated") | tojson }},
+    "bibliographyCopySuccessLabel": {{ t("references.project.bibliography.copy_success") | tojson }},
+    "bibliographyCopyFailedLabel": {{ t("references.project.bibliography.copy_failed") | tojson }},
+    "importUrl": {{ url_for("references.import_project_references", project_id=project.id) | tojson }},
+    "importEmptyLabel": {{ t("references.project.import.empty_error") | tojson }},
+    "importSuccessLabel": {{ t("references.project.import.success") | tojson }},
+    "importFailedLabel": {{ t("references.project.import.failed") | tojson }},
+    "importCreatedLabel": {{ t("references.project.import.created_label") | tojson }},
+    "importDuplicateLabel": {{ t("references.project.import.duplicate_label") | tojson }},
+    "importInvalidLabel": {{ t("references.project.import.invalid_label") | tojson }},
+    "zoteroStatusUrl": {{ url_for("references.zotero_sync_status", project_id=project.id) | tojson }},
+    "zoteroSyncUrl": {{ url_for("references.sync_project_zotero_references", project_id=project.id) | tojson }},
+    "zoteroLoadingLabel": {{ t("references.project.zotero.loading") | tojson }},
+    "zoteroConnectedLabel": {{ t("references.project.zotero.ready") | tojson }},
+    "zoteroNotConnectedLabel": {{ t("references.project.zotero.not_connected") | tojson }},
+    "zoteroSyncReadyLabel": {{ t("references.project.zotero.sync_ready") | tojson }},
+    "zoteroCollectionAllLabel": {{ t("references.project.zotero.collection_all") | tojson }},
+    "zoteroSyncSuccessLabel": {{ t("references.project.zotero.sync_success") | tojson }},
+    "zoteroSyncFailedLabel": {{ t("references.project.zotero.sync_failed") | tojson }}
+}
+</script>
+<script src="{{ url_for('static', filename='js/project/references.js') }}"></script>
+{% endblock %}

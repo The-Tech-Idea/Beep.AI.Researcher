@@ -1,0 +1,59 @@
+{# Document map — extends project layout #}
+{% extends "project/_layout.html" %}
+{% set page_title = t('document_map.title') %}
+{% set page_subtitle = t('document_map.subtitle') %}
+{% set page_icon = 'diagram-3' %}
+{% set active_page = 'map' %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/library_setup_summary.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/document_map.css') }}">
+{% endblock %}
+
+{% block workspace_content %}
+<div
+    data-library-setup-summary
+    data-project-api-base="/projects/{{ project.id }}"
+    data-collections-url="{{ url_for('projects.list_rag_collections_for_project') }}"
+    data-start-url="{{ url_for('project_start.project_start_page', project_id=project.id) }}"
+    data-settings-url="{{ url_for('researcher.project_settings', project_id=project.id) }}"
+    data-collection-id="{{ project.collection_id or '' }}"
+    data-quality-mode="{{ project.rag_quality_mode or 'balanced' }}"
+    data-quality-fast-label="{{ t('project_search.rag_mode.fast') }}"
+    data-quality-balanced-label="{{ t('project_search.rag_mode.balanced') }}"
+    data-quality-deep-label="{{ t('project_search.rag_mode.deep') }}"
+></div>
+
+<div class="d-flex gap-2 mb-3 py-2 document-map-banner" id="mapBanner" data-document-map-banner>
+    <i class="bi bi-diagram-3 flex-shrink-0 fs-5 document-map-banner-icon"></i>
+    <div class="small document-map-banner-copy">{{ t('document_map.banner.text') }}</div>
+    <button type="button" class="btn-close ms-auto" data-dismiss-map-banner></button>
+</div>
+
+<div class="card document-map-card">
+    <div class="card-body">
+        <div id="mapCanvas" class="document-map-canvas" data-project-id="{{ project.id }}"></div>
+        <div id="mapEmptyState" class="text-center py-5 document-map-empty-state" hidden>
+            <i class="bi bi-diagram-3 fs-1 d-block mb-3 document-map-empty-icon"></i>
+            <h5 class="document-map-empty-title">{{ t('document_map.empty.title') }}</h5>
+            <p class="small document-map-empty-copy">{{ t('document_map.empty.desc') }}</p>
+            <a href="{{ url_for('researcher.project_codes', project_id=project.id) }}" class="btn btn-sm document-map-empty-action">
+                <i class="bi bi-tags me-1"></i>{{ t('document_map.empty.cta') }}
+            </a>
+        </div>
+
+        <div class="d-flex gap-3 align-items-center mt-3 flex-wrap document-map-legend">
+            <span class="fw-medium document-map-legend-label">{{ t('document_map.legend.label') }}</span>
+            <span><span class="document-map-legend-dot document-map-legend-dot-document"></span>{{ t('document_map.legend.documents') }}</span>
+            <span><span class="document-map-legend-dot document-map-legend-dot-code"></span>{{ t('document_map.legend.codes') }}</span>
+            <span><span class="me-1 document-map-legend-separator">—</span>{{ t('document_map.legend.connection') }}</span>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script src="{{ url_for('static', filename='js/project/library_setup_summary.js') }}"></script>
+<script src="{{ url_for('static', filename='js/project/document_map_page.js') }}"></script>
+<script src="{{ url_for('static', filename='js/document-map.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,44 @@
+{# Shared layout for all project pages #}
+{% extends base_template or "base.html" %}
+
+{% block title %}{{ project.name }} - {{ page_title|default(t('layout.default_title')) }} - Beep.AI.Researcher{%
+endblock %}
+
+{% block extra_css %}
+{% block page_css %}{% endblock %}
+{% endblock %}
+
+{% block content %}
+<div class="workspace-container{% if hide_project_sidebar %} no-sidebar{% endif %}">
+    {% if not hide_project_sidebar %}
+    {% include 'project/_sidebar.html' %}
+    {% endif %}
+    <main class="workspace-main">
+        <header class="workspace-header">
+            <div class="header-left">
+                <button type="button"
+                    class="mobile-menu-btn d-md-none btn btn-sm btn-outline-secondary mb-2"
+                    aria-label="Toggle project menu">
+                    <i class="bi bi-list"></i>
+                </button>
+                <h1 class="page-title">{{ page_title|default(t('layout.default_title')) }}</h1>
+                {% if page_subtitle %}
+                <p class="page-subtitle">{{ page_subtitle }}</p>
+                {% endif %}
+            </div>
+            <div class="header-actions">
+                {% block header_actions %}{% endblock %}
+            </div>
+        </header>
+        <div class="workspace-content">
+            {% block workspace_content %}{% endblock %}
+        </div>
+    </main>
+    {% block assistant_panel %}{% endblock %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/project/sidebar.js') }}"></script>
+{% block page_js %}{% endblock %}
+{% endblock %}

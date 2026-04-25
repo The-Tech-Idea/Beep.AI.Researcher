@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Beep.AI.Researcher — Confidential Research Platform{% endblock %}
+
+{% block main_class %}container{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="text-center">
+        <h1 class="display-4 mb-3">Confidential Research. On Your Infrastructure.</h1>
+        <p class="lead mb-4">
+            Enterprise-grade document research, qualitative coding, and data analysis—all on-premises. No data leaves your perimeter.
+        </p>
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+            <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg px-4">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Sign in
+            </a>
+            <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary btn-lg px-4">
+                <i class="bi bi-person-plus me-2"></i>Create account
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="py-4 border-top">
+    <div class="text-center mb-4">
+        <h2 class="mb-2">Research without compromise</h2>
+        <p class="mb-0">Everything stays inside your perimeter, with modern research workflows.</p>
+    </div>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <i class="bi bi-shield-lock text-primary fs-2 mb-3"></i>
+                    <h5>On-premises only</h5>
+                    <p class="small mb-0">All data stays within your infrastructure. No cloud dependencies.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <i class="bi bi-search text-primary fs-2 mb-3"></i>
+                    <h5>Document research</h5>
+                    <p class="small mb-0">Search, code, and analyze internal documents with NVivo-style coding.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <i class="bi bi-bar-chart text-primary fs-2 mb-3"></i>
+                    <h5>Data analysis</h5>
+                    <p class="small mb-0">SPSS-style stats, Julius-style charts. Chat with your data.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-4 border-top">
+    <div class="text-center">
+        <h5 class="mb-3">TheTechIdea | Internal Research Platform</h5>
+        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary">Get started</a>
+    </div>
+</section>
+{% endblock %}

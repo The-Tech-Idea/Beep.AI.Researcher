@@ -1,0 +1,44 @@
+.agent-plans-details-summary {
+    cursor: pointer;
+}
+
+.agent-plans-status-json {
+    max-height: 16.25rem;
+    overflow: auto;
+}
+
+.agent-plans-status-badge-default {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.agent-plans-status-badge-light {
+    background: color-mix(in srgb, var(--bg-secondary) 82%, var(--text-muted) 18%);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.agent-plans-status-badge-waiting {
+    background: color-mix(in srgb, var(--bg-secondary) 82%, var(--color-warning) 18%);
+    color: var(--color-warning);
+    border: 1px solid color-mix(in srgb, var(--border-color) 72%, var(--color-warning) 28%);
+}
+
+.agent-plans-status-badge-completed {
+    background: color-mix(in srgb, var(--bg-secondary) 82%, var(--color-success) 18%);
+    color: var(--color-success);
+    border: 1px solid color-mix(in srgb, var(--border-color) 72%, var(--color-success) 28%);
+}
+
+.agent-plans-status-badge-failed {
+    background: color-mix(in srgb, var(--bg-secondary) 82%, var(--color-error) 18%);
+    color: var(--color-error);
+    border: 1px solid color-mix(in srgb, var(--border-color) 72%, var(--color-error) 28%);
+}
+
+.agent-plans-status-badge-running {
+    background: color-mix(in srgb, var(--bg-secondary) 82%, var(--color-info) 18%);
+    color: var(--color-info);
+    border: 1px solid color-mix(in srgb, var(--border-color) 72%, var(--color-info) 28%);
+}

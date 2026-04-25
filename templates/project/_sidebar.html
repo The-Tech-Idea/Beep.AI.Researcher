@@ -1,0 +1,201 @@
+{# Sidebar navigation partial - shared across all project pages #}
+{# 1d: Readiness dot macro #}
+{% macro rdot(count, prereq=1) %}{% if count and count|int > 0 %}<span class="sidebar-rdot rdot-ready"></span>{% elif prereq and prereq|int > 0 %}<span class="sidebar-rdot rdot-progress"></span>{% else %}<span class="sidebar-rdot rdot-empty"></span>{% endif %}{% endmacro %}
+<nav class="workspace-sidebar" id="workspaceSidebar">
+    <div class="sidebar-header">
+        <button class="sidebar-toggle" id="sidebarToggle" type="button" title="{{ t('sidebar.toggle') }}"
+            aria-label="{{ t('sidebar.toggle') }}">
+            <i class="bi bi-list"></i>
+        </button>
+        <div class="project-info">
+            <span class="project-name">{{ project.name }}</span>
+        </div>
+    </div>
+
+    <ul class="sidebar-nav">
+        <li class="nav-section">
+            <span class="section-label">{{ t('sidebar.section.overview') }}</span>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('researcher.project_overview', project_id=project.id) }}"
+                class="nav-link {% if active_page == 'overview' %}active{% endif %}"
+                {% if active_page == 'overview' %}aria-current="page"{% endif %}>
+                <i class="bi bi-house"></i>
+                <span>{{ t('sidebar.nav.dashboard') }}</span>
+            </a>
+        </li>
+
+        <li class="nav-section">
+            <span class="section-label">{{ t('sidebar.section.research') }}</span>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('researcher.project_documents', project_id=project.id) }}"
+                class="nav-link {% if active_page == 'documents' %}active{% endif %}"
+                {% if active_page == 'documents' %}aria-current="page"{% endif %}>
+                <i class="bi bi-file-earmark-text"></i>
+                <span>{{ t('sidebar.nav.documents') }}</span>
+                {% if document_count %}<span class="nav-badge">{{ document_count }}</span>{% endif %}
+                {{ rdot(document_count, 1) }}
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('researcher.project_search', project_id=project.id) }}"
+                class="nav-link {% if active_page == 'search' %}active{% endif %}"
+                {% if active_page == 'search' %}aria-current="page"{% endif %}>
+                <i class="bi bi-chat-left-text"></i>
+                <span>{{ t('sidebar.nav.search_chat') }}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('researcher.project_codes', project_id=project.id) }}"
+                class="nav-link {% if active_page == 'codes' %}active{% endif %}"
+                {% if active_page == 'codes' %}aria-current="page"{% endif %}>
+                <i class="bi bi-tags"></i>
+                <span>{{ t('sidebar.nav.codes') }}</span>
+                {% if code_count %}<span class="nav-badge">{{ code_count }}</span>{% endif %}
+                {{ rdot(code_count, document_count) }}
+            </a>
+        </li>
+
+        <li class="nav-section">
+            <span class="section-label">{{ t('sidebar.section.productivity') }}</span>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('researcher.project_tasks', project_id=project.id) }}"
+                class="nav-link {% if active_page == 'tasks' %}active{% endif %}"
+                {% if active_page == 'tasks' %}aria-current="page"{% endif %}>
+                <i class="bi bi-kanban"></i>
+                <span>{{ t('sidebar.nav.tasks') }}</span>
+                {% if task_count %}<span class="nav-badge">{{ task_count }}</span>{% endif %}
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('researcher.project_report', project_id=project.id) }}"
+                class="nav-link {% if active_page == 'report' %}active{% endif %}"
+                {% if active_page == 'report' %}aria-current="page"{% endif %}>
+                <i class="bi bi-file-earmark-richtext"></i>
+                <span>{{ t('sidebar.nav.report')|default('Report', true) }}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('researcher.scheduled_reports_page', project_id=project.id) }}"
+                class="nav-link {% if active_page == 'reports' %}active{% endif %}"
+                {% if active_page == 'reports' %}aria-current="page"{% endif %}>
+                <i class="bi bi-calendar-check"></i>
+                <span>{{ t('sidebar.nav.scheduled_reports')|default('Scheduled Reports', true) }}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('researcher.retention_page', project_id=project.id) }}"
+                class="nav-link {% if active_page == 'retention' %}active{% endif %}"
+                {% if active_page == 'retention' %}aria-current="page"{% endif %}>
+                <i class="bi bi-clock-history"></i>
+                <span>{{ t('sidebar.nav.retention')|default('Retention', true) }}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('researcher.project_references_page', project_id=project.id) }}"
+                class="nav-link {% if active_page == 'references' %}active{% endif %}"
+                {% if active_page == 'references' %}aria-current="page"{% endif %}>
+                <i class="bi bi-book"></i>
+                <span>{{ t('sidebar.nav.references')|default('References', true) }}</span>
+            </a>
+        </li>
+
+        <li class="nav-section">
+            <span class="section-label">{{ t('sidebar.section.analysis') }}</span>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('researcher.data_page', project_id=project.id) }}"
+                class="nav-link {% if active_page == 'data' %}active{% endif %}"
+                {% if active_page == 'data' %}aria-current="page"{% endif %}>
+                <i class="bi bi-bar-chart"></i>
+                <span>{{ t('sidebar.nav.data_charts') }}</span>
+            </a>
+        </li>
+
+        <li class="nav-section">
+            <span class="section-label">{{ t('sidebar.section.learning') }}</span>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('researcher.flashcards_page', project_id=project.id) }}"
+                class="nav-link {% if active_page == 'flashcards' %}active{% endif %}"
+                {% if active_page == 'flashcards' %}aria-current="page"{% endif %}>
+                <i class="bi bi-card-text"></i>
+                <span>{{ t('sidebar.nav.flashcards') }}</span>
+                {{ rdot(flashcard_count, document_count) }}
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('researcher.quizzes_page', project_id=project.id) }}"
+                class="nav-link {% if active_page == 'quizzes' %}active{% endif %}"
+                {% if active_page == 'quizzes' %}aria-current="page"{% endif %}>
+                <i class="bi bi-question-circle"></i>
+                <span>{{ t('sidebar.nav.quizzes') }}</span>
+                {{ rdot(quiz_count, document_count) }}
+            </a>
+        </li>
+
+        <li class="nav-section">
+            <span class="section-label">{{ t('sidebar.section.tools') }}</span>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('researcher.document_map', project_id=project.id) }}"
+                class="nav-link {% if active_page == 'map' %}active{% endif %}"
+                {% if active_page == 'map' %}aria-current="page"{% endif %}>
+                <i class="bi bi-diagram-3"></i>
+                <span>{{ t('sidebar.nav.document_map') }}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('researcher.matrix_page', project_id=project.id) }}"
+                class="nav-link {% if active_page == 'matrix' %}active{% endif %}"
+                {% if active_page == 'matrix' %}aria-current="page"{% endif %}>
+                <i class="bi bi-grid-3x3"></i>
+                <span>{{ t('sidebar.nav.matrix') }}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('researcher.contradictions_page', project_id=project.id) }}"
+                class="nav-link {% if active_page == 'contradictions' %}active{% endif %}"
+                {% if active_page == 'contradictions' %}aria-current="page"{% endif %}>
+                <i class="bi bi-exclamation-triangle"></i>
+                <span>{{ t('sidebar.nav.contradictions') }}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('researcher.extraction_page', project_id=project.id) }}"
+                class="nav-link {% if active_page == 'extraction' %}active{% endif %}"
+                {% if active_page == 'extraction' %}aria-current="page"{% endif %}>
+                <i class="bi bi-collection"></i>
+                <span>{{ t('sidebar.nav.extraction') }}</span>
+                {{ rdot(extraction_count, document_count) }}
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('researcher.hallucination_audit_page', project_id=project.id) }}"
+                class="nav-link {% if active_page == 'hallucination' %}active{% endif %}"
+                {% if active_page == 'hallucination' %}aria-current="page"{% endif %}>
+                <i class="bi bi-shield-exclamation"></i>
+                <span>{{ t('sidebar.nav.audit') }}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url_for('researcher.stats_page', project_id=project.id) }}"
+                class="nav-link {% if active_page == 'stats' %}active{% endif %}"
+                {% if active_page == 'stats' %}aria-current="page"{% endif %}>
+                <i class="bi bi-calculator"></i>
+                <span>{{ t('sidebar.nav.stats') }}</span>
+            </a>
+        </li>
+    </ul>
+
+    <div class="sidebar-footer">
+        <a href="{{ url_for('researcher.project_settings', project_id=project.id) }}"
+            class="nav-link {% if active_page == 'settings' %}active{% endif %}"
+            {% if active_page == 'settings' %}aria-current="page"{% endif %}>
+            <i class="bi bi-gear"></i>
+            <span>{{ t('sidebar.nav.settings') }}</span>
+        </a>
+    </div>
+</nav>

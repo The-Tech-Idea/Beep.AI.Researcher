@@ -1,0 +1,112 @@
+.document-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.document-selector__toolbar {
+    align-items: center;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: space-between;
+}
+
+.document-selector__select-all {
+    align-items: center;
+    color: var(--spa-text);
+    cursor: pointer;
+    display: inline-flex;
+    gap: 0.5rem;
+    margin: 0;
+}
+
+.document-selector__checkbox {
+    flex-shrink: 0;
+}
+
+.document-selector__select-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.document-selector__count {
+    align-items: center;
+    background: color-mix(in srgb, var(--spa-surface-2) 90%, var(--spa-primary-light) 10%);
+    border: 1px solid color-mix(in srgb, var(--spa-primary) 14%, var(--spa-border));
+    border-radius: var(--border-radius-pill, 999px);
+    color: var(--spa-text-secondary);
+    display: inline-flex;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1;
+    padding: 0.35rem 0.55rem;
+    white-space: nowrap;
+}
+
+.document-selector__list {
+    border: 1px solid var(--spa-border);
+    border-radius: var(--spa-radius);
+    display: flex;
+    flex-direction: column;
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.document-selector__item {
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    gap: 0.65rem;
+    margin: 0;
+    padding: 0.6rem 0.75rem;
+}
+
+.document-selector__item + .document-selector__item {
+    border-top: 1px solid color-mix(in srgb, var(--spa-border) 88%, transparent);
+}
+
+.document-selector__item:hover,
+.document-selector__item:focus-within {
+    background: color-mix(in srgb, var(--spa-surface-2) 82%, var(--spa-primary-light) 18%);
+}
+
+.document-selector__file-icon {
+    color: var(--spa-text-muted);
+    flex-shrink: 0;
+}
+
+.document-selector__name {
+    color: var(--spa-text);
+    flex: 1;
+    font-size: 0.875rem;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.document-selector__size {
+    color: var(--spa-text-muted);
+    flex-shrink: 0;
+    font-size: 0.75rem;
+}
+
+.document-selector__empty {
+    align-items: center;
+    background: color-mix(in srgb, var(--spa-surface-2) 90%, var(--spa-primary-light) 10%);
+    border: 1px solid var(--spa-border);
+    border-radius: var(--spa-radius);
+    color: var(--spa-text-secondary);
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.75rem 0.85rem;
+}
+
+.document-selector__empty-icon {
+    color: var(--spa-text-muted);
+    flex-shrink: 0;
+}
+
+.document-selector__empty-copy {
+    font-size: 0.8125rem;
+}

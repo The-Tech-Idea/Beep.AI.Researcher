@@ -1,0 +1,730 @@
+.collection-guide-card {
+    border: 1px solid var(--spa-border);
+    border-radius: var(--spa-radius-lg);
+    background:
+        radial-gradient(circle at top right, color-mix(in srgb, var(--spa-primary) 12%, transparent), transparent 38%),
+        linear-gradient(145deg, var(--spa-surface), color-mix(in srgb, var(--spa-surface-2) 90%, var(--spa-primary-light) 10%));
+    padding: 1rem 1.05rem;
+    box-shadow: var(--spa-shadow-sm);
+}
+
+.collection-guide-card,
+.collection-guide-card p,
+.collection-guide-card li {
+    color: var(--spa-text-secondary);
+    line-height: 1.6;
+}
+
+.collection-guide-card h5 {
+    color: var(--spa-text);
+    font-weight: 700;
+}
+
+.collection-card {
+    border-color: var(--spa-border);
+    background: var(--spa-surface);
+    box-shadow: var(--spa-shadow-sm);
+}
+
+.collection-card .card-header {
+    background: color-mix(in srgb, var(--spa-surface-2) 88%, var(--spa-primary-light) 12%);
+    border-bottom-color: var(--spa-border);
+}
+
+.collection-soft-surface {
+    border-color: var(--spa-border) !important;
+    background: color-mix(in srgb, var(--spa-surface-2) 92%, var(--spa-primary-light) 8%) !important;
+    color: var(--spa-text-secondary);
+}
+
+.extraction-intro-icon {
+    color: var(--spa-primary);
+}
+
+.extraction-intro-step {
+    align-items: center;
+    background: color-mix(in srgb, var(--spa-primary-light) 82%, white);
+    border: 1px solid color-mix(in srgb, var(--spa-primary) 22%, var(--spa-border));
+    border-radius: var(--border-radius-pill);
+    color: var(--spa-primary);
+    display: inline-flex;
+    font-size: var(--font-size-eyebrow);
+    font-weight: 600;
+    line-height: 1;
+    padding: 0.45rem 0.75rem;
+}
+
+.extraction-help-icon,
+.extraction-field-builder-empty,
+.extraction-empty-copy,
+.extraction-run-field-list,
+.extraction-progress-meta,
+.extraction-results-placeholder,
+.extraction-what-next-title,
+.extraction-next-desc {
+    color: var(--spa-text-muted);
+}
+
+.extraction-preset-button,
+.extraction-results-action,
+.extraction-stats-banner-button {
+    border-radius: var(--border-radius-pill);
+}
+
+.extraction-preset-button {
+    background: color-mix(in srgb, var(--spa-surface-2) 90%, var(--spa-primary-light) 10%);
+    border: 1px solid color-mix(in srgb, var(--spa-primary) 14%, var(--spa-border));
+    color: var(--spa-text-secondary);
+}
+
+.extraction-preset-button:hover,
+.extraction-preset-button:focus-visible {
+    background: color-mix(in srgb, var(--spa-primary-light) 62%, var(--spa-surface));
+    border-color: color-mix(in srgb, var(--spa-primary) 24%, var(--spa-border));
+    color: var(--spa-primary);
+}
+
+.extraction-add-field-button {
+    color: var(--spa-primary);
+}
+
+.extraction-add-field-button:hover,
+.extraction-add-field-button:focus-visible {
+    color: color-mix(in srgb, var(--spa-primary) 84%, var(--spa-text));
+}
+
+.extraction-field-builder {
+    min-height: 60px;
+}
+
+.extraction-field-row {
+    gap: 0.35rem;
+}
+
+.extraction-field-type-select {
+    width: 90px;
+}
+
+.extraction-field-remove-button,
+.extraction-schema-delete-button {
+    align-items: center;
+    border: 1px solid transparent;
+    border-radius: var(--border-radius-pill);
+    color: var(--spa-text-muted);
+    display: inline-flex;
+    justify-content: center;
+}
+
+.extraction-field-remove-button {
+    background: color-mix(in srgb, var(--spa-danger) 10%, var(--spa-surface));
+    border-color: color-mix(in srgb, var(--spa-danger) 20%, var(--spa-border));
+    color: color-mix(in srgb, var(--spa-danger) 76%, var(--spa-text));
+}
+
+.extraction-field-remove-button:hover,
+.extraction-field-remove-button:focus-visible,
+.extraction-schema-delete-button:hover,
+.extraction-schema-delete-button:focus-visible {
+    background: color-mix(in srgb, var(--spa-danger) 16%, var(--spa-surface));
+    border-color: color-mix(in srgb, var(--spa-danger) 28%, var(--spa-border));
+    color: color-mix(in srgb, var(--spa-danger) 88%, var(--spa-text));
+}
+
+.extraction-schema-feedback,
+.extraction-results-message,
+.extraction-schema-empty-state,
+.extraction-results-empty-state {
+    padding: 0.9rem 1rem;
+}
+
+.extraction-schema-feedback,
+.extraction-results-message {
+    border: 1px solid color-mix(in srgb, var(--spa-danger) 20%, var(--spa-border));
+    border-radius: var(--spa-radius);
+    color: color-mix(in srgb, var(--spa-danger) 80%, var(--spa-text));
+}
+
+.extraction-schema-feedback {
+    background: color-mix(in srgb, var(--spa-danger) 8%, var(--spa-surface));
+}
+
+.extraction-results-message {
+    background: color-mix(in srgb, var(--spa-danger) 10%, var(--spa-surface));
+}
+
+.extraction-schema-empty-state,
+.extraction-results-empty-state {
+    color: var(--spa-text-muted);
+    text-align: center;
+}
+
+.extraction-schema-empty-state-icon {
+    display: block;
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+    opacity: 0.5;
+}
+
+.extraction-schema-meta {
+    color: var(--spa-text-muted);
+}
+
+.extraction-schema-delete-button {
+    background: transparent;
+}
+
+.extraction-empty-icon {
+    color: var(--spa-text-muted);
+    font-size: 3rem;
+    opacity: 0.4;
+}
+
+#runPanel[hidden],
+#extractionIntroBanner[hidden] {
+    display: none !important;
+}
+
+.extraction-progress {
+    height: 6px;
+    overflow: hidden;
+    position: relative;
+    border-radius: var(--border-radius-pill);
+    background: color-mix(in srgb, var(--spa-surface-2) 88%, var(--spa-primary-light) 12%);
+}
+
+.extraction-progress-bar {
+    animation: extraction-progress-slide 1.2s linear infinite;
+    background:
+        linear-gradient(
+            90deg,
+            color-mix(in srgb, var(--spa-primary) 28%, transparent) 0%,
+            var(--spa-primary) 50%,
+            color-mix(in srgb, var(--spa-primary) 28%, transparent) 100%
+        );
+    border-radius: inherit;
+    height: 100%;
+    left: -35%;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.extraction-progress-spinner {
+    width: 0.85rem;
+    height: 0.85rem;
+    border: 2px solid color-mix(in srgb, var(--spa-primary) 25%, transparent);
+    border-top-color: var(--spa-primary);
+    border-radius: 50%;
+    animation: extraction-spinner 0.9s linear infinite;
+}
+
+.extraction-results-count {
+    align-items: center;
+    background: color-mix(in srgb, var(--spa-surface-2) 88%, var(--spa-primary-light) 12%);
+    border: 1px solid color-mix(in srgb, var(--spa-primary) 18%, var(--spa-border));
+    border-radius: var(--border-radius-pill);
+    color: var(--spa-text-secondary);
+    display: inline-flex;
+    font-size: var(--font-size-eyebrow);
+    font-weight: 700;
+    line-height: 1;
+    padding: 0.35rem 0.55rem;
+}
+
+.extraction-results-action {
+    border: 1px solid;
+}
+
+.extraction-results-action--report {
+    background: color-mix(in srgb, var(--spa-success) 10%, var(--spa-surface));
+    border-color: color-mix(in srgb, var(--spa-success) 20%, var(--spa-border));
+    color: color-mix(in srgb, var(--spa-success) 74%, var(--spa-text));
+}
+
+.extraction-results-action--report:hover,
+.extraction-results-action--report:focus-visible {
+    background: color-mix(in srgb, var(--spa-success) 16%, var(--spa-surface));
+    border-color: color-mix(in srgb, var(--spa-success) 28%, var(--spa-border));
+    color: color-mix(in srgb, var(--spa-success) 86%, var(--spa-text));
+}
+
+.extraction-results-action--export {
+    background: color-mix(in srgb, var(--spa-surface-2) 92%, var(--spa-primary-light) 8%);
+    border-color: color-mix(in srgb, var(--spa-primary) 16%, var(--spa-border));
+    color: var(--spa-text-secondary);
+}
+
+.extraction-results-action--export:hover,
+.extraction-results-action--export:focus-visible {
+    background: color-mix(in srgb, var(--spa-primary-light) 58%, var(--spa-surface));
+    border-color: color-mix(in srgb, var(--spa-primary) 26%, var(--spa-border));
+    color: var(--spa-primary);
+}
+
+.extraction-results-table-head th {
+    background: color-mix(in srgb, var(--spa-surface-2) 84%, var(--spa-primary-light) 16%);
+    color: var(--spa-text);
+}
+
+.extraction-results-document-link {
+    color: var(--spa-text-secondary);
+    text-decoration: none;
+}
+
+.extraction-results-document-link:hover,
+.extraction-results-document-link:focus-visible {
+    color: var(--spa-primary);
+}
+
+.extraction-results-document-icon {
+    color: var(--spa-text-muted);
+}
+
+.extraction-next-desc {
+    font-size: 0.75rem;
+}
+
+.extraction-stats-banner {
+    border: 1px solid color-mix(in srgb, var(--spa-success) 20%, var(--spa-border));
+    border-radius: var(--spa-radius-lg);
+    background: color-mix(in srgb, var(--spa-success) 10%, var(--spa-surface));
+    padding: 0.9rem 1rem;
+}
+
+.extraction-stats-banner-icon {
+    color: color-mix(in srgb, var(--spa-success) 78%, var(--spa-text));
+}
+
+.extraction-stats-banner-copy {
+    color: color-mix(in srgb, var(--spa-success) 74%, var(--spa-text));
+}
+
+.extraction-stats-banner-button {
+    background: color-mix(in srgb, var(--spa-success) 20%, var(--spa-surface));
+    border: 1px solid color-mix(in srgb, var(--spa-success) 28%, var(--spa-border));
+    color: color-mix(in srgb, var(--spa-success) 84%, var(--spa-text));
+}
+
+.extraction-stats-banner-button:hover,
+.extraction-stats-banner-button:focus-visible {
+    background: color-mix(in srgb, var(--spa-success) 28%, var(--spa-surface));
+    color: color-mix(in srgb, var(--spa-success) 92%, var(--spa-text));
+}
+
+.extraction-next-tile {
+    color: inherit;
+}
+
+.extraction-next-tile-button {
+    background: transparent;
+}
+
+.extraction-next-icon--stats {
+    color: var(--spa-primary);
+}
+
+.extraction-next-icon--codes {
+    color: color-mix(in srgb, var(--spa-success) 80%, var(--spa-text));
+}
+
+.extraction-next-icon--export {
+    color: color-mix(in srgb, var(--spa-warning) 80%, var(--spa-text));
+}
+
+@keyframes extraction-progress-slide {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(70%);
+    }
+}
+
+@keyframes extraction-spinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.extraction-results-empty-icon {
+    font-size: 2rem;
+    opacity: 0.5;
+}
+
+.extraction-intro-banner {
+    align-items: flex-start;
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.extraction-intro-copy {
+    flex: 1;
+    min-width: 0;
+}
+
+.extraction-intro-title {
+    color: var(--spa-text);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    margin-bottom: 0.35rem;
+}
+
+.extraction-intro-description {
+    font-size: 0.875rem;
+}
+
+.extraction-intro-steps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.extraction-step-icon,
+.extraction-button-icon,
+.extraction-schema-icon,
+.extraction-schema-meta-icon,
+.extraction-results-document-icon {
+    margin-right: 0.35rem;
+}
+
+.extraction-banner-dismiss {
+    appearance: none;
+    background:
+        linear-gradient(45deg, transparent 46%, currentColor 46%, currentColor 54%, transparent 54%),
+        linear-gradient(-45deg, transparent 46%, currentColor 46%, currentColor 54%, transparent 54%);
+    background-color: color-mix(in srgb, var(--spa-surface-2) 86%, var(--spa-primary) 14%);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 0.8rem 0.8rem;
+    border: 1px solid color-mix(in srgb, var(--spa-primary) 16%, var(--spa-border));
+    border-radius: 999px;
+    color: var(--spa-text);
+    cursor: pointer;
+    flex-shrink: 0;
+    height: 2rem;
+    margin-left: auto;
+    width: 2rem;
+}
+
+.extraction-banner-dismiss:hover,
+.extraction-banner-dismiss:focus-visible {
+    background-color: color-mix(in srgb, var(--spa-surface-2) 76%, var(--spa-primary) 24%);
+    border-color: color-mix(in srgb, var(--spa-primary) 28%, var(--spa-border));
+}
+
+.extraction-card,
+.extraction-panel {
+    margin-bottom: 1rem;
+}
+
+.extraction-card-header {
+    align-items: center;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.extraction-card-header--between {
+    justify-content: space-between;
+}
+
+.extraction-card-title {
+    color: var(--spa-text);
+    font-size: 0.9375rem;
+    font-weight: 700;
+}
+
+.extraction-form-section {
+    margin-bottom: 1rem;
+}
+
+.extraction-form-label {
+    color: var(--spa-text);
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+}
+
+.extraction-form-label-row {
+    align-items: center;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: space-between;
+}
+
+.extraction-preset-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.extraction-help-inline-icon {
+    margin-left: 0.25rem;
+}
+
+.extraction-primary-action,
+.extraction-results-action,
+.extraction-stats-banner-button,
+.extraction-next-tile-button {
+    align-items: center;
+    border-radius: var(--border-radius-pill);
+    display: inline-flex;
+    font-weight: 600;
+    gap: 0.35rem;
+    justify-content: center;
+}
+
+.extraction-primary-action {
+    background: color-mix(in srgb, var(--spa-primary) 16%, var(--spa-surface));
+    border: 1px solid color-mix(in srgb, var(--spa-primary) 26%, var(--spa-border));
+    color: var(--spa-text);
+    min-height: 2.1rem;
+    padding: 0.5rem 0.85rem;
+}
+
+.extraction-primary-action:hover,
+.extraction-primary-action:focus-visible {
+    background: color-mix(in srgb, var(--spa-primary) 24%, var(--spa-surface));
+    border-color: color-mix(in srgb, var(--spa-primary) 36%, var(--spa-border));
+    color: var(--spa-text);
+}
+
+.extraction-primary-action--block {
+    width: 100%;
+}
+
+.extraction-list-shell {
+    padding: 0;
+}
+
+.extraction-schema-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.extraction-schema-item {
+    align-items: flex-start;
+    border-top: 1px solid color-mix(in srgb, var(--spa-border) 88%, transparent);
+    display: flex;
+    gap: 0.5rem;
+    justify-content: space-between;
+    padding: 0.65rem 0.8rem;
+}
+
+.extraction-schema-item:first-child {
+    border-top: 0;
+}
+
+.extraction-schema-item--active {
+    background: color-mix(in srgb, var(--spa-surface-2) 82%, var(--spa-primary-light) 18%);
+}
+
+.extraction-schema-select {
+    background: transparent;
+    border: 0;
+    color: inherit;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0;
+    text-align: left;
+}
+
+.extraction-schema-name {
+    color: var(--spa-text);
+    font-weight: 600;
+}
+
+.extraction-schema-meta {
+    align-items: center;
+    color: var(--spa-text-muted);
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 0.75rem;
+    gap: 0.35rem;
+}
+
+.extraction-schema-meta-item {
+    align-items: center;
+    display: inline-flex;
+}
+
+.extraction-schema-meta-separator {
+    color: var(--spa-text-muted);
+}
+
+.extraction-field-builder {
+    padding: 0.5rem;
+}
+
+.extraction-field-builder-empty {
+    margin: 0;
+    padding: 0.4rem 0;
+    text-align: center;
+}
+
+.extraction-field-row {
+    align-items: center;
+    display: flex;
+    gap: 0.35rem;
+    margin-bottom: 0.35rem;
+}
+
+.extraction-field-name-input {
+    flex: 1;
+}
+
+.extraction-field-row:last-child {
+    margin-bottom: 0;
+}
+
+.extraction-supporting-sources {
+    margin-bottom: 1rem;
+}
+
+.extraction-empty-state {
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.extraction-empty-title {
+    margin-top: 0.9rem;
+}
+
+.extraction-run-heading,
+.extraction-results-heading,
+.extraction-results-actions,
+.extraction-progress-meta,
+.extraction-stats-banner {
+    align-items: center;
+    display: flex;
+}
+
+.extraction-run-heading,
+.extraction-results-heading {
+    gap: 0.5rem;
+}
+
+.extraction-run-field-callout {
+    margin-bottom: 1rem;
+    padding: 0.65rem 0.85rem;
+}
+
+.extraction-run-field-list {
+    margin-left: 0.35rem;
+}
+
+.extraction-doc-selector {
+    margin-bottom: 0.5rem;
+}
+
+.extraction-progress-shell {
+    margin-top: 0.5rem;
+}
+
+.extraction-progress-meta {
+    font-size: 0.8125rem;
+    gap: 0.5rem;
+    margin-top: 0.35rem;
+}
+
+.extraction-progress-eta {
+    margin-left: auto;
+}
+
+.extraction-results-header {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.extraction-results-actions {
+    gap: 0.5rem;
+}
+
+.extraction-results-body {
+    padding: 0;
+}
+
+.extraction-results-area {
+    padding: 0.9rem 1rem;
+}
+
+.extraction-results-placeholder,
+.extraction-results-empty-copy {
+    margin: 0;
+    padding: 0.35rem 0;
+    text-align: center;
+}
+
+.extraction-results-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.extraction-results-table th,
+.extraction-results-table td {
+    border: 1px solid color-mix(in srgb, var(--spa-border) 92%, transparent);
+    padding: 0.55rem 0.7rem;
+    vertical-align: top;
+}
+
+.extraction-results-raw {
+    font-size: 0.8125rem;
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+.extraction-results-document-link {
+    align-items: center;
+    display: inline-flex;
+}
+
+.extraction-stats-banner {
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.extraction-stats-banner-icon {
+    flex-shrink: 0;
+    font-size: 1.25rem;
+}
+
+.extraction-next-grid {
+    margin-top: 0.5rem;
+    row-gap: 0.5rem;
+}
+
+.extraction-next-tile {
+    align-items: center;
+    background: var(--spa-surface);
+    border: 1px solid var(--spa-border);
+    border-radius: var(--spa-radius);
+    box-shadow: var(--spa-shadow-sm);
+    color: inherit;
+    display: flex;
+    gap: 0.65rem;
+    height: 100%;
+    padding: 0.9rem 1rem;
+    text-align: left;
+    text-decoration: none;
+}
+
+.extraction-next-tile-button {
+    appearance: none;
+    width: 100%;
+}
+
+.extraction-next-name {
+    color: var(--spa-text);
+    font-size: 0.8125rem;
+    font-weight: 600;
+}
+
+.extraction-next-icon {
+    flex-shrink: 0;
+    font-size: 1.4rem;
+}

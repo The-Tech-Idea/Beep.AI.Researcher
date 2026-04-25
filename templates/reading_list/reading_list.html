@@ -1,0 +1,68 @@
+{% extends base_template or "base.html" %}
+{% block title %}Reading List{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/reading_list/reading_list.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="spa-page-header">
+    <div class="spa-page-header-left">
+        <div class="spa-page-icon"><i class="bi bi-bookmark-heart"></i></div>
+        <div>
+            <div class="spa-page-title">Reading List</div>
+            <div class="spa-page-subtitle">Papers saved for later reading</div>
+        </div>
+    </div>
+    <div class="spa-page-actions">
+        <select id="rl-status-filter" class="form-select form-select-sm reading-list-filter">
+            <option value="">All items</option>
+            <option value="unread">Unread</option>
+            <option value="reading">Reading</option>
+            <option value="done">Done</option>
+        </select>
+    </div>
+</div>
+
+<div id="rl-status" class="alert d-none mb-3" role="alert"></div>
+
+<div id="rl-empty" class="spa-card d-none">
+    <div class="spa-card-body text-center py-5">
+        <i class="bi bi-bookmark-heart reading-list-empty-icon"></i>
+        <p class="mt-3 mb-2 fw-semibold">Your reading list is empty</p>
+        <p class="text-muted small">Save papers from your <a href="/feed">feed</a> to read them later.</p>
+    </div>
+</div>
+
+<div id="rl-loading" class="text-center py-5 d-none">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading…</span>
+    </div>
+</div>
+
+<div id="rl-list" class="reading-list-items"></div>
+
+<!-- Move to project modal -->
+<div class="modal fade" id="rl-move-modal" tabindex="-1" aria-labelledby="rl-move-modal-label" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rl-move-modal-label">Add to Project</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label for="rl-project-select" class="form-label small">Select project</label>
+                <select id="rl-project-select" class="form-select form-select-sm"></select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary btn-sm" id="rl-move-confirm-btn">Move</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/reading_list/reading_list.js') }}"></script>
+{% endblock %}

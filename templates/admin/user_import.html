@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Bulk Import Users — Admin — Beep.AI.Researcher{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_user_import_page.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4 d-flex justify-content-between align-items-center">
+    <div>
+        <h1><i class="bi bi-upload me-2"></i>Bulk Import Users</h1>
+        <p class="mb-0 admin-user-import-subtitle">Upload a CSV file to create multiple users at once.</p>
+    </div>
+    <a href="{{ url_for('admin.users_list') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i>Back to Users
+    </a>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}{% for cat, msg in messages %}
+<div class="admin-user-import-message admin-user-import-message--{{ 'error' if cat == 'error' else cat }}" role="alert">
+    {{ msg }}
+</div>
+{% endfor %}{% endif %}
+{% endwith %}
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-header"><strong>Upload CSV</strong></div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="csv_file" class="form-label">CSV File <span class="admin-user-import-required">*</span></label>
+                        <input type="file" class="form-control" id="csv_file" name="csv_file"
+                            accept=".csv,text/csv" required>
+                        <div class="form-text">Max 10 MB. UTF-8 encoded. One user per row.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="default_role" class="form-label">Default role (used when CSV row has no role)</label>
+                        <select class="form-select" id="default_role" name="default_role">
+                            <option value="">— No role —</option>
+                            {% for r in roles %}
+                            <option value="{{ r.name }}">{{ r.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-cloud-upload me-1"></i>Import users
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card">
+            <div class="card-header"><strong>CSV Format</strong></div>
+            <div class="card-body">
+                <p class="small admin-user-import-muted mb-2">Required columns:</p>
+                <table class="table table-sm small mb-3">
+                    <thead><tr><th>Column</th><th>Required</th><th>Notes</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>username</code></td><td>✅</td><td>Must be unique</td></tr>
+                        <tr><td><code>password</code></td><td>✅</td><td>Plain text — hashed on import</td></tr>
+                        <tr><td><code>email</code></td><td>—</td><td>Optional</td></tr>
+                        <tr><td><code>role</code></td><td>—</td><td>Role name, e.g. <code>User</code></td></tr>
+                    </tbody>
+                </table>
+                <p class="small admin-user-import-muted mb-1">Example:</p>
+                <pre class="admin-user-import-sample small">username,email,role,password
+alice,alice@example.com,User,Temp1234!
+bob,,Admin,Temp5678!</pre>
+                <ul class="small admin-user-import-muted mb-0">
+                    <li>Rows with duplicate usernames are <strong>skipped</strong> (not updated).</li>
+                    <li>All imported users start <strong>active</strong> with email verified.</li>
+                    <li>Password policy is <strong>not enforced</strong> during bulk import — set strong defaults.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

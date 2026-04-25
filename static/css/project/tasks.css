@@ -1,0 +1,170 @@
+.tasks-status-dot-todo {
+    background: var(--color-text-muted);
+}
+
+.tasks-status-dot-progress {
+    background: var(--color-accent-primary);
+}
+
+.tasks-status-dot-done {
+    background: var(--color-accent-success);
+}
+
+.tasks-task-title-complete {
+    opacity: 0.7;
+    text-decoration: line-through;
+}
+
+.tasks-header-action,
+.tasks-column-add-button,
+.tasks-modal-action {
+    align-items: center;
+    border-radius: var(--border-radius-pill);
+    display: inline-flex;
+    gap: var(--space-2);
+    justify-content: center;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tasks-header-action,
+.tasks-modal-action {
+    border: 1px solid transparent;
+    color: var(--color-text);
+    font-weight: 600;
+    padding: 0.45rem 0.85rem;
+}
+
+.tasks-header-action--suggest,
+.tasks-modal-action--cancel,
+.tasks-column-add-button {
+    background: color-mix(in srgb, var(--color-surface-secondary) 90%, var(--color-accent-primary) 10%);
+    border: 1px solid color-mix(in srgb, var(--color-accent-primary) 16%, var(--color-border-muted));
+    color: var(--color-text);
+}
+
+.tasks-header-action--suggest:hover,
+.tasks-header-action--suggest:focus-visible,
+.tasks-modal-action--cancel:hover,
+.tasks-modal-action--cancel:focus-visible,
+.tasks-column-add-button:hover,
+.tasks-column-add-button:focus-visible {
+    background: color-mix(in srgb, var(--color-surface-secondary) 78%, var(--color-accent-primary) 22%);
+    border-color: color-mix(in srgb, var(--color-accent-primary) 26%, var(--color-border-muted));
+    color: var(--color-text);
+}
+
+.tasks-header-action--add,
+.tasks-modal-action--save {
+    background: color-mix(in srgb, var(--color-accent-primary) 18%, var(--color-surface));
+    border-color: color-mix(in srgb, var(--color-accent-primary) 26%, var(--color-border-muted));
+    color: var(--color-text);
+}
+
+.tasks-header-action--add:hover,
+.tasks-header-action--add:focus-visible,
+.tasks-modal-action--save:hover,
+.tasks-modal-action--save:focus-visible {
+    background: color-mix(in srgb, var(--color-accent-primary) 26%, var(--color-surface));
+    border-color: color-mix(in srgb, var(--color-accent-primary) 34%, var(--color-border-muted));
+    color: var(--color-text);
+}
+
+.tasks-header-action:disabled {
+    cursor: wait;
+    opacity: 0.72;
+}
+
+.tasks-button-icon {
+    flex-shrink: 0;
+}
+
+.tasks-button-spinner {
+    animation: tasks-spin 0.9s linear infinite;
+}
+
+.tasks-column-add-button {
+    height: 2rem;
+    padding: 0;
+    width: 2rem;
+}
+
+.tasks-due-date {
+    align-items: center;
+    border-radius: var(--border-radius-pill);
+    display: inline-flex;
+    font-size: var(--font-size-badge);
+    gap: var(--space-1);
+    line-height: 1;
+    padding: 0.34rem 0.55rem;
+}
+
+.tasks-due-date--scheduled {
+    background: color-mix(in srgb, var(--color-surface-secondary) 92%, var(--color-border-muted) 8%);
+    border: 1px solid color-mix(in srgb, var(--color-border-muted) 70%, var(--color-surface-secondary));
+    color: var(--color-text);
+}
+
+.tasks-due-date--complete {
+    background: color-mix(in srgb, var(--color-surface-secondary) 92%, var(--color-text-muted) 8%);
+    border: 1px solid color-mix(in srgb, var(--color-text-muted) 18%, var(--color-border-muted));
+    color: var(--color-text-muted);
+}
+
+.tasks-due-date-icon {
+    font-size: 0.9em;
+}
+
+.tasks-suggestions-panel {
+    background: color-mix(in srgb, var(--color-surface) 92%, var(--color-accent-primary) 8%);
+    border: 1px solid color-mix(in srgb, var(--color-accent-primary) 16%, var(--color-border-muted));
+    border-radius: var(--border-radius-soft);
+    padding: var(--space-3);
+}
+
+.tasks-suggestions-heading {
+    color: var(--color-text);
+    display: block;
+    font-size: var(--font-size-badge);
+    font-weight: 700;
+}
+
+.tasks-suggestions-list {
+    display: grid;
+    gap: var(--space-2);
+    list-style: none;
+    margin: var(--space-3) 0 0;
+    padding: 0;
+}
+
+.tasks-suggestion-list-item {
+    margin: 0;
+}
+
+.tasks-suggestion-item {
+    background: color-mix(in srgb, var(--color-surface-secondary) 92%, var(--color-accent-primary) 8%);
+    border: 1px solid color-mix(in srgb, var(--color-accent-primary) 14%, var(--color-border-muted));
+    border-radius: var(--border-radius-soft);
+    color: var(--color-text);
+    cursor: pointer;
+    display: block;
+    padding: 0.7rem 0.85rem;
+    text-align: left;
+    width: 100%;
+}
+
+.tasks-suggestion-item:hover,
+.tasks-suggestion-item:focus-visible {
+    background: color-mix(in srgb, var(--color-surface-secondary) 82%, var(--color-accent-primary) 18%);
+    border-color: color-mix(in srgb, var(--color-accent-primary) 24%, var(--color-border-muted));
+    color: var(--color-text);
+}
+
+@keyframes tasks-spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}

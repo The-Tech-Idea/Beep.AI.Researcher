@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="{{ g.locale or 'en' }}" dir="{{ 'rtl' if g.locale == 'ar' else 'ltr' }}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Beep.AI.Researcher{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="{{ url_for('static', filename='vendor/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/design-system.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard-theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/jenni-theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chat-panel.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/project/layout.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <a href="#spa-content" class="visually-hidden-focusable">Skip to content</a>
+    <div class="spa-shell">
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- SIDEBAR: Always visible, drives SPA navigation        -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <aside class="spa-sidebar" id="spa-sidebar">
+            <div class="spa-sidebar-header">
+                <a class="spa-brand"
+                    href="{{ url_for('researcher.index') if current_user.is_authenticated else url_for('landing') }}">
+                    <span class="spa-brand-icon">B</span>
+                    <span class="spa-brand-text">{{ t('base.brand') }}</span>
+                </a>
+                <button class="spa-sidebar-collapse-btn" id="sidebar-collapse-btn"
+                    title="{{ t('base.collapse_sidebar') }}" aria-label="{{ t('base.collapse_sidebar') }}">
+                    <i class="bi bi-layout-sidebar-inset"></i>
+                </button>
+            </div>
+
+            {% if current_user.is_authenticated %}
+            <!-- New Project Button -->
+            <div class="spa-sidebar-action">
+                <button class="spa-new-btn" id="new-project-btn">
+                    <i class="bi bi-plus-lg"></i>
+                    <span>{{ t('base.new_project') }}</span>
+                </button>
+            </div>
+
+            <!-- Primary Navigation -->
+            <nav class="spa-nav" id="spa-nav">
+                <a href="/researcher/" class="spa-nav-item" data-spa-link data-spa-id="dashboard">
+                    <i class="bi bi-house"></i><span>{{ t('base.nav.home') }}</span>
+                </a>
+                <a href="/references" class="spa-nav-item" data-spa-link data-spa-id="library">
+                    <i class="bi bi-journal-text"></i><span>{{ t('base.nav.library') }}</span>
+                </a>
+                {% if ui_features.chat_enabled %}
+                <a href="#" class="spa-nav-item" data-open-chat-panel data-spa-id="ai-chat">
+                    <i class="bi bi-stars"></i><span>{{ t('base.nav.ai_assistant') }}</span>
+                </a>
+                {% endif %}
+                <a href="/researcher/agent-plans" class="spa-nav-item" data-spa-link data-spa-id="agent-plans">
+                    <i class="bi bi-signpost-split"></i><span>{{ t('sidebar.nav.guided_plans') }}</span>
+                </a>
+                {% if ui_features.ai_discovery_enabled %}
+                <a href="/feed" class="spa-nav-item" data-spa-link data-spa-id="feed">
+                    <i class="bi bi-newspaper"></i><span>{{ t('sidebar.nav.my_feed') if t('sidebar.nav.my_feed') != 'sidebar.nav.my_feed' else 'My Feed' }}</span>
+                </a>
+                <a href="/reading-list" class="spa-nav-item" data-spa-link data-spa-id="reading-list">
+                    <i class="bi bi-bookmark-heart"></i><span>{{ t('sidebar.nav.reading_list') if t('sidebar.nav.reading_list') != 'sidebar.nav.reading_list' else 'Reading List' }}</span>
+                </a>
+                <a href="/alerts" class="spa-nav-item" data-spa-link data-spa-id="alerts">
+                    <i class="bi bi-bell"></i><span>{{ t('sidebar.nav.alerts') if t('sidebar.nav.alerts') != 'sidebar.nav.alerts' else 'Alerts' }}</span><span id="alerts-nav-count" class="badge bg-danger ms-2 d-none" aria-live="polite"></span>
+                </a>
+                {% endif %}
+            </nav>
+
+            <!-- Project Context Section -->
+            <div class="spa-sidebar-section" id="spa-projects-section">
+                <div class="spa-section-header">
+                    <h6>{{ t('base.projects.title') }}</h6>
+                    <select class="spa-project-select" id="spa-project-select" title="{{ t('base.projects.select') }}">
+                        <option value="">{{ t('base.projects.select') }}</option>
+                        {# Projects injected by context processor or JS #}
+                    </select>
+                </div>
+
+            </div>
+
+            <!-- Bottom Account Section -->
+            <div class="spa-sidebar-footer">
+                <div class="spa-nav">
+                    <a href="/researcher/tenants" class="spa-nav-item" data-spa-link data-spa-id="tenants">
+                        <i class="bi bi-building"></i><span>{{ t('base.nav.tenants') }}</span>
+                    </a>
+                    <a href="{{ url_for('auth.profile') }}" class="spa-nav-item" data-spa-link data-spa-id="profile">
+                        <i class="bi bi-person-circle"></i><span>{{ t('base.nav.profile') }}</span>
+                    </a>
+                    {% if current_user.is_admin %}
+                    <a href="{{ url_for('admin.index') }}" class="spa-nav-item">
+                        <i class="bi bi-shield-lock"></i><span>{{ t('base.nav.admin') }}</span>
+                    </a>
+                    {% endif %}
+                    <a href="{{ url_for('auth.logout') }}" class="spa-nav-item">
+                        <i class="bi bi-box-arrow-right"></i><span>{{ t('base.nav.logout') }}</span>
+                    </a>
+                </div>
+            </div>
+            {% else %}
+            <div class="spa-sidebar-footer">
+                <div class="spa-nav">
+                    <a href="{{ url_for('auth.login') }}" class="spa-nav-item">
+                        <i class="bi bi-box-arrow-in-right"></i><span>{{ t('base.nav.login') }}</span>
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </aside>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- MAIN AREA: Topbar + dynamically-loaded content         -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <div class="spa-main" id="spa-main">
+            <header class="spa-topbar" id="spa-topbar">
+                <div class="spa-topbar-left">
+                    <button class="spa-mobile-menu-btn" id="mobile-menu-btn" title="{{ t('base.topbar.menu') }}"
+                        aria-label="{{ t('base.topbar.menu') }}">
+                        <span class="visually-hidden">{{ t('base.topbar.menu') }}</span>
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <div class="spa-breadcrumb" id="spa-breadcrumb">
+                        <span id="spa-page-title">{% block page_title %}{{ t('base.topbar.home') }}{% endblock %}</span>
+                    </div>
+                </div>
+                <div class="spa-topbar-right">
+                    {% if current_user.is_authenticated %}
+                    <div class="ai-status-indicator" id="ai-server-status" title="Checking AI Server...">
+                        <span class="status-dot"></span>
+                        <span class="small" id="ai-status-text">AI</span>
+                    </div>
+                    {% endif %}
+                    <div class="dropdown">
+                        <button class="btn btn-sm spa-topbar-btn dropdown-toggle" type="button"
+                            data-bs-toggle="dropdown" title="{{ t('base.topbar.language') }}">
+                            <i class="bi bi-translate"></i>
+                            <span class="d-none d-md-inline">{{ locale_names.get(current_locale, current_locale|upper)
+                                }}</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            {% for loc in supported_locales %}
+                            <li>
+                                <a class="dropdown-item {% if loc == current_locale %}active{% endif %}"
+                                    href="{{ url_for('set_locale', locale=loc, next=request.path) }}">
+                                    {{ locale_names.get(loc, loc) }}
+                                    {% if loc == current_locale %}<i class="bi bi-check ms-2"></i>{% endif %}
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="spa-theme-switcher">
+                        <button type="button" class="theme-btn" data-theme-value="light"
+                            title="{{ t('base.topbar.light') }}"><i class="bi bi-sun"></i></button>
+                        <button type="button" class="theme-btn" data-theme-value="dark"
+                            title="{{ t('base.topbar.dark') }}"><i class="bi bi-moon"></i></button>
+                        <button type="button" class="theme-btn" data-theme-value="system"
+                            title="{{ t('base.topbar.system') }}"><i class="bi bi-display"></i></button>
+                    </div>
+                    {% if ui_features.chat_enabled %}
+                    <button class="spa-topbar-btn spa-chat-trigger" id="spa-chat-trigger"
+                        title="{{ t('base.nav.ai_assistant') }} (Ctrl+Shift+A)"
+                        aria-label="{{ t('base.nav.ai_assistant') }}">
+                        <i class="bi bi-stars"></i>
+                    </button>
+                    {% endif %}
+                </div>
+            </header>
+
+            <!-- SPA Content Area — loaded via fetch() or server-rendered -->
+            <main class="spa-content" id="spa-content">
+                <div class="spa-content-inner" id="spa-content-inner" aria-live="polite">
+                    {% if session.get('impersonating_as') %}
+                    <div class="alert alert-warning d-flex justify-content-between align-items-center mb-3" role="alert">
+                        <span><i class="bi bi-person-fill-exclamation me-2"></i>
+                            You are impersonating <strong>{{ current_user.username }}</strong>.
+                            Your actions affect this user's account.
+                        </span>
+                        <a href="{{ url_for('admin.impersonate_stop') }}" class="btn btn-sm btn-warning ms-3">
+                            <i class="bi bi-box-arrow-right me-1"></i>Stop impersonating
+                        </a>
+                    </div>
+                    {% endif %}
+                    {% block content %}{% endblock %}
+                </div>
+                <!-- Loading overlay for SPA transitions -->
+                <div class="spa-loading" id="spa-loading" hidden>
+                    <div class="spa-loading-spinner" role="status">
+                        <span class="visually-hidden">{{ t('base.loading') }}</span>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- AI CHAT PANEL: Always-available right side panel       -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        {% if current_user.is_authenticated and ui_features.chat_enabled %}
+        <aside class="spa-chat-panel" id="chat-panel">
+            <div class="spa-chat-header">
+                <div class="spa-chat-title">
+                    <span class="status-dot" id="chat-status-dot"></span>
+                    <h5>{{ t('base.chat.title') }}</h5>
+                </div>
+                <div class="d-flex gap-1">
+                    <button class="spa-chat-header-btn" id="chat-clear-btn" title="{{ t('base.chat.clear') }}"
+                        aria-label="{{ t('base.chat.clear') }}"><i class="bi bi-trash"></i></button>
+                    <button class="spa-chat-header-btn" id="chat-panel-close" title="{{ t('base.chat.close') }}"
+                        aria-label="{{ t('base.chat.close') }}"><i class="bi bi-x-lg"></i></button>
+                </div>
+            </div>
+            <div class="spa-chat-messages" id="chat-messages" aria-live="polite"></div>
+            <div class="spa-chat-input-area">
+                <form class="spa-chat-form" id="chat-form">
+                    <div class="spa-chat-input-row">
+                        <textarea class="spa-chat-input" id="chat-input" placeholder="{{ t('base.chat.placeholder') }}"
+                            rows="1"></textarea>
+                        <button type="submit" class="spa-chat-send" id="chat-send-btn"
+                            title="{{ t('base.chat.send') }}" aria-label="{{ t('base.chat.send') }}"><i
+                                class="bi bi-send-fill"></i></button>
+                    </div>
+                </form>
+                <div class="spa-chat-quick">
+                    <button type="button" class="chat-option-btn" data-prompt="{{ t('base.chat.summarize_prompt') }}"><i
+                            class="bi bi-file-text"></i> {{ t('base.chat.summarize') }}</button>
+                    <button type="button" class="chat-option-btn" data-prompt="{{ t('base.chat.findings_prompt') }}"><i
+                            class="bi bi-search"></i> {{ t('base.chat.findings') }}</button>
+                    <button type="button" class="chat-option-btn"
+                        data-prompt="{{ t('base.chat.next_steps_prompt') }}"><i class="bi bi-lightning"></i> {{
+                        t('base.chat.next_steps') }}</button>
+                </div>
+            </div>
+        </aside>
+        {% endif %}
+    </div>
+
+    <script src="{{ url_for('static', filename='vendor/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/base_shell.js') }}?v={{ config.APP_VERSION or '1.0' }}"></script>
+    <script src="{{ url_for('static', filename='js/flow_notifications.js') }}?v={{ config.APP_VERSION or '1.0' }}"></script>
+
+    {% if current_user.is_authenticated %}
+    <!-- SPA Navigation Controller -->
+    <script src="{{ url_for('static', filename='js/workspace.js') }}"></script>
+    {% if ui_features.ai_discovery_enabled %}
+    <script src="{{ url_for('static', filename='js/ai_discovery/nav_badges.js') }}"></script>
+    {% endif %}
+    <!-- AI Chat Panel -->
+    {% if ui_features.chat_enabled %}
+    <script src="{{ url_for('static', filename='js/chat-panel.js') }}?v={{ config.APP_VERSION or '1.0' }}"></script>
+    {% endif %}
+    {% endif %}
+
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

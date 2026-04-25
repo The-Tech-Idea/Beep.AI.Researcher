@@ -1,0 +1,187 @@
+{% extends "project/_layout.html" %}
+
+{% set active_page = 'documents' %}
+{% set page_title = t('documents.title') %}
+{% set page_subtitle = t('documents.subtitle') %}
+{% set page_icon = 'file-earmark-text' %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/library_setup_summary.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/documents.css') }}">
+{% endblock %}
+
+{% block header_actions %}
+<button class="documents-upload-button" id="uploadBtn" type="button">
+    <i class="bi bi-upload documents-button-icon" aria-hidden="true"></i><span>{{ t('documents.button.upload') }}</span>
+</button>
+{% endblock %}
+
+{% block workspace_content %}
+<div
+    data-library-setup-summary
+    data-project-api-base="/projects/{{ project.id }}"
+    data-collections-url="{{ url_for('projects.list_rag_collections_for_project') }}"
+    data-start-url="{{ url_for('project_start.project_start_page', project_id=project.id) }}"
+    data-settings-url="{{ url_for('researcher.project_settings', project_id=project.id) }}"
+    data-collection-id="{{ project.collection_id or '' }}"
+    data-quality-mode="{{ project.rag_quality_mode or 'balanced' }}"
+    data-quality-fast-label="{{ t('project_search.rag_mode.fast') }}"
+    data-quality-balanced-label="{{ t('project_search.rag_mode.balanced') }}"
+    data-quality-deep-label="{{ t('project_search.rag_mode.deep') }}"
+></div>
+
+<div id="uploadZoneCard" class="mb-3" hidden>
+    <div class="spa-upload-zone" id="uploadZone">
+        <i class="bi bi-cloud-arrow-up"></i>
+        <h4 class="documents-upload-title">{{ t('documents.upload.drag') }}</h4>
+        <p class="documents-upload-description">{{
+            t('documents.upload.browse') }}</p>
+        <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.txt,.md,.csv,.xlsx" hidden>
+        <p class="documents-upload-formats">{{ t('documents.upload.formats') }}</p>
+    </div>
+</div>
+
+<div class="spa-filter-bar">
+    <div class="spa-search-input">
+        <i class="bi bi-search"></i>
+        <input type="text" placeholder="{{ t('documents.filter.search') }}" id="docSearch">
+    </div>
+    <div class="documents-filter-group">
+        <button class="documents-filter-button documents-filter-button--active" type="button" data-filter="all">{{ t('documents.filter.all')
+            }}</button>
+        <button class="documents-filter-button" type="button" data-filter="indexed">{{ t('documents.filter.indexed')
+            }}</button>
+        <button class="documents-filter-button" type="button" data-filter="pending">{{ t('documents.filter.pending')
+            }}</button>
+    </div>
+    <select class="form-select form-select-sm documents-sort-select">
+        <option value="date_desc">{{ t('documents.sort.newest') }}</option>
+        <option value="date_asc">{{ t('documents.sort.oldest') }}</option>
+        <option value="name_asc">{{ t('documents.sort.name_asc') }}</option>
+        <option value="name_desc">{{ t('documents.sort.name_desc') }}</option>
+    </select>
+</div>
+
+<div class="spa-card">
+    <div class="spa-card-body flush">
+        {% if documents %}
+        <table class="spa-table">
+            <thead>
+                <tr>
+                    <th class="documents-select-column"><input type="checkbox" class="form-check-input" id="selectAll"></th>
+                    <th>{{ t('documents.table.name') }}</th>
+                    <th>{{ t('documents.table.status') }}</th>
+                    <th>{{ t('documents.table.size') }}</th>
+                    <th>{{ t('documents.table.uploaded') }}</th>
+                    <th>{{ t('documents.table.activity') }}</th>
+                    <th>{{ t('documents.table.actions') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for doc in documents %}
+                <tr data-doc-id="{{ doc.id }}">
+                    <td><input type="checkbox" class="form-check-input doc-checkbox"></td>
+                    <td>
+                        <div class="documents-name-cell">
+                            <div
+                                class="spa-doc-icon {{ doc.file_type|lower if doc.file_type in ['pdf','doc','txt'] else 'other' }}">
+                                <i
+                                    class="bi bi-file-earmark-{{ doc.file_type|lower if doc.file_type in ['pdf','text'] else 'fill' }}"></i>
+                            </div>
+                            <div>
+                                <div class="documents-file-name">{{ doc.name }}</div>
+                                <div class="documents-file-meta">{{ doc.file_type|upper
+                                    }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span
+                            class="spa-badge {{ 'active' if doc.status == 'ready' else ('archived' if doc.status in ['pending', 'processing'] else 'draft') }}">
+                            <i
+                                class="bi bi-{{ 'check-circle' if doc.status == 'ready' else ('hourglass' if doc.status in ['pending', 'processing'] else 'x-circle') }}"></i>
+                            {{ t('documents.status.indexed') if doc.status == 'ready' else
+                            (t('documents.status.processing') if
+                            doc.status in ['pending', 'processing'] else t('documents.status.failed')) }}
+                        </span>
+                    </td>
+                    <td class="documents-muted-cell">{{ doc.size_formatted }}</td>
+                    <td class="documents-muted-cell">{{ doc.created_at.strftime('%b %d, %Y') }}</td>
+                    <td>
+                        <div class="documents-activity-row">
+                            <span class="doc-activity-codes documents-activity-badge documents-activity-badge-codes"
+                                  data-doc-id="{{ doc.id }}"
+                                  title="{{ t('documents.activity.codes') }}" hidden><i class="bi bi-tags documents-activity-icon" aria-hidden="true"></i><span>0</span></span>
+                            <span class="doc-activity-extractions documents-activity-badge documents-activity-badge-extractions"
+                                  data-doc-id="{{ doc.id }}"
+                                  title="{{ t('documents.activity.extractions') }}" hidden><i class="bi bi-table documents-activity-icon" aria-hidden="true"></i><span>0</span></span>
+                            <span class="doc-activity-flashcards documents-activity-badge documents-activity-badge-flashcards"
+                                  data-doc-id="{{ doc.id }}"
+                                  title="{{ t('documents.activity.flashcards') }}" hidden><i class="bi bi-card-text documents-activity-icon" aria-hidden="true"></i><span>0</span></span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="documents-actions-row">
+                            <button class="documents-action-button documents-action-button--neutral view-doc-btn"
+                                title="{{ t('documents.action.view') }}" data-doc-id="{{ doc.id }}" type="button"><i
+                                    class="bi bi-eye" aria-hidden="true"></i></button>
+                            {# Ask AI about this document #}
+                            <a class="documents-action-button documents-action-button--info"
+                                title="{{ t('documents.action.ask_ai') }}"
+                                href="{{ url_for('researcher.project_search', project_id=project.id) }}?doc={{ doc.id }}"><i
+                                    class="bi bi-chat-left-text" aria-hidden="true"></i></a>
+                            {# Extract data from this document #}
+                            <a class="documents-action-button documents-action-button--primary"
+                                title="{{ t('documents.action.extract') }}"
+                                href="{{ url_for('researcher.extraction_page', project_id=project.id) }}?doc={{ doc.id }}"><i
+                                    class="bi bi-table" aria-hidden="true"></i></a>
+                            {# Generate flashcards from this document #}
+                            <a class="documents-action-button documents-action-button--neutral"
+                                title="{{ t('documents.action.flashcards') }}"
+                                href="{{ url_for('researcher.flashcards_page', project_id=project.id) }}?doc={{ doc.id }}"><i
+                                    class="bi bi-card-text" aria-hidden="true"></i></a>
+                            <button class="documents-action-button documents-action-button--neutral download-doc-btn"
+                                title="{{ t('documents.action.download') }}" data-doc-id="{{ doc.id }}" type="button"><i
+                                    class="bi bi-download" aria-hidden="true"></i></button>
+                            <button class="documents-action-button documents-action-button--danger delete-doc-btn"
+                                title="{{ t('documents.action.delete') }}" data-doc-id="{{ doc.id }}" type="button"><i
+                                    class="bi bi-trash" aria-hidden="true"></i></button>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="spa-empty">
+            <i class="bi bi-file-earmark-text"></i>
+            <h4>{{ t('documents.empty.title') }}</h4>
+            <p>{{ t('documents.empty.desc') }}</p>
+            <button class="documents-upload-button documents-upload-button--empty" id="uploadBtnEmpty" type="button">
+                <i class="bi bi-upload documents-button-icon" aria-hidden="true"></i><span>{{ t('documents.empty.upload') }}</span>
+            </button>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div id="bulkActionsBar" class="documents-bulk-bar" hidden>
+    <span class="documents-bulk-count"><strong id="selectedCount">0</strong> {{ t('documents.bulk.selected') }}</span>
+    <button class="documents-bulk-button documents-bulk-button--neutral" type="button"><i class="bi bi-download documents-button-icon" aria-hidden="true"></i><span>{{ t('documents.bulk.download')
+        }}</span></button>
+    <button class="documents-bulk-button documents-bulk-button--danger" type="button"><i class="bi bi-trash documents-button-icon" aria-hidden="true"></i><span>{{ t('documents.bulk.delete')
+        }}</span></button>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script id="documents-i18n-data" type="application/json">
+{{ {
+    "projectId": project.id,
+    "confirm_delete": t("documents.confirm.delete"),
+    "activity_api": "/researcher/api/projects/" ~ project.id ~ "/document-activity"
+} | tojson | safe }}
+</script>
+<script src="{{ url_for('static', filename='js/project/library_setup_summary.js') }}"></script>
+<script src="{{ url_for('static', filename='js/project-documents.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,36 @@
+.audit-popover-trigger {
+    cursor: pointer;
+}
+
+.audit-popover-icon {
+    font-size: 0.75rem;
+}
+
+.audit-stat-value--danger {
+    color: var(--color-danger-strong);
+}
+
+.audit-stat-value--success {
+    color: var(--color-success-strong);
+}
+
+.audit-step-badge {
+    color: var(--text-muted);
+    background: color-mix(in srgb, var(--text-muted) 10%, var(--surface-primary));
+    border: 1px solid color-mix(in srgb, var(--text-muted) 18%, var(--surface-primary));
+}
+
+.audit-flag-icon--danger {
+    color: var(--color-danger-strong);
+}
+
+.audit-flag-icon--success {
+    color: var(--color-success-strong);
+}
+
+.audit-answer-cell {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

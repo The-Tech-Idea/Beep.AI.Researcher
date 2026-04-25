@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('admin.title') }} - Beep.AI.Researcher{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard_page.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <h1><i class="bi bi-shield-lock me-2"></i>{{ t('admin.title') }}</h1>
+    <p>{{ t('admin.subtitle') }}</p>
+</div>
+
+<!-- ── Management nav cards ──────────────────────────────────────────────── -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <a href="{{ url_for('admin.users_list') }}" class="card text-decoration-none h-100 admin-dashboard-card admin-dashboard-card--users">
+            <div class="card-body">
+                <h5 class="card-title admin-dashboard-card-title admin-dashboard-card-title--users"><i class="bi bi-people me-2"></i>{{ t('admin.cards.users.title') }}</h5>
+                <p class="card-text mb-1 small admin-dashboard-card-copy">{{ t('admin.cards.users.body') }}</p>
+                <span class="admin-dashboard-badge admin-dashboard-badge--users">{{ user_count }} {{ t('admin.cards.users.count_label') }}</span>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a href="{{ url_for('admin.settings') }}" class="card text-decoration-none h-100 admin-dashboard-card">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-gear me-2"></i>{{ t('admin.cards.settings.title') }}</h5>
+                <p class="card-text mb-1 small admin-dashboard-card-copy">{{ t('admin.cards.settings.body') }}</p>
+                <span class="admin-dashboard-badge admin-dashboard-badge--neutral">{{ t('admin.cards.settings.badge') }}</span>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a href="{{ url_for('admin.document_management') }}" class="card text-decoration-none h-100 admin-dashboard-card">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-file-earmark-text me-2"></i>Documents</h5>
+                <p class="card-text mb-1 small admin-dashboard-card-copy">Browse &amp; manage all uploaded files</p>
+                <span class="admin-dashboard-badge admin-dashboard-badge--info">{{ doc_count }} files</span>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a href="{{ url_for('admin.quota_management') }}" class="card text-decoration-none h-100 admin-dashboard-card">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-pie-chart me-2"></i>Quota</h5>
+                <p class="card-text mb-1 small admin-dashboard-card-copy">Plan tiers, per-user &amp; tenant limits</p>
+                <span class="admin-dashboard-badge {% if quota_enforcement %}admin-dashboard-badge--success{% else %}admin-dashboard-badge--warning{% endif %}">
+                    {% if quota_enforcement %}Enforced{% else %}Track-only{% endif %}
+                </span>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a href="{{ url_for('admin.localization') }}" class="card text-decoration-none h-100 admin-dashboard-card">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-translate me-2"></i>{{ t('admin.cards.localization.title') }}</h5>
+                <p class="card-text mb-1 small admin-dashboard-card-copy">{{ t('admin.cards.localization.body') }}</p>
+                <span class="admin-dashboard-badge admin-dashboard-badge--success">{{ t('admin.cards.localization.badge') }}</span>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a href="{{ url_for('admin.governance') }}" class="card text-decoration-none h-100 admin-dashboard-card">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-graph-up me-2"></i>{{ t('admin.cards.governance.title') }}</h5>
+                <p class="card-text mb-1 small admin-dashboard-card-copy">{{ t('admin.cards.governance.body') }}</p>
+                <span class="admin-dashboard-badge admin-dashboard-badge--surface">{{ t('admin.cards.governance.badge') }}</span>
+            </div>
+        </a>
+    </div>
+</div>
+
+<!-- ── System health ──────────────────────────────────────────────────────── -->
+<div class="row g-3 mb-4">
+    <!-- Storage -->
+    <div class="col-md-3">
+        <div class="card h-100 admin-dashboard-health-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="admin-dashboard-health-label">Storage Backend</div>
+                        <div class="fw-bold text-capitalize">{{ storage_backend }}</div>
+                    </div>
+                    <i class="bi bi-hdd fs-3 admin-dashboard-health-icon"></i>
+                </div>
+                {% set storage_mb = (total_storage / 1048576) | round(1) %}
+                <div class="mt-2 small admin-dashboard-health-copy">
+                    {% if total_storage >= 1073741824 %}
+                        {{ (total_storage / 1073741824) | round(2) }} GB used
+                    {% else %}
+                        {{ storage_mb }} MB used
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Email -->
+    <div class="col-md-3">
+        <div class="card h-100 admin-dashboard-health-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="admin-dashboard-health-label">Email</div>
+                        <div class="fw-bold">
+                            {% if email_configured %}
+                                <span class="admin-dashboard-status admin-dashboard-status--success">Configured</span>
+                            {% else %}
+                                <span class="admin-dashboard-status admin-dashboard-status--warning">Not configured</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <i class="bi bi-envelope fs-3 {% if email_configured %}admin-dashboard-health-icon admin-dashboard-health-icon--success{% else %}admin-dashboard-health-icon admin-dashboard-health-icon--warning{% endif %}"></i>
+                </div>
+                <div class="mt-2 small admin-dashboard-health-copy text-capitalize">Method: {{ email_method }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MFA -->
+    <div class="col-md-3">
+        <div class="card h-100 admin-dashboard-health-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="admin-dashboard-health-label">MFA</div>
+                        <div class="fw-bold">
+                            {% if mfa_enabled %}
+                                <span class="admin-dashboard-status admin-dashboard-status--success">Enabled</span>
+                            {% else %}
+                                <span class="admin-dashboard-status admin-dashboard-status--muted">Disabled</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <i class="bi bi-phone fs-3 {% if mfa_enabled %}admin-dashboard-health-icon admin-dashboard-health-icon--success{% else %}admin-dashboard-health-icon{% endif %}"></i>
+                </div>
+                <div class="mt-2 small admin-dashboard-health-copy">
+                    <a href="{{ url_for('admin.settings') }}" class="admin-dashboard-inline-link">Configure →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SSO -->
+    <div class="col-md-3">
+        <div class="card h-100 admin-dashboard-health-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="admin-dashboard-health-label">Identity / SSO</div>
+                        <div class="fw-bold">
+                            {% if sso_enabled %}
+                                <span class="admin-dashboard-status admin-dashboard-status--success text-capitalize">{{ sso_provider }}</span>
+                            {% else %}
+                                <span class="admin-dashboard-status admin-dashboard-status--muted">Local auth</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <i class="bi bi-shield-lock fs-3 {% if sso_enabled %}admin-dashboard-health-icon admin-dashboard-health-icon--success{% else %}admin-dashboard-health-icon{% endif %}"></i>
+                </div>
+                <div class="mt-2 small admin-dashboard-health-copy">
+                    <a href="{{ url_for('admin.settings') }}" class="admin-dashboard-inline-link">Configure →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── Recent Audit Activity ─────────────────────────────────────────────── -->
+{% if recent_audit %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i>Recent Activity</h5>
+        <a href="{{ url_for('admin.governance') }}" class="btn btn-sm btn-outline-secondary">
+            View all →
+        </a>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-sm mb-0">
+                <tbody>
+                    {% for entry in recent_audit %}
+                    <tr>
+                        <td class="admin-dashboard-audit-time">
+                            {{ entry.created_at.strftime('%m-%d %H:%M') if entry.created_at else '—' }}
+                        </td>
+                        <td class="small">
+                            <span class="admin-dashboard-badge admin-dashboard-badge--neutral">{{ entry.action }}</span>
+                        </td>
+                        <td class="small admin-dashboard-health-copy">{{ entry.resource or '' }}{% if entry.resource_id %} #{{ entry.resource_id }}{% endif %}</td>
+                        <td class="small admin-dashboard-health-copy text-end pe-3">
+                            {{ entry.user.username if entry.user else '—' }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- ── Quick links ───────────────────────────────────────────────────────── -->
+<div class="card mt-3">
+    <div class="card-header">
+        <h5 class="mb-0">{{ t('admin.quick_links.title') }}</h5>
+    </div>
+    <div class="card-body admin-dashboard-quick-links">
+        <a href="{{ url_for('admin.users_list') }}" class="btn admin-dashboard-quick-link admin-dashboard-quick-link--users"><i class="bi bi-people me-1"></i>{{ t('admin.quick_links.users') }}</a>
+        <a href="{{ url_for('admin.settings') }}" class="btn admin-dashboard-quick-link admin-dashboard-quick-link--neutral"><i class="bi bi-gear me-1"></i>{{ t('admin.quick_links.settings') }}</a>
+        <a href="{{ url_for('admin.document_management') }}" class="btn admin-dashboard-quick-link admin-dashboard-quick-link--info"><i class="bi bi-file-earmark-text me-1"></i>Documents</a>
+        <a href="{{ url_for('admin.quota_management') }}" class="btn admin-dashboard-quick-link admin-dashboard-quick-link--warning"><i class="bi bi-pie-chart me-1"></i>Quota</a>
+        <a href="{{ url_for('admin.localization') }}" class="btn admin-dashboard-quick-link admin-dashboard-quick-link--success"><i class="bi bi-translate me-1"></i>{{ t('admin.quick_links.localization') }}</a>
+        <a href="{{ url_for('admin.governance') }}" class="btn admin-dashboard-quick-link admin-dashboard-quick-link--neutral"><i class="bi bi-graph-up me-1"></i>{{ t('admin.quick_links.governance') }}</a>
+        <a href="{{ url_for('researcher.index') }}" class="btn admin-dashboard-quick-link admin-dashboard-quick-link--neutral"><i class="bi bi-arrow-left me-1"></i>{{ t('admin.quick_links.back') }}</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Beep.AI.Researcher{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth_entry.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <a href="{{ url_for('landing') }}" class="auth-brand">
+            <div class="auth-brand-icon"><i class="bi bi-robot"></i></div>
+            <span>Beep.AI</span>
+        </a>
+
+        <h1 class="auth-title">Welcome back</h1>
+        <p class="auth-subtitle">Sign in to your intelligent research workspace</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="mb-4">
+            {% for cat, msg in messages %}
+            <div class="auth-message auth-message--{{ 'danger' if cat == 'error' else cat }}">
+                <i class="bi bi-exclamation-circle-fill me-2"></i> {{ msg }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <form method="post" action="{{ url_for('auth.login') }}">
+            {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+
+            <div class="auth-input-group">
+                <label class="auth-label" for="loginUsername">Username or Email</label>
+                <input type="text" id="loginUsername" name="username" class="form-control auth-input"
+                    placeholder="Enter your username"
+                    required autofocus>
+            </div>
+
+            <div class="auth-input-group">
+                <label class="auth-label d-flex justify-content-between" for="loginPassword">
+                    <span>Password</span>
+                    <!-- Optional: <a href="#" class="text-decoration-none fw-normal text-muted small">Forgot?</a> -->
+                </label>
+                <input type="password" id="loginPassword" name="password" class="form-control auth-input"
+                    placeholder="••••••••" required>
+            </div>
+
+            <div class="mb-4 form-check d-flex align-items-center">
+                <input type="checkbox" name="remember" class="form-check-input mt-0 me-2" id="remember">
+                <label class="form-check-label text-muted small pt-1" for="remember">Keep me signed in</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 auth-btn">
+                Sign In <i class="bi bi-arrow-right ms-1"></i>
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            New to Beep.AI? <a href="{{ url_for('auth.register') }}">Create an account</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

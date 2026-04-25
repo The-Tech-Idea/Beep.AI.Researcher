@@ -1,0 +1,254 @@
+.review-guide-card {
+    border: 1px solid var(--spa-border);
+    border-radius: var(--spa-radius-lg);
+    background:
+        radial-gradient(circle at top right, color-mix(in srgb, var(--spa-warning) 14%, transparent), transparent 42%),
+        linear-gradient(145deg, var(--spa-surface), color-mix(in srgb, var(--spa-surface-2) 92%, var(--spa-warning) 8%));
+    padding: 1rem 1.05rem;
+}
+
+.review-guide-card h5,
+.review-result-shell h5 {
+    color: var(--spa-text);
+    font-weight: 700;
+}
+
+.review-guide-card p,
+.review-guide-card li {
+    color: var(--spa-text-secondary);
+    line-height: 1.6;
+}
+
+.review-guide-card ul {
+    margin: 0.65rem 0 0;
+    padding-left: 1.1rem;
+}
+
+.review-panel,
+.review-result-shell .card {
+    border-color: var(--spa-border);
+    background: var(--spa-surface);
+    box-shadow: var(--spa-shadow-sm);
+}
+
+.review-result-shell .card-header {
+    background: color-mix(in srgb, var(--spa-surface-2) 86%, var(--spa-warning) 14%);
+    border-bottom-color: var(--spa-border);
+}
+
+.review-empty-state i,
+.contradictions-empty-icon {
+    color: var(--spa-warning);
+}
+
+.contradictions-claim-help,
+.contradictions-progress-label,
+.contradictions-empty-copy,
+.contradictions-summary-note,
+.contradictions-note-copy,
+.contradictions-source-meta {
+    color: var(--spa-text-secondary);
+}
+
+.contradictions-check-all,
+.contradictions-audit-link,
+.contradictions-open-file-link {
+    color: var(--spa-primary);
+    text-decoration: none;
+}
+
+.contradictions-check-all:hover,
+.contradictions-check-all:focus-visible,
+.contradictions-audit-link:hover,
+.contradictions-audit-link:focus-visible,
+.contradictions-open-file-link:hover,
+.contradictions-open-file-link:focus-visible {
+    color: color-mix(in srgb, var(--spa-primary) 80%, var(--spa-text));
+}
+
+.contradictions-doc-selector-shell {
+    border: 1px solid var(--spa-border);
+    border-radius: var(--spa-radius-md);
+    padding: 0.5rem;
+}
+
+.contradictions-detect-button {
+    align-items: center;
+    background: color-mix(in srgb, var(--spa-warning) 18%, var(--spa-surface));
+    border: 1px solid color-mix(in srgb, var(--spa-warning) 28%, var(--spa-border));
+    border-radius: var(--spa-radius-pill, 999px);
+    color: var(--spa-text);
+    display: inline-flex;
+    gap: 0.5rem;
+    justify-content: center;
+    padding: 0.65rem 0.9rem;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    width: 100%;
+}
+
+.contradictions-detect-button:hover,
+.contradictions-detect-button:focus-visible {
+    background: color-mix(in srgb, var(--spa-warning) 28%, var(--spa-surface));
+    border-color: color-mix(in srgb, var(--spa-warning) 38%, var(--spa-border));
+    color: var(--spa-text);
+}
+
+.contradictions-detect-button:disabled {
+    cursor: wait;
+    opacity: 0.72;
+}
+
+.contradictions-detect-icon,
+.contradictions-summary-icon {
+    color: var(--spa-warning);
+}
+
+.contradictions-progress {
+    height: 4px;
+}
+
+.contradictions-progress-bar {
+    width: 100%;
+}
+
+.contradictions-progress-shell {
+    display: grid;
+    gap: 0.4rem;
+}
+
+.contradictions-empty-icon {
+    font-size: 3rem;
+    opacity: 0.5;
+}
+
+.contradictions-empty-body {
+    padding: 3rem 1rem;
+    text-align: center;
+}
+
+.contradictions-empty-title {
+    margin-top: 0.75rem;
+}
+
+.contradictions-message {
+    align-items: flex-start;
+    border: 1px solid var(--spa-border);
+    border-radius: var(--spa-radius-md);
+    display: flex;
+    gap: 0.65rem;
+    padding: 1rem;
+}
+
+.contradictions-message--error {
+    background: color-mix(in srgb, var(--spa-danger) 12%, var(--spa-surface));
+    border-color: color-mix(in srgb, var(--spa-danger) 20%, var(--spa-border));
+}
+
+.contradictions-message--success {
+    background: color-mix(in srgb, var(--spa-success) 12%, var(--spa-surface));
+    border-color: color-mix(in srgb, var(--spa-success) 20%, var(--spa-border));
+}
+
+.contradictions-message-icon {
+    flex-shrink: 0;
+    font-size: 1rem;
+}
+
+.contradictions-message--error .contradictions-message-icon {
+    color: var(--spa-danger);
+}
+
+.contradictions-message--success .contradictions-message-icon {
+    color: var(--spa-success);
+}
+
+.contradictions-audit-banner {
+    align-items: center;
+    background: color-mix(in srgb, var(--spa-surface) 92%, var(--spa-primary) 8%);
+    border: 1px solid color-mix(in srgb, var(--spa-primary) 16%, var(--spa-border));
+    border-radius: var(--spa-radius-md);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.9rem 1rem;
+}
+
+.contradictions-audit-icon {
+    color: var(--spa-primary);
+}
+
+.contradictions-summary-note {
+    font-size: 0.8125rem;
+}
+
+.contradictions-note-panel {
+    border-color: var(--spa-border);
+    background: var(--spa-surface-2);
+    border-radius: var(--spa-radius-md);
+    border-style: solid;
+    border-width: 1px;
+    margin-top: 0.75rem;
+    padding: 0.9rem;
+}
+
+.contradictions-note-copy {
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+.contradictions-source-card {
+    border-color: var(--spa-border);
+    background: var(--spa-surface);
+    border-radius: var(--spa-radius-md);
+    border-style: solid;
+    border-width: 1px;
+    margin-bottom: 0.75rem;
+    padding: 0.9rem;
+}
+
+.contradictions-source-quote {
+    border-inline-start: 3px solid var(--spa-warning);
+    font-size: 0.875rem;
+    margin: 0.75rem 0 0.5rem;
+    padding-inline-start: 0.9rem;
+}
+
+.contradictions-open-file-link,
+.contradictions-source-meta {
+    align-items: center;
+    display: inline-flex;
+    gap: 0.35rem;
+}
+
+.contradictions-source-meta {
+    font-size: 0.8125rem;
+}
+
+.contradictions-source-meta-icon {
+    color: var(--spa-text-secondary);
+}
+
+.contradictions-severity-pill {
+    align-items: center;
+    border-radius: var(--spa-radius-pill, 999px);
+    display: inline-flex;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1;
+    padding: 0.35rem 0.55rem;
+}
+
+.contradictions-severity-pill.contradictions-severity-high {
+    background: var(--spa-danger);
+    color: #fff;
+}
+
+.contradictions-severity-pill.contradictions-severity-medium {
+    background: color-mix(in srgb, var(--spa-warning) 88%, white 12%);
+    color: var(--spa-text);
+}
+
+.contradictions-severity-pill.contradictions-severity-low {
+    background: color-mix(in srgb, var(--spa-primary) 16%, var(--spa-surface));
+    color: var(--spa-text);
+}

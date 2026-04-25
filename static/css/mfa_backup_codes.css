@@ -1,0 +1,32 @@
+.mfa-backup-codes-container {
+    max-width: 540px;
+}
+
+.mfa-backup-codes-header-icon {
+    color: var(--accent-warning-strong);
+    font-size: 1.25rem;
+}
+
+.mfa-backup-codes-box {
+    margin-bottom: var(--space-4);
+    padding: var(--space-4);
+    border-radius: var(--border-radius-soft);
+    background: color-mix(in srgb, var(--surface-secondary) 78%, var(--surface-primary));
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    font-family: var(--font-monospace);
+}
+
+.mfa-backup-codes-box > div + div {
+    margin-top: 0.35rem;
+}
+
+.mfa-backup-codes-status {
+    margin-bottom: var(--space-3);
+    padding: var(--space-3);
+    border-radius: var(--border-radius-soft);
+    border: 1px solid color-mix(in srgb, var(--color-success) 24%, transparent);
+    background: color-mix(in srgb, var(--color-success) 12%, var(--surface-primary));
+    color: var(--color-success-strong);
+    font-size: var(--font-size-small-note);
+}

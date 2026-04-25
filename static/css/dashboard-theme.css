@@ -1,0 +1,417 @@
+/* Dashboard Theme-Aware Styles */
+
+/* Override legacy static colors with design system variables */
+
+/* Cards */
+.card {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.card-header {
+    background: var(--bg-tertiary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.card-body {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Badges and Pills */
+.badge, .status-pill {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color);
+}
+
+.badge-primary {
+    background: var(--color-primary) !important;
+    color: white !important;
+}
+
+.badge-success {
+    background: var(--color-success) !important;
+    color: white !important;
+}
+
+.badge-warning {
+    background: var(--color-warning) !important;
+    color: white !important;
+}
+
+.badge-danger {
+    background: var(--color-error) !important;
+    color: white !important;
+}
+
+/* Quick Action Cards */
+.quick-action-card {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+    transition: all var(--transition-base);
+}
+
+.quick-action-card:hover {
+    background: var(--bg-hover) !important;
+    border-color: var(--color-primary) !important;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.quick-title {
+    color: var(--text-primary) !important;
+}
+
+.quick-sub {
+    color: var(--text-secondary) !important;
+}
+
+/* Buttons */
+.btn {
+    transition: all var(--transition-fast);
+}
+
+.btn-outline-light {
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.btn-outline-light:hover {
+    background: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+    color: white !important;
+}
+
+.btn-outline-secondary {
+    border-color: var(--border-color) !important;
+    color: var(--text-secondary) !important;
+}
+
+.btn-outline-secondary:hover {
+    background: var(--bg-hover) !important;
+    border-color: var(--border-hover) !important;
+    color: var(--text-primary) !important;
+}
+
+.btn-outline-warning {
+    border-color: var(--color-cta) !important;
+    color: var(--color-cta) !important;
+}
+
+.btn-outline-warning:hover {
+    background: var(--color-cta) !important;
+    color: white !important;
+}
+
+.btn-primary {
+    background: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+}
+
+.btn-primary:hover {
+    background: var(--color-primary-hover) !important;
+}
+
+/* Project Cards */
+.project-card {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.project-title {
+    color: var(--text-primary) !important;
+}
+
+.project-desc {
+    color: var(--text-secondary) !important;
+}
+
+/* Tables */
+.table {
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.table thead {
+    background: var(--bg-tertiary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.table tbody tr {
+    border-color: var(--border-color) !important;
+}
+
+.table tbody tr:hover {
+    background: var(--bg-hover) !important;
+}
+
+/* Text Colors */
+.text-light {
+    color: var(--text-primary) !important;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+.text-secondary {
+    color: var(--text-secondary) !important;
+}
+
+/* Background Colors */
+.bg-dark {
+    background: var(--bg-primary) !important;
+}
+
+.bg-secondary {
+    background: var(--bg-secondary) !important;
+}
+
+/* Borders */
+.border {
+    border-color: var(--border-color) !important;
+}
+
+.border-bottom {
+    border-bottom-color: var(--border-color) !important;
+}
+
+.border-top {
+    border-top-color: var(--border-color) !important;
+}
+
+.border-secondary {
+    border-color: var(--border-color) !important;
+}
+
+/* Forms */
+.form-control {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.form-control:focus {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-focus) !important;
+    color: var(--text-primary) !important;
+    box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25) !important;
+}
+
+.form-select {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.form-label {
+    color: var(--text-primary) !important;
+}
+
+/* Alerts */
+.alert {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.alert-success {
+    background: rgba(16, 185, 129, 0.1) !important;
+    border-color: var(--color-success) !important;
+    color: var(--color-success) !important;
+}
+
+.alert-warning {
+    background: rgba(245, 158, 11, 0.1) !important;
+    border-color: var(--color-warning) !important;
+    color: var(--color-warning) !important;
+}
+
+.alert-danger {
+    background: rgba(239, 68, 68, 0.1) !important;
+    border-color: var(--color-error) !important;
+    color: var(--color-error) !important;
+}
+
+.alert-info {
+    background: rgba(59, 130, 246, 0.1) !important;
+    border-color: var(--color-info) !important;
+    color: var(--color-info) !important;
+}
+
+/* Modals */
+.modal-content {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.modal-header {
+    background: var(--bg-tertiary) !important;
+    border-bottom-color: var(--border-color) !important;
+}
+
+.modal-footer {
+    border-top-color: var(--border-color) !important;
+}
+
+.modal-title {
+    color: var(--text-primary) !important;
+}
+
+/* Dropdowns */
+.dropdown-menu {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+    box-shadow: var(--shadow-lg) !important;
+}
+
+.dropdown-item {
+    color: var(--text-primary) !important;
+}
+
+.dropdown-item:hover {
+    background: var(--bg-hover) !important;
+    color: var(--text-primary) !important;
+}
+
+.dropdown-divider {
+    border-top-color: var(--border-color) !important;
+}
+
+/* Navigation Pills/Tabs */
+.nav-pills .nav-link {
+    color: var(--text-secondary) !important;
+}
+
+.nav-pills .nav-link.active {
+    background: var(--color-primary) !important;
+    color: white !important;
+}
+
+.nav-tabs {
+    border-bottom-color: var(--border-color) !important;
+}
+
+.nav-tabs .nav-link {
+    color: var(--text-secondary) !important;
+    border-color: transparent !important;
+}
+
+.nav-tabs .nav-link:hover {
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.nav-tabs .nav-link.active {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-color) var(--border-color) var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* List Groups */
+.list-group-item {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.list-group-item:hover {
+    background: var(--bg-hover) !important;
+}
+
+/* Progress Bars */
+.progress {
+    background: var(--bg-tertiary) !important;
+}
+
+.progress-bar {
+    background: var(--color-primary) !important;
+}
+
+/* Links */
+a {
+    color: var(--color-secondary) !important;
+    transition: color var(--transition-fast);
+}
+
+a:hover {
+    color: var(--color-primary) !important;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary) !important;
+}
+
+/* Specific Dashboard Elements */
+.dashboard-projects {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.helper-container {
+    background: transparent !important;
+}
+
+.metric-label {
+    color: var(--text-muted) !important;
+}
+
+.metric-value {
+    color: var(--text-primary) !important;
+}
+
+/* Empty States */
+.empty-state {
+    color: var(--text-muted) !important;
+}
+
+.empty-state i {
+    color: var(--text-muted) !important;
+}
+
+/* Pagination */
+.pagination .page-link {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.pagination .page-link:hover {
+    background: var(--bg-hover) !important;
+    border-color: var(--border-hover) !important;
+}
+
+.pagination .page-item.active .page-link {
+    background: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+}
+
+/* Tooltips */
+.tooltip-inner {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color);
+}
+
+/* Popovers */
+.popover {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.popover-header {
+    background: var(--bg-tertiary) !important;
+    border-bottom-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.popover-body {
+    color: var(--text-primary) !important;
+}

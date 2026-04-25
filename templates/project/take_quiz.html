@@ -1,0 +1,71 @@
+{# Take quiz — extends project layout #}
+{% extends "project/_layout.html" %}
+{% set page_title = quiz.name %}
+{% set page_subtitle = t('quizzes.take.subtitle') %}
+{% set page_icon = 'question-circle' %}
+{% set active_page = 'quizzes' %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/library_setup_summary.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/take_quiz.css') }}">
+{% endblock %}
+
+{% block workspace_content %}
+<div
+    data-library-setup-summary
+    data-project-api-base="/projects/{{ project.id }}"
+    data-collections-url="{{ url_for('projects.list_rag_collections_for_project') }}"
+    data-start-url="{{ url_for('project_start.project_start_page', project_id=project.id) }}"
+    data-settings-url="{{ url_for('researcher.project_settings', project_id=project.id) }}"
+    data-collection-id="{{ project.collection_id or '' }}"
+    data-quality-mode="{{ project.rag_quality_mode or 'balanced' }}"
+    data-quality-fast-label="{{ t('project_search.rag_mode.fast') }}"
+    data-quality-balanced-label="{{ t('project_search.rag_mode.balanced') }}"
+    data-quality-deep-label="{{ t('project_search.rag_mode.deep') }}"
+></div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="spa-card">
+            <div class="spa-card-header d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="mb-0" id="quizTitle">{{ quiz.name }}</h6>
+                    <small class="text-muted" id="questionProgress">{{ t('quizzes.take.loading') }}</small>
+                </div>
+                <div id="progressBarWrap">
+                    <div class="progress take-quiz-progress">
+                        <div class="progress-bar take-quiz-progress-bar" id="progressBar"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="spa-card-body" id="quizContent" data-project-id="{{ project.id }}" data-quiz-id="{{ quiz.id }}">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script id="take-quiz-config" type="application/json">
+    {
+        "projectId": {{ project.id }},
+        "quizId": {{ quiz.id }},
+        "i18n": {
+            "loading": {{ t('quizzes.take.loading') | tojson }},
+            "empty": {{ t('quizzes.take.empty') | tojson }},
+            "load_error": {{ t('quizzes.take.load_error') | tojson }},
+            "previous": {{ t('quizzes.take.previous') | tojson }},
+            "next": {{ t('quizzes.take.next') | tojson }},
+            "finish": {{ t('quizzes.take.finish') | tojson }},
+            "progress": {{ t('quizzes.take.progress') | tojson }},
+            "submit_error": {{ t('quizzes.take.submit_error') | tojson }},
+            "score_label": {{ t('quizzes.take.score_label') | tojson }},
+            "back_to_list": {{ t('quizzes.take.back_to_list') | tojson }},
+            "retry": {{ t('quizzes.take.retry') | tojson }},
+            "completed": {{ t('quizzes.take.completed') | tojson }}
+        }
+    }
+</script>
+<script src="{{ url_for('static', filename='js/project/library_setup_summary.js') }}"></script>
+<script src="{{ url_for('static', filename='js/take-quiz.js') }}"></script>
+{% endblock %}

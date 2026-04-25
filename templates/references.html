@@ -1,0 +1,281 @@
+{% extends base_template or "base.html" %}
+{% block title %}{{ t('references.title') }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/references_page.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="spa-page-header">
+    <div class="spa-page-header-left">
+        <div class="spa-page-icon"><i class="bi bi-journal-bookmark"></i></div>
+        <div>
+            <div class="spa-page-title">{{ t('references.title') }}</div>
+            <div class="spa-page-subtitle">{{ t('references.subtitle') }}</div>
+        </div>
+    </div>
+    <div class="spa-page-actions">
+        <a href="#addReferenceForm" class="btn btn-primary btn-sm"><i class="bi bi-plus me-1"></i>{{
+            t('references.actions.new') }}</a>
+    </div>
+</div>
+
+<div class="spa-split references-page-split">
+    {# Sidebar: project list #}
+    <div class="spa-card references-page-sidebar">
+        <div class="spa-card-header">
+            <div class="spa-card-title">{{ t('references.sidebar.title') }}</div>
+        </div>
+        <div class="spa-card-body">
+            <p class="text-muted small mb-3">{{ t('references.sidebar.body') }}</p>
+            {% for project in projects %}
+            <div class="spa-list-item references-page-sidebar-item">
+                <span>{{ project.name }}</span>
+                <span class="spa-badge">{{ grouped_references.get(project.id)|length if
+                    grouped_references.get(project.id) else 0 }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {# Main: reference table + export #}
+    <div class="references-page-main">
+        <div class="spa-card mb-3">
+            <div class="spa-card-header">
+                <div>
+                    <div class="spa-card-title">{{ t('references.table.title') }}</div>
+                    <small class="text-muted">{{ total_references }} {{ t('references.table.count_label') }}</small>
+                </div>
+                {% if projects %}
+                <div class="d-flex gap-2 align-items-end flex-wrap">
+                    <select id="referenceExportProject" class="form-select form-select-sm references-inline-select">
+                        {% for project in projects %}
+                        <option value="{{ project.id }}">{{ project.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <select id="referenceExportStyle" class="form-select form-select-sm references-inline-select">
+                        <option value="apa">{{ t('references.export.style.apa') }}</option>
+                        <option value="mla">{{ t('references.export.style.mla') }}</option>
+                        <option value="chicago">{{ t('references.export.style.chicago') }}</option>
+                        <option value="bibtex">{{ t('references.export.style.bibtex') }}</option>
+                        <option value="ris">{{ t('references.export.style.ris') }}</option>
+                        <option value="json">{{ t('references.export.style.json') }}</option>
+                    </select>
+                    <button type="button" id="referenceExportBtn" class="btn btn-outline-secondary btn-sm">{{
+                        t('references.export.button') }}</button>
+                </div>
+                {% endif %}
+            </div>
+            <div class="spa-card-body flush">
+                {% if latest_references %}
+                <table class="spa-table">
+                    <thead>
+                        <tr>
+                            <th>{{ t('references.table.header.title') }}</th>
+                            <th>{{ t('references.table.header.authors') }}</th>
+                            <th>{{ t('references.table.header.publication') }}</th>
+                            <th>{{ t('references.table.header.year') }}</th>
+                            <th>{{ t('references.table.header.actions') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reference in latest_references %}
+                        <tr>
+                            <td>
+                                <strong>{{ reference.title }}</strong>
+                                {% if reference.document_title %}
+                                <div class="small text-muted mt-1">{{ t('references.table.linked_document') }}: {{
+                                    reference.document_title }}</div>
+                                {% endif %}
+                            </td>
+                            <td>{{ reference.authors or t('references.table.empty') }}</td>
+                            <td>
+                                {{ reference.publication or t('references.table.empty') }}
+                                {% if reference.doi %}<div class="small text-muted">DOI: {{ reference.doi }}</div>{%
+                                endif %}
+                            </td>
+                            <td>{{ reference.year or '—' }}</td>
+                            <td class="small">{{ reference.project_name }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="spa-empty">
+                    <i class="bi bi-journal-bookmark"></i>
+                    <p>{{ t('references.table.empty') }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {# Add Reference Form #}
+        <div class="spa-card" id="addReferenceForm">
+            <div class="spa-card-header">
+                <div class="spa-card-title">{{ t('references.form.title') }}</div>
+            </div>
+            <div class="spa-card-body">
+                <form method="post" action="{{ url_for('references.references_page') }}">
+                    <div class="row gy-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="refProject">{{ t('references.form.project') }}</label>
+                            <select id="refProject" name="project_id" class="form-select">
+                                {% for project in projects %}
+                                <option value="{{ project.id }}" {% if prefill_project_id==project.id %}selected{% endif
+                                    %}>{{ project.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="refDocument">{{ t('references.form.document') }}</label>
+                            <input id="refDocument" name="document_id" class="form-control"
+                                placeholder="{{ t('references.form.document_placeholder') }}"
+                                value="{{ prefill_document_id or '' }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="refTitle">{{ t('references.form.title') }}</label>
+                            <input id="refTitle" name="title" class="form-control" required
+                                placeholder="{{ t('references.form.title_placeholder') }}" value="{{ prefill_title }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="refAuthors">{{ t('references.form.authors') }}</label>
+                            <input id="refAuthors" name="authors" class="form-control"
+                                placeholder="{{ t('references.form.authors_placeholder') }}"
+                                value="{{ prefill_authors }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="refPublication">{{ t('references.form.publication') }}</label>
+                            <input id="refPublication" name="publication" class="form-control" value="{{ prefill_publication }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="refYear">{{ t('references.form.year') }}</label>
+                            <input id="refYear" name="year" type="number" min="1900" max="2100" class="form-control"
+                                value="{{ prefill_year }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="refDoi">{{ t('references.form.doi') }}</label>
+                            <input id="refDoi" name="doi" class="form-control" value="{{ prefill_doi }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="refUrl">{{ t('references.form.url') }}</label>
+                            <input id="refUrl" name="url" class="form-control" value="{{ prefill_url }}">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="refCitation">{{ t('references.form.citation') }}</label>
+                            <textarea id="refCitation" name="citation" class="form-control" rows="2">{{ prefill_citation }}</textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="refNotes">{{ t('references.form.notes') }}</label>
+                            <textarea id="refNotes" name="notes" class="form-control" rows="2">{{ prefill_notes }}</textarea>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-sm">{{ t('references.form.save')
+                                }}</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="spa-card mt-3">
+            <div class="spa-card-header">
+                <div class="spa-card-title">{{ t('references.import.title') }}</div>
+            </div>
+            <div class="spa-card-body">
+                <div class="row gy-3">
+                    <div class="col-md-4">
+                        <label class="form-label" for="referenceImportProject">{{ t('references.import.project') }}</label>
+                        <select id="referenceImportProject" class="form-select">
+                            {% for project in projects %}
+                            <option value="{{ project.id }}">{{ project.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="referenceImportFormat">{{ t('references.import.format') }}</label>
+                        <select id="referenceImportFormat" class="form-select">
+                            <option value="json">JSON</option>
+                            <option value="bibtex">{{ t('references.export.style.bibtex') }}</option>
+                            <option value="ris">{{ t('references.export.style.ris') }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="referenceImportFile">{{ t('references.import.file') }}</label>
+                        <input id="referenceImportFile" type="file" class="form-control" accept=".json,.bib,.ris,.txt">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="referenceImportContent">{{ t('references.import.paste') }}</label>
+                        <textarea id="referenceImportContent" class="form-control" rows="4"
+                            placeholder="{{ t('references.import.paste_placeholder') }}"></textarea>
+                    </div>
+                        <div class="col-12 d-flex align-items-center gap-2">
+                            <button type="button" id="referenceImportBtn" class="btn btn-primary btn-sm"
+                                data-importing="{{ t('references.import.importing') }}"
+                                data-failed="{{ t('references.import.failed') }}">{{ t('references.import.button')
+                            }}</button>
+                        <small id="referenceImportStatus" class="references-page-status references-page-status--muted"></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        <div class="spa-card mt-3">
+            <div class="spa-card-header">
+                <div class="spa-card-title">{{ t('doi.validation.title') }}</div>
+            </div>
+            <div class="spa-card-body">
+                <div class="row gy-3">
+                    <div class="col-md-6">
+                        <label class="form-label" for="doiInput">{{ t('doi.validation.single') }}</label>
+                        <div class="input-group">
+                            <input type="text" id="doiInput" class="form-control"
+                                placeholder="{{ t('doi.validation.single_placeholder') }}">
+                            <button type="button" id="btnValidateDoi" class="btn btn-outline-primary"
+                                data-valid="{{ t('doi.validation.valid') }}"
+                                data-invalid="{{ t('doi.validation.invalid') }}"
+                                data-checking="{{ t('doi.validation.checking') }}">
+                                {{ t('doi.validation.validate') }}
+                            </button>
+                        </div>
+                        <div id="doiResult" class="references-page-validation-result"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="doiBatchProject">{{ t('doi.validation.batch_desc') }}</label>
+                        <div class="d-flex align-items-center gap-2">
+                            <select id="doiBatchProject" class="form-select references-inline-select">
+                                {% for project in projects %}
+                                <option value="{{ project.id }}">{{ project.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="button" id="btnValidateBatch" class="btn btn-primary btn-sm"
+                                data-checking="{{ t('doi.validation.checking') }}"
+                                data-total="{{ t('doi.validation.result_total') }}"
+                                data-valid="{{ t('doi.validation.result_valid') }}"
+                                data-invalid="{{ t('doi.validation.result_invalid') }}"
+                                data-skipped="{{ t('doi.validation.result_skipped') }}">
+                                {{ t('doi.validation.batch') }}
+                            </button>
+                        </div>
+                        <div id="doiBatchResult" class="references-page-batch-result"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script id="references-page-config" type="application/json">
+{{ {
+    "exportUrlTemplate": "/projects/__PROJECT_ID__/references/export?style=__STYLE__",
+    "importUrlTemplate": "/projects/__PROJECT_ID__/references/import",
+    "validateDoiUrlTemplate": "/projects/__PROJECT_ID__/references/validate-doi",
+    "validateBatchUrlTemplate": "/projects/__PROJECT_ID__/references/validate-citations",
+    "createdLabel": "Created",
+    "skippedLabel": "Skipped",
+    "errorLabel": "Error"
+} | tojson | safe }}
+</script>
+<script src="{{ url_for('static', filename='js/references_page.js') }}"></script>
+{% endblock %}

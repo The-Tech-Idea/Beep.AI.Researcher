@@ -1,0 +1,290 @@
+{% extends "base.html" %}
+
+{% block title %}Quota Management - Admin - Beep.AI.Researcher{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_quota_management_page.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page-header mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div>
+        <h1><i class="bi bi-pie-chart me-2"></i>Quota Management</h1>
+        <p class="mb-0">Plan tiers, per-user and per-tenant storage quota overrides, and usage overview.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{{ url_for('admin.settings') }}#tab-quota" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-gear me-1"></i>Global Defaults
+        </a>
+        <a href="{{ url_for('admin.index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Back to Admin
+        </a>
+    </div>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}{% for cat, msg in messages %}
+    <div class="admin-quota-message admin-quota-message--{{ 'error' if cat == 'error' else cat }}" role="alert">
+      {{ msg }}
+    </div>
+  {% endfor %}{% endif %}
+{% endwith %}
+
+<!-- ── Global Defaults summary ───────────────────────────────────────────── -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card admin-quota-summary-card h-100">
+            <div class="card-body">
+                <div class="admin-quota-summary-label">Global Default Storage / User</div>
+                <div class="h4 mb-0 fw-bold">
+                    {% if global_storage >= 1073741824 %}
+                        {{ (global_storage / 1073741824) | round(1) }} GB
+                    {% elif global_storage >= 1048576 %}
+                        {{ (global_storage / 1048576) | round(1) }} MB
+                    {% else %}
+                        {{ global_storage | filesizeformat }}
+                    {% endif %}
+                </div>
+                <small class="admin-quota-summary-note">{{ global_storage | int }} bytes</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card admin-quota-summary-card h-100">
+            <div class="card-body">
+                <div class="admin-quota-summary-label">Global Default Document Count / User</div>
+                <div class="h4 mb-0 fw-bold">{{ global_docs }}</div>
+                <small class="admin-quota-summary-note">0 = unlimited</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card admin-quota-summary-card h-100">
+            <div class="card-body">
+                <div class="admin-quota-summary-label">Users with Quota Overrides</div>
+                <div class="h4 mb-0 fw-bold">
+                    {{ user_stats | selectattr('storage_quota_bytes') | list | length }}
+                </div>
+                <small class="admin-quota-summary-note">out of {{ user_stats | length }} tracked users</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══ Tabs ══════════════════════════════════════════════════════════════════ -->
+<ul class="nav nav-tabs mb-3" id="quotaTabs" role="tablist">
+    <li class="nav-item" role="presentation"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#qt-usage"   type="button" role="tab" aria-selected="true"><i class="bi bi-bar-chart me-1"></i>Usage Overview</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link"        data-bs-toggle="tab" data-bs-target="#qt-tiers"   type="button" role="tab" aria-selected="false"><i class="bi bi-layers me-1"></i>Plan Tiers</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link"        data-bs-toggle="tab" data-bs-target="#qt-tenant"  type="button" role="tab" aria-selected="false"><i class="bi bi-building me-1"></i>Tenant Quotas</button></li>
+</ul>
+
+<div class="tab-content">
+
+<!-- ── Usage Overview ────────────────────────────────────────────────────── -->
+<div class="tab-pane fade show active" id="qt-usage">
+    <div class="card">
+        <div class="card-header"><h5 class="mb-0">Top Users by Storage Used</h5></div>
+        <div class="card-body p-0">
+            {% if user_stats %}
+            <div class="table-responsive">
+                <table class="table table-hover table-sm mb-0">
+                    <thead class="admin-quota-table-head">
+                        <tr>
+                            <th>Username</th>
+                            <th class="text-end">Storage Used</th>
+                            <th class="admin-quota-usage-column">Usage</th>
+                            <th class="text-end">Limit</th>
+                            <th class="text-end">Documents</th>
+                            <th class="text-center">Override</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stat in user_stats %}
+                        {% set limit = stat.storage_quota_bytes or global_storage %}
+                        {% set pct = [(stat.storage_used_bytes / limit * 100) | round(1), 100] | min if limit > 0 else 0 %}
+                        {% set usage_state = 'high' if pct >= 90 else ('warning' if pct >= 75 else 'healthy') %}
+                        <tr>
+                            <td><strong>{{ stat.username }}</strong></td>
+                            <td class="text-end font-monospace small">
+                                {% set used = stat.storage_used_bytes %}
+                                {% if used >= 1073741824 %}{{ (used / 1073741824) | round(2) }} GB
+                                {% elif used >= 1048576 %}{{ (used / 1048576) | round(1) }} MB
+                                {% elif used >= 1024 %}{{ (used / 1024) | round(1) }} KB
+                                {% else %}{{ used }} B{% endif %}
+                            </td>
+                            <td>
+                                <div class="admin-quota-progress" title="{{ pct }}%">
+                                    <div class="admin-quota-progress-bar admin-quota-progress-bar-{{ usage_state }}" data-pct="{{ pct }}"></div>
+                                </div>
+                                <small class="admin-quota-progress-label">{{ pct }}%</small>
+                            </td>
+                            <td class="text-end font-monospace small admin-quota-muted-value">
+                                {% if limit >= 1073741824 %}{{ (limit / 1073741824) | round(1) }} GB
+                                {% elif limit >= 1048576 %}{{ (limit / 1048576) | round(1) }} MB
+                                {% else %}{{ limit }} B{% endif %}
+                            </td>
+                            <td class="text-end small admin-quota-muted-value">{{ stat.document_count }}</td>
+                            <td class="text-center">
+                                {% if stat.storage_quota_bytes %}
+                                    <span class="admin-quota-override-badge admin-quota-override-badge-custom">Custom</span>
+                                {% else %}
+                                    <span class="admin-quota-override-badge admin-quota-override-badge-global">Global</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="admin-quota-empty-state">No usage data yet.</div>
+            {% endif %}
+        </div>
+    </div>
+</div><!-- /qt-usage -->
+
+
+<!-- ── Plan Tiers ─────────────────────────────────────────────────────────── -->
+<div class="tab-pane fade" id="qt-tiers">
+
+    <!-- Add tier form -->
+    <div class="card mb-3">
+        <div class="card-header"><h5 class="mb-0"><i class="bi bi-plus-circle me-1"></i>Add Plan Tier</h5></div>
+        <div class="card-body">
+            <form method="post" action="{{ url_for('admin.quota_plan_tier_add') }}" class="row g-2 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label small mb-1">Tier Name</label>
+                    <input type="text" class="form-control form-control-sm" name="name" placeholder="pro, enterprise…" required>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small mb-1">Storage (bytes)</label>
+                    <input type="number" class="form-control form-control-sm" name="storage_quota_bytes" min="0" placeholder="5368709120">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small mb-1">Doc Count</label>
+                    <input type="number" class="form-control form-control-sm" name="document_quota" min="0" placeholder="5000">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small mb-1">Max Upload (bytes)</label>
+                    <input type="number" class="form-control form-control-sm" name="max_upload_size_bytes" min="0" placeholder="524288000">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary btn-sm">Add Tier</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tiers table -->
+    <div class="card">
+        <div class="card-body p-0">
+            {% if plan_tiers %}
+            <div class="table-responsive">
+                <table class="table table-hover table-sm mb-0">
+                    <thead class="admin-quota-table-head">
+                        <tr>
+                            <th>Tier Name</th>
+                            <th class="text-end">Storage Limit</th>
+                            <th class="text-end">Document Limit</th>
+                            <th class="text-end">Max Upload</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tier in plan_tiers %}
+                        <tr>
+                            <td><strong>{{ tier.name }}</strong></td>
+                            <td class="text-end small font-monospace">
+                                {% if tier.storage_quota_bytes %}
+                                    {% if tier.storage_quota_bytes >= 1073741824 %}{{ (tier.storage_quota_bytes / 1073741824) | round(1) }} GB
+                                    {% else %}{{ (tier.storage_quota_bytes / 1048576) | round(1) }} MB{% endif %}
+                                {% else %}—{% endif %}
+                            </td>
+                            <td class="text-end small">{{ tier.document_quota or '—' }}</td>
+                            <td class="text-end small font-monospace">
+                                {% if tier.max_upload_size_bytes %}
+                                    {{ (tier.max_upload_size_bytes / 1048576) | round(1) }} MB
+                                {% else %}—{% endif %}
+                            </td>
+                            <td class="text-center">
+                                <form method="post" action="{{ url_for('admin.quota_plan_tier_delete', tier_id=tier.id) }}"
+                                      class="admin-quota-tier-delete-form" data-tier-name="{{ tier.name }}">
+                                    <button type="submit" class="btn btn-sm py-0 px-2 admin-quota-tier-delete-button"
+                                            aria-label="Delete tier {{ tier.name }}">
+                                        <i class="bi bi-trash" aria-hidden="true"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="admin-quota-empty-state">No plan tiers defined. Add one above.</div>
+            {% endif %}
+        </div>
+    </div>
+
+</div><!-- /qt-tiers -->
+
+
+<!-- ── Tenant Quotas ──────────────────────────────────────────────────────── -->
+<div class="tab-pane fade" id="qt-tenant">
+    <div class="card">
+        <div class="card-body p-0">
+            {% if tenant_quotas %}
+            <div class="table-responsive">
+                <table class="table table-hover table-sm mb-0">
+                    <thead class="admin-quota-table-head">
+                        <tr>
+                            <th>Tenant ID</th>
+                            <th class="text-end">Storage Limit</th>
+                            <th class="text-end">Storage Used</th>
+                            <th class="text-end">Doc Limit</th>
+                            <th class="text-end">Doc Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tq in tenant_quotas %}
+                        <tr>
+                            <td>{{ tq.tenant_id }}</td>
+                            <td class="text-end small font-monospace">
+                                {% if tq.storage_quota_bytes %}
+                                    {% if tq.storage_quota_bytes >= 1073741824 %}{{ (tq.storage_quota_bytes / 1073741824) | round(1) }} GB
+                                    {% else %}{{ (tq.storage_quota_bytes / 1048576) | round(1) }} MB{% endif %}
+                                {% else %}—{% endif %}
+                            </td>
+                            <td class="text-end small font-monospace">
+                                {% if tq.storage_used_bytes %}
+                                    {% if tq.storage_used_bytes >= 1073741824 %}{{ (tq.storage_used_bytes / 1073741824) | round(2) }} GB
+                                    {% else %}{{ (tq.storage_used_bytes / 1048576) | round(1) }} MB{% endif %}
+                                {% else %}0 B{% endif %}
+                            </td>
+                            <td class="text-end small">{{ tq.document_quota or '—' }}</td>
+                            <td class="text-end small">{{ tq.document_count or 0 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="admin-quota-empty-state">No tenant quota records found.</div>
+            {% endif %}
+        </div>
+    </div>
+</div><!-- /qt-tenant -->
+
+</div><!-- /tab-content -->
+<script id="admin-quota-config" type="application/json">
+{{ {
+    "storageQuotaTabKey": "adminQuotaTab",
+    "deleteTierConfirmPrefix": "Delete tier ",
+    "deleteTierConfirmSuffix": "?"
+} | tojson | safe }}
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/admin_quota_management_page.js') }}"></script>
+{% endblock %}

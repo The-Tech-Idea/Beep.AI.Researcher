@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}Invite Tokens — Admin — Beep.AI.Researcher{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_invites_page.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div>
+        <h1><i class="bi bi-envelope-plus me-2"></i>Invite Tokens</h1>
+        <p class="mb-0 text-muted">
+            Registration mode: <strong>{{ reg_mode }}</strong>.
+            {% if reg_mode != 'invite' %}
+            Invites work regardless of mode — the link will bypass registration restrictions.
+            {% endif %}
+        </p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{{ url_for('admin.users_list') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-people me-1"></i>Users
+        </a>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
+            <i class="bi bi-plus-lg me-1"></i>Create invite
+        </button>
+    </div>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}{% for cat, msg in messages %}
+<div class="admin-invites-message admin-invites-message--{{ 'error' if cat == 'error' else cat }}" role="alert">
+    {{ msg }}
+</div>
+{% endfor %}{% endif %}
+{% endwith %}
+
+<div class="card">
+    <div class="card-body p-0">
+        {% if invites %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Token</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Uses</th>
+                        <th>Expires</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for inv in invites %}
+                    <tr>
+                        <td>
+                            <code class="small">{{ inv.token[:16] }}…</code>
+                            <button class="btn btn-sm admin-invites-copy-button ms-1"
+                                data-copy-text="{{ base_url }}/register?invite={{ inv.token }}"
+                                title="Copy invite URL" aria-label="Copy invite URL for token {{ inv.token[:8] }}">
+                                <i class="bi bi-clipboard" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                        <td>{{ inv.email or '—' }}</td>
+                        <td>{{ inv.role_name or '—' }}</td>
+                        <td>{{ inv.use_count }}{% if inv.max_uses %}/{{ inv.max_uses }}{% endif %}</td>
+                        <td>{{ inv.expires_at.strftime('%Y-%m-%d') if inv.expires_at else 'Never' }}</td>
+                        <td>
+                            {% if inv.revoked_at %}
+                            <span class="admin-invites-status-badge admin-invites-status-badge--revoked">Revoked</span>
+                            {% elif not inv.is_valid %}
+                            <span class="admin-invites-status-badge admin-invites-status-badge--invalid">Exhausted/Expired</span>
+                            {% else %}
+                            <span class="admin-invites-status-badge admin-invites-status-badge--valid">Valid</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ inv.created_at.strftime('%Y-%m-%d') if inv.created_at else '—' }}</td>
+                        <td>
+                            {% if inv.is_valid %}
+                            <form method="post"
+                                action="{{ url_for('admin.invite_revoke', invite_id=inv.id) }}"
+                                class="d-inline"
+                                data-admin-confirm="Revoke this invite?">
+                                <button type="submit" class="btn btn-sm admin-invites-revoke-button"
+                                    aria-label="Revoke invite {{ inv.token[:8] }}"
+                                    >
+                                    <i class="bi bi-x-circle" aria-hidden="true"></i>
+                                    Revoke
+                                </button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="p-4 mb-0 admin-invites-empty-state">No invite tokens created yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Create invite modal -->
+<div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-modal="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ url_for('admin.invite_create') }}">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createModalLabel">
+                        <i class="bi bi-envelope-plus me-2"></i>Create Invite Token
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="invite_email" class="form-label">Restrict to email (optional)</label>
+                        <input type="email" class="form-control" id="invite_email" name="email"
+                            placeholder="Leave blank for any email">
+                        <div class="form-text">If set, only this email address can use the token.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="invite_role_name" class="form-label">Auto-assign role</label>
+                        <select class="form-select" id="invite_role_name" name="role_name">
+                            <option value="">— Use registration default —</option>
+                            {% for r in roles %}
+                            <option value="{{ r.name }}">{{ r.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <label for="invite_max_uses" class="form-label">Max uses</label>
+                            <input type="number" class="form-control" id="invite_max_uses" name="max_uses"
+                                value="1" min="1">
+                        </div>
+                        <div class="col-6">
+                            <label for="invite_expires_days" class="form-label">Expires in (days)</label>
+                            <input type="number" class="form-control" id="invite_expires_days" name="expires_days"
+                                placeholder="Never" min="1">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-lg me-1"></i>Create
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/admin_invites_page.js') }}"></script>
+{% endblock %}

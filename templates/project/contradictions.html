@@ -1,0 +1,104 @@
+{# Contradictions — extends project layout #}
+{% extends "project/_layout.html" %}
+{% set page_title = t('contradictions.title') %}
+{% set page_subtitle = t('contradictions.subtitle') %}
+{% set page_icon = 'exclamation-triangle' %}
+{% set active_page = 'contradictions' %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/library_setup_summary.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/components/document_selector.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/contradictions.css') }}">
+{% endblock %}
+
+{% block workspace_content %}
+<div
+    data-library-setup-summary
+    data-project-api-base="/projects/{{ project.id }}"
+    data-collections-url="{{ url_for('projects.list_rag_collections_for_project') }}"
+    data-start-url="{{ url_for('project_start.project_start_page', project_id=project.id) }}"
+    data-settings-url="{{ url_for('researcher.project_settings', project_id=project.id) }}"
+    data-collection-id="{{ project.collection_id or '' }}"
+    data-quality-mode="{{ project.rag_quality_mode or 'balanced' }}"
+    data-quality-fast-label="{{ t('project_search.rag_mode.fast') }}"
+    data-quality-balanced-label="{{ t('project_search.rag_mode.balanced') }}"
+    data-quality-deep-label="{{ t('project_search.rag_mode.deep') }}"
+></div>
+
+<div class="row g-3">
+    <!-- Left: Query Panel -->
+    <div class="col-md-4">
+        <div class="review-guide-card mb-3">
+            <h5 class="mb-2">{{ t('contradictions.panel_title') }}</h5>
+            <p class="mb-0">{{ t('contradictions.panel_desc') }}</p>
+            <ul>
+                <li>{{ t('contradictions.claim_help') }}</li>
+                <li>{{ t('contradictions.search_in') }}: {{ t('contradictions.check_all')|lower }}</li>
+            </ul>
+        </div>
+        <div class="card review-panel">
+            <div class="card-header d-flex align-items-center gap-2">
+                <i class="bi bi-search"></i>
+                <span class="fw-medium">{{ t('contradictions.review_title') }}</span>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="contradictionQuery" class="form-label small fw-medium">{{ t('contradictions.claim_label') }}</label>
+                    <div class="form-text contradictions-claim-help mb-1">{{ t('contradictions.claim_help') }}</div>
+                    <textarea class="form-control" id="contradictionQuery" rows="4"
+                        placeholder="{{ t('contradictions.placeholder') }}"></textarea>
+                </div>
+                <div class="d-flex align-items-center justify-content-between mb-1">
+                    <div class="form-label small fw-medium mb-0">{{ t('contradictions.search_in') }}</div>
+                    <a href="#" class="small contradictions-check-all" id="checkAllDocs">{{ t('contradictions.check_all') }}</a>
+                </div>
+                <div id="docSelector" class="mb-3 contradictions-doc-selector-shell"></div>
+                <button type="button" class="contradictions-detect-button" id="btnDetect">
+                    <i class="bi bi-exclamation-triangle contradictions-detect-icon" aria-hidden="true"></i><span>{{ t('contradictions.detect') }}</span>
+                </button>
+                <div id="detectProgress" class="mt-2 contradictions-progress-shell" hidden>
+                    <div class="progress contradictions-progress">
+                        <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated contradictions-progress-bar"></div>
+                    </div>
+                    <small class="contradictions-progress-label">{{ t('contradictions.analyzing') }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right: Results -->
+    <div class="col-md-8">
+        <div id="contradictionResults" class="review-result-shell"></div>
+        {# 13d: Connection banner to Hallucination Audit — shown by JS after results #}
+        <div id="contradictionAuditBanner" class="contradictions-audit-banner mt-3" hidden>
+            <i class="bi bi-shield-check contradictions-audit-icon" aria-hidden="true"></i>{{ t('contradictions.audit_banner') }}
+            <a href="{{ url_for('researcher.hallucination_audit_page', project_id=project.id) }}" class="contradictions-audit-link">{{ t('contradictions.audit_banner_link') }} →</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script id="contradictions-config" type="application/json">
+    {
+        "projectId": {{ project.id }},
+        "i18n": {
+            "emptyTitle": {{ t('contradictions.empty_title')|tojson }},
+            "emptyBody": {{ t('contradictions.empty')|tojson }},
+            "missingQuery": {{ t('contradictions.missing_query')|tojson }},
+            "summarySingle": {{ t('contradictions.summary_single')|tojson }},
+            "summaryMulti": {{ t('contradictions.summary_multi')|tojson }},
+            "supportingView": {{ t('contradictions.supporting_view')|tojson }},
+            "fileSays": {{ t('contradictions.file_says')|tojson }},
+            "reviewNote": {{ t('contradictions.review_note')|tojson }},
+            "severityHigh": {{ t('contradictions.severity_high')|tojson }},
+            "severityMedium": {{ t('contradictions.severity_medium')|tojson }},
+            "severityLow": {{ t('contradictions.severity_low')|tojson }},
+            "openFile": {{ t('contradictions.open_file')|tojson }}
+        }
+    }
+</script>
+<script src="{{ url_for('static', filename='js/components/document-selector.js') }}"></script>
+<script src="{{ url_for('static', filename='js/project/library_setup_summary.js') }}"></script>
+<script src="{{ url_for('static', filename='js/contradictions.js') }}"></script>
+{% endblock %}

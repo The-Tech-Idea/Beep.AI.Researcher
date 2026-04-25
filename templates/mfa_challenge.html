@@ -1,0 +1,149 @@
+{% extends base_template|default("base.html") %}
+{% block title %}Two-Factor Authentication — Beep.AI.Researcher{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/mfa_challenge.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mfa-challenge-container">
+    <div class="card shadow-sm">
+        <div class="card-header d-flex align-items-center gap-2">
+            <i class="bi bi-shield-lock-fill mfa-challenge-header-icon"></i>
+            <strong>Two-Factor Authentication</strong>
+        </div>
+
+        <div class="card-body p-4">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}{% for cat, msg in messages %}
+                <div class="alert alert-{{ 'danger' if cat == 'error' else cat }} alert-dismissible fade show" role="alert">
+                  {{ msg }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              {% endfor %}{% endif %}
+            {% endwith %}
+
+            <!-- Method selector tabs -->
+            <ul class="nav nav-pills nav-fill mb-3" id="mfaMethodTabs" role="tablist">
+              {% if 'totp' in methods %}
+              <li class="nav-item" role="presentation">
+                  <button class="nav-link {% if 'totp' in methods %}active{% endif %}"
+                          id="tab-totp-btn" data-bs-toggle="pill" data-bs-target="#tab-totp"
+                          type="button" role="tab" aria-selected="{{ 'true' if 'totp' in methods else 'false' }}">
+                      <i class="bi bi-phone me-1"></i>Authenticator
+                  </button>
+              </li>
+              {% endif %}
+              {% if 'email' in methods or methods|length == 0 %}
+              <li class="nav-item" role="presentation">
+                  <button class="nav-link {% if 'totp' not in methods %}active{% endif %}"
+                          id="tab-email-btn" data-bs-toggle="pill" data-bs-target="#tab-email"
+                          type="button" role="tab" aria-selected="{{ 'false' if 'totp' in methods else 'true' }}">
+                      <i class="bi bi-envelope me-1"></i>Email Code
+                  </button>
+              </li>
+              {% endif %}
+              {% if 'sms' in methods %}
+              <li class="nav-item" role="presentation">
+                  <button class="nav-link"
+                          id="tab-sms-btn" data-bs-toggle="pill" data-bs-target="#tab-sms"
+                          type="button" role="tab" aria-selected="false">
+                      <i class="bi bi-chat-dots me-1"></i>SMS Code
+                  </button>
+              </li>
+              {% endif %}
+              <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="tab-backup-btn" data-bs-toggle="pill"
+                          data-bs-target="#tab-backup" type="button" role="tab" aria-selected="false">
+                      <i class="bi bi-life-preserver me-1"></i>Backup Code
+                  </button>
+              </li>
+            </ul>
+
+            <div class="tab-content">
+              <!-- TOTP tab -->
+              {% if 'totp' in methods %}
+              <div class="tab-pane fade {% if 'totp' in methods %}show active{% endif %}" id="tab-totp" role="tabpanel">
+                  <p class="text-muted small">Enter the 6-digit code from your authenticator app.</p>
+                  <form method="POST">
+                      <input type="hidden" name="method" value="totp">
+                      <div class="mb-3">
+                          <label for="totp_code" class="form-label">Authentication Code</label>
+                          <input type="text" class="form-control form-control-lg text-center font-monospace"
+                                 id="totp_code" name="code" maxlength="6" placeholder="000000"
+                                 autocomplete="one-time-code" inputmode="numeric" autofocus required>
+                      </div>
+                      <button type="submit" class="btn btn-primary w-100">
+                          <i class="bi bi-check-circle me-1"></i>Verify
+                      </button>
+                  </form>
+              </div>
+              {% endif %}
+
+              <!-- Email OTP tab -->
+              <div class="tab-pane fade {% if 'totp' not in methods %}show active{% endif %}" id="tab-email" role="tabpanel">
+                  <p class="text-muted small">Enter the 6-digit code sent to your email address.</p>
+                  <form method="POST">
+                      <input type="hidden" name="method" value="email">
+                      <div class="mb-3">
+                          <label for="email_code" class="form-label">Email Code</label>
+                          <input type="text" class="form-control form-control-lg text-center font-monospace"
+                                 id="email_code" name="code" maxlength="6" placeholder="000000"
+                                 autocomplete="one-time-code" inputmode="numeric" required>
+                      </div>
+                      <button type="submit" class="btn btn-primary w-100 mb-2">
+                          <i class="bi bi-check-circle me-1"></i>Verify
+                      </button>
+                  </form>
+                  <form method="POST" action="{{ url_for('auth.mfa_resend_otp') }}">
+                      <button type="submit" class="btn btn-link btn-sm w-100 text-muted">
+                          <i class="bi bi-arrow-clockwise me-1"></i>Resend code
+                      </button>
+                  </form>
+              </div>
+
+              <!-- Backup code tab -->
+              <div class="tab-pane fade" id="tab-backup" role="tabpanel">
+                  <p class="text-muted small">Enter one of your single-use backup recovery codes.</p>
+                  <form method="POST">
+                      <input type="hidden" name="method" value="backup">
+                      <div class="mb-3">
+                          <label for="backup_code" class="form-label">Backup Code</label>
+                          <input type="text" class="form-control form-control-lg text-center font-monospace"
+                                 id="backup_code" name="code" placeholder="XXXXXXXX"
+                                 autocomplete="off" required>
+                      </div>
+                      <button type="submit" class="btn btn-outline-secondary w-100">
+                          <i class="bi bi-life-preserver me-1"></i>Use Backup Code
+                      </button>
+                  </form>
+              </div>
+
+              <!-- SMS OTP tab -->
+              {% if 'sms' in methods %}
+              <div class="tab-pane fade" id="tab-sms" role="tabpanel">
+                  <p class="text-muted small">Enter the 6-digit code sent to your registered phone number.</p>
+                  <form method="POST">
+                      <input type="hidden" name="method" value="sms">
+                      <div class="mb-3">
+                          <label for="sms_code" class="form-label">SMS Code</label>
+                          <input type="text" class="form-control form-control-lg text-center font-monospace"
+                                 id="sms_code" name="code" maxlength="6" placeholder="000000"
+                                 autocomplete="one-time-code" inputmode="numeric" required>
+                      </div>
+                      <button type="submit" class="btn btn-primary w-100 mb-2">
+                          <i class="bi bi-check-circle me-1"></i>Verify
+                      </button>
+                  </form>
+                  <form method="POST" action="{{ url_for('auth.mfa_resend_otp') }}">
+                      <input type="hidden" name="method" value="sms">
+                      <button type="submit" class="btn btn-link btn-sm w-100 text-muted">
+                          <i class="bi bi-arrow-clockwise me-1"></i>Resend SMS code
+                      </button>
+                  </form>
+              </div>
+              {% endif %}
+            </div><!-- tab-content -->
+        </div><!-- card-body -->
+    </div><!-- card -->
+</div>
+{% endblock %}
