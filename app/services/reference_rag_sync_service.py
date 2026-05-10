@@ -10,6 +10,7 @@ idempotent — the Server replaces the existing chunk if it already exists.
 """
 from __future__ import annotations
 
+import hashlib
 import logging
 from typing import Optional
 
@@ -85,9 +86,11 @@ def sync_reference_to_rag(
     metadata = {
         "source_type": "reference",
         "reference_id": str(ref.id),
+        "rag_document_id": f"reference_{ref.id}",
         "citation_key": ref.citation_key or "",
         "year": str(ref.year) if ref.year else "",
         "ref_source_type": str(ref.source_type or ""),
+        "content_hash": hashlib.sha256(text.encode("utf-8")).hexdigest(),
     }
 
     try:

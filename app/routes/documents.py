@@ -7,11 +7,6 @@ compatibility checks and documentation references.
 
 from app.models.researcher import ResearchProject
 from app.routes.documents import documents_bp
-from app.routes.route_entity_lookup import get_entity_or_404
+from app.routes.route_entity_lookup import get_entity_or_404, get_project_or_404
 
-
-def _get_project_or_404(project_id):
-    return get_entity_or_404(ResearchProject, project_id)
-
-
-__all__ = ['documents_bp', '_get_project_or_404']
+__all__ = ["documents_bp"]

@@ -3,7 +3,7 @@
 }
 
 .mfa-setup-sms-header-icon {
-    color: var(--accent-primary-strong);
+    color: var(--color-primary);
     font-size: 1.25rem;
 }
 

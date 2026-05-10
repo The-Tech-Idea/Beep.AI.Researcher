@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('synthesis.title') }} - {{ project.name }}{% endblock %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/synthesis/synthesis.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/components/paper_card.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/components/stance_badge.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex align-items-center mb-4">
+        <i class="bi bi-diagram-3 fs-3 me-2" style="color: var(--color-info)"></i>
+        <div>
+            <h4 class="mb-0">{{ t('synthesis.title') }}</h4>
+            <p class="text-muted mb-0">{{ t('synthesis.subtitle') }}</p>
+        </div>
+    </div>
+
+    <!-- Query Card -->
+    <div class="synthesis-query-card mb-4">
+        <label class="form-label" for="synthesisQuestion">{{ t('synthesis.question.label') }}</label>
+        <textarea class="synthesis-query-textarea" id="synthesisQuestion"
+            placeholder="{{ t('synthesis.question.placeholder') }}" rows="3"></textarea>
+        <div class="d-flex gap-2 mt-3">
+            <select class="form-select form-select-sm" id="synthesisMaxEvidence" style="max-width:140px;">
+                <option value="5">{{ t('synthesis.evidence_limit.option_5') }}</option>
+                <option value="10" selected>{{ t('synthesis.evidence_limit.option_10') }}</option>
+                <option value="20">{{ t('synthesis.evidence_limit.option_20') }}</option>
+            </select>
+            <select class="form-select form-select-sm" id="synthesisQuality" style="max-width:140px;">
+                <option value="fast">{{ t('synthesis.quality_mode.fast') }}</option>
+                <option value="balanced" selected>{{ t('synthesis.quality_mode.balanced') }}</option>
+                <option value="deep">{{ t('synthesis.quality_mode.deep') }}</option>
+            </select>
+            <button class="btn btn-sm btn-primary" type="button" id="btnRunSynthesis">
+                <i class="bi bi-lightning-charge me-1"></i>{{ t('synthesis.synthesise') }}
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div id="synthesisLoading" class="text-center py-5" hidden>
+        <div class="spinner-border" role="status" style="color: var(--color-info)"></div>
+        <p class="mt-3 text-muted">{{ t('synthesis.synthesising') }}</p>
+    </div>
+
+    <!-- Error -->
+    <div id="synthesisError" class="alert alert-danger" hidden role="alert"></div>
+
+    <!-- Result -->
+    <div id="synthesisResult" hidden>
+        <div class="synthesis-result-card mb-4">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <h5 class="mb-0">
+                    <i class="bi bi-chat-square-text me-2" style="color: var(--color-info)"></i>{{ t('synthesis.answer') }}
+                </h5>
+                <div class="d-flex gap-2">
+                    <span class="synthesis-confidence" id="resultConfidence"></span>
+                    <button class="btn btn-sm btn-outline-secondary" type="button" id="btnExportPDF">
+                        <i class="bi bi-file-earmark-pdf"></i> {{ t('synthesis.export_pdf') }}
+                    </button>
+                    <button class="btn btn-sm btn-outline-info" type="button" id="btnSendToWriting">
+                        <i class="bi bi-file-earmark-richtext"></i> {{ t('synthesis.send_to_writing') }}
+                    </button>
+                </div>
+            </div>
+            <div id="resultAnswer" class="synthesis-answer" style="white-space: pre-wrap;"></div>
+        </div>
+
+        <!-- Evidence Table -->
+        <div class="synthesis-result-card">
+            <h5 class="mb-3">
+                <i class="bi bi-table me-2" style="color: var(--color-info)"></i>{{ t('synthesis.evidence_table') }}
+            </h5>
+            <div class="table-responsive">
+                <table class="synthesis-evidence-table">
+                    <thead>
+                        <tr>
+                            <th style="width:3rem">{{ t('synthesis.evidence.column_number') }}</th>
+                            <th>{{ t('synthesis.evidence.snippet') }}</th>
+                            <th style="width:8rem">{{ t('synthesis.evidence.stance') }}</th>
+                            <th style="width:5rem">{{ t('synthesis.evidence.score') }}</th>
+                            <th style="width:5rem">{{ t('synthesis.evidence.actions') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody id="evidenceTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="synthesis-stats-row mt-3" id="synthesisStats"></div>
+    </div>
+
+    <!-- Past Syntheses -->
+    <div class="synthesis-result-card mt-4">
+        <h5 class="mb-3">
+            <i class="bi bi-clock-history me-2" style="color: var(--color-info)"></i>{{ t('synthesis.past_syntheses') }}
+        </h5>
+        <div id="pastReportsLoading" class="text-muted small">{{ t('common.loading') }}</div>
+        <div id="pastReportsList"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script>
+window.BEEP_I18N = {
+    'synthesis.toast.select_project': {{ t('synthesis.toast.select_project') | tojson }},
+    'synthesis.toast.enter_question': {{ t('synthesis.toast.enter_question') | tojson }},
+    'synthesis.button.synthesising': {{ t('synthesis.button.synthesising') | tojson }},
+    'synthesis.synthesise': {{ t('synthesis.synthesise') | tojson }},
+    'synthesis.error.failed': {{ t('synthesis.error.failed') | tojson }},
+    'synthesis.answer.empty': {{ t('synthesis.answer.empty') | tojson }},
+    'synthesis.confidence.supporting': {{ t('synthesis.confidence.supporting') | tojson }},
+    'synthesis.confidence.contradicting': {{ t('synthesis.confidence.contradicting') | tojson }},
+    'synthesis.confidence.mixed': {{ t('synthesis.confidence.mixed') | tojson }},
+    'synthesis.evidence.flag_stance': {{ t('synthesis.evidence.flag_stance') | tojson }},
+    'synthesis.toast.stance_changed': {{ t('synthesis.toast.stance_changed') | tojson }}
+};
+</script>
+<script src="{{ url_for('static', filename='js/components/stance_badge.js') }}"></script>
+<script src="{{ url_for('static', filename='js/synthesis/synthesis.js') }}?v={{ config.APP_VERSION or '1.0' }}"></script>
+{% endblock %}

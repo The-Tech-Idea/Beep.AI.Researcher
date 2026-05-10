@@ -1,4 +1,5 @@
 """Phase 1 AI Discovery – reading list routes."""
+
 from __future__ import annotations
 
 import logging
@@ -7,6 +8,7 @@ from flask import Blueprint, abort, jsonify, render_template, request
 from flask_login import current_user, login_required
 
 from app.config_manager import is_feature_enabled
+from app.routes.route_entity_lookup import _base_template
 from app.services.ai_discovery_payloads import reading_list_item_to_payload
 
 reading_list_bp = Blueprint("reading_list", __name__, url_prefix="/reading-list")
@@ -20,20 +22,16 @@ def _require_feature():
         abort(404)
 
 
-def _is_partial() -> bool:
-    partial_flag = (request.args.get("partial") or "").strip().lower()
-    return partial_flag in {"1", "true"} or request.headers.get("X-Requested-With") == "SPA"
-
-
-def _base_template() -> str:
-    return "base_embed.html" if _is_partial() else "base.html"
+_VALID_STATUSES = {"unread", "reading", "done"}
 
 
 @reading_list_bp.route("", methods=["GET"])
 @login_required
 def index():
     _require_feature()
-    return render_template("reading_list/reading_list.html", base_template=_base_template())
+    return render_template(
+        "reading_list/reading_list.html", base_template=_base_template()
+    )
 
 
 @reading_list_bp.route("/data", methods=["GET"])
@@ -45,7 +43,9 @@ def list_items():
 
     status = request.args.get("status") or None
     tag = request.args.get("tag") or None
-    items = ReadingListService().list_items(current_user.id, status=status, topic_tag=tag)
+    items = ReadingListService().list_items(
+        current_user.id, status=status, topic_tag=tag
+    )
     return jsonify({"items": [reading_list_item_to_payload(item) for item in items]})
 
 
@@ -79,7 +79,9 @@ def update_status(item_id: int):
     payload = request.get_json(silent=True) or {}
     status = (payload.get("status") or "").strip()
     if status not in _VALID_STATUSES:
-        return jsonify({"error": f"status must be one of {sorted(_VALID_STATUSES)}"}), 400
+        return jsonify(
+            {"error": f"status must be one of {sorted(_VALID_STATUSES)}"}
+        ), 400
 
     try:
         ReadingListService().update_status(current_user.id, item_id, status)
@@ -109,6 +111,7 @@ def move_to_project(item_id: int):
     try:
         ref = ReadingListService().move_to_project(current_user.id, item_id, project_id)
         from app.services.reference_service import reference_to_dict
+
         return jsonify({"ok": True, "reference": reference_to_dict(ref)})
     except LookupError as exc:
         return jsonify({"error": str(exc)}), 404

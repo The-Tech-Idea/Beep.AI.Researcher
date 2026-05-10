@@ -1,17 +1,14 @@
 """Video source routes — YouTube ingest and summarisation (Phase 03)."""
+
 from __future__ import annotations
 
 from flask import Blueprint, jsonify, request
 from flask_login import current_user, login_required
 
-from app.routes.route_entity_lookup import get_entity_or_404
+from app.routes.route_entity_lookup import get_entity_or_404, get_project_or_404
 from app.models.researcher import ResearchProject
 
 video_sources_bp = Blueprint("video_sources", __name__)
-
-
-def _get_project_or_404(project_id: int) -> ResearchProject:
-    return get_entity_or_404(ResearchProject, project_id)
 
 
 @video_sources_bp.route(
@@ -42,7 +39,7 @@ def ingest_video(project_id: int):
             "thumbnail_url": "..."
         }
     """
-    project = _get_project_or_404(project_id)
+    project = get_project_or_404(project_id)
 
     if project.owner_id != current_user.id:
         return jsonify({"error": "Not authorized"}), 403
@@ -105,7 +102,7 @@ def summarise_video(project_id: int, document_id: int):
             "note_document_id": 43
         }
     """
-    project = _get_project_or_404(project_id)
+    project = get_project_or_404(project_id)
 
     if project.owner_id != current_user.id:
         return jsonify({"error": "Not authorized"}), 403
@@ -127,9 +124,7 @@ def summarise_video(project_id: int, document_id: int):
     try:
         from app.services.video_summary_service import summarize_video_document
 
-        result = summarize_video_document(
-            project, document, user_id=current_user.id
-        )
+        result = summarize_video_document(project, document, user_id=current_user.id)
     except Exception as exc:
         return jsonify({"error": str(exc)}), 500
 

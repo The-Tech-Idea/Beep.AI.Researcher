@@ -103,7 +103,9 @@
         if (moveBtn) {
             moveTarget = moveBtn.dataset.id;
             const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('rl-move-modal'));
-            loadProjects().then(() => modal.show());
+            loadProjects()
+                .then(() => modal.show())
+                .catch(() => showStatus('Could not load projects.'));
             return;
         }
 

@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('feature_flags.title') }} - Admin - Beep.AI.Researcher{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_feature_flags_page.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page-header mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div>
+        <h1><i class="bi bi-toggles me-2"></i>{{ t('feature_flags.title') }}</h1>
+        <p class="mb-0 admin-feature-flags-subtitle">{{ t('feature_flags.subtitle') }}</p>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+        <div class="admin-feature-flags-summary">
+            <span class="badge bg-success">{{ enabled_count }}</span> / {{ total_count }} {{ t('feature_flags.enabled') }}
+        </div>
+        <a href="{{ url_for('admin.index') }}" class="btn admin-feature-flags-secondary-button">
+            <i class="bi bi-arrow-left me-1"></i>{{ t('feature_flags.back_to_admin') }}
+        </a>
+    </div>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+    <div class="admin-feature-flags-message admin-feature-flags-message--{{ category }}" role="alert">
+      {{ message }}
+    </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<!-- Bulk actions -->
+<div class="card mb-3">
+    <div class="card-body py-2">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex gap-2 align-items-center">
+                <span class="small text-muted">{{ t('feature_flags.bulk_actions') }}:</span>
+                <button type="button" class="btn btn-sm btn-outline-success" id="btn-enable-all">
+                    <i class="bi bi-toggle-on me-1"></i>{{ t('feature_flags.enable_all') }}
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger" id="btn-disable-all">
+                    <i class="bi bi-toggle-off me-1"></i>{{ t('feature_flags.disable_all') }}
+                </button>
+            </div>
+            <div class="d-flex gap-2 align-items-center">
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="btn-reset-defaults">
+                    <i class="bi bi-arrow-counterclockwise me-1"></i>{{ t('feature_flags.reset_defaults') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Feature groups by category -->
+{% for cat_key, cat_data in grouped.items() %}
+{% if cat_data.features %}
+<div class="card mb-3 admin-feature-flags-category-card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class="bi {{ cat_data.icon }} me-2"></i>{{ cat_data.label }}
+            <span class="badge bg-secondary ms-2">{{ cat_data.features | length }}</span>
+        </h5>
+        <div class="form-check form-switch mb-0">
+            <input class="form-check-input category-toggle" type="checkbox" role="switch"
+                   id="category-{{ cat_key }}"
+                   data-category="{{ cat_key }}"
+                   {% if cat_data.features | selectattr('enabled') | list | length == cat_data.features | length %}checked{% endif %}>
+            <label class="form-check-label small" for="category-{{ cat_key }}">
+                {{ t('feature_flags.toggle_category') }}
+            </label>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            {% for feature in cat_data.features %}
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="admin-feature-flag-card {% if feature.enabled %}admin-feature-flag-card--enabled{% endif %}" data-feature="{{ feature.name }}">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <div class="admin-feature-flag-icon">
+                                <i class="bi {{ feature.icon }}"></i>
+                            </div>
+                            <div class="admin-feature-flag-content">
+                                <h6 class="admin-feature-flag-label mb-1">{{ feature.label }}</h6>
+                                <p class="admin-feature-flag-description small mb-0">{{ feature.description }}</p>
+                                <div class="admin-feature-flag-meta mt-1">
+                                    <span class="badge admin-feature-flag-level admin-feature-flag-level--{{ feature.level }}">
+                                        {{ feature.level }}
+                                    </span>
+                                    <span class="badge admin-feature-flag-category">{{ feature.category }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-check form-switch mb-0 ms-2">
+                            <input class="form-check-input feature-toggle" type="checkbox" role="switch"
+                                   id="feature-{{ feature.name }}"
+                                   data-feature="{{ feature.name }}"
+                                   {% if feature.enabled %}checked{% endif %}>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+
+<!-- All features flat list (for quick reference) -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-list-ul me-2"></i>{{ t('feature_flags.all_features') }}</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 admin-feature-flags-table">
+                <thead>
+                    <tr>
+                        <th style="width: 40px;"></th>
+                        <th>{{ t('feature_flags.table.feature') }}</th>
+                        <th>{{ t('feature_flags.table.category') }}</th>
+                        <th>{{ t('feature_flags.table.level') }}</th>
+                        <th style="width: 80px;" class="text-center">{{ t('feature_flags.table.status') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for feature in feature_list %}
+                    <tr data-feature="{{ feature.name }}">
+                        <td><i class="bi {{ feature.icon }}"></i></td>
+                        <td>
+                            <strong>{{ feature.label }}</strong>
+                            <div class="small text-muted">{{ feature.description }}</div>
+                        </td>
+                        <td><span class="badge bg-secondary">{{ feature.category }}</span></td>
+                        <td>
+                            <span class="badge admin-feature-flag-level admin-feature-flag-level--{{ feature.level }}">
+                                {{ feature.level }}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <span class="admin-feature-flag-status {% if feature.enabled %}admin-feature-flag-status--enabled{% else %}admin-feature-flag-status--disabled{% endif %}">
+                                {% if feature.enabled %}
+                                    <i class="bi bi-check-circle-fill"></i> {{ t('feature_flags.enabled') }}
+                                {% else %}
+                                    <i class="bi bi-x-circle-fill"></i> {{ t('feature_flags.disabled') }}
+                                {% endif %}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script id="feature-flags-config" type="application/json">
+{{ {
+    "toggleUrl": url_for('admin.feature_flag_toggle'),
+    "toggleAllUrl": url_for('admin.feature_flag_toggle_all'),
+    "resetDefaultsUrl": url_for('admin.feature_flag_reset_defaults'),
+    "togglingLabel": "Toggling...",
+    "enabledLabel": "Enabled",
+    "disabledLabel": "Disabled",
+    "confirmEnableAll": "Enable ALL features? This may impact performance.",
+    "confirmDisableAll": "Disable ALL features? Core functionality may be affected.",
+    "confirmResetDefaults": "Reset all features to their default configuration?",
+    "successToggle": "Feature updated successfully",
+    "errorToggle": "Failed to update feature",
+    "successBulk": "Bulk update completed",
+    "errorBulk": "Bulk update failed"
+} | tojson | safe }}
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/admin_feature_flags_page.js') }}"></script>
+{% endblock %}

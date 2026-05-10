@@ -195,6 +195,7 @@ window.initReportEditor = function () {
     };
 
     window.aiAssist = async function (action) {
+        try {
         const context = getSelectionContext();
         if (!context.text) {
             showMessage(cfg.select_text || 'Select some text first.');
@@ -279,6 +280,9 @@ window.initReportEditor = function () {
             quill.insertText(quill.getLength() - 1, '\n' + suggested + '\n');
         }
         updateWordCount();
+        } catch (err) {
+            showMessage(cfg.ai_unavailable || 'Writing help is not available right now.');
+        }
     };
 
     window.fetchInsertableData = function (type) {

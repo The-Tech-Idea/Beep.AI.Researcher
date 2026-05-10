@@ -5,10 +5,11 @@ from app.services import beep_ai_client
 
 
 class _FakeResponse:
-    def __init__(self, payload=None, status_code=200, content_type='application/json'):
+    def __init__(self, payload=None, status_code=200, content_type='application/json', content=b''):
         self._payload = payload or {}
         self.status_code = status_code
         self.headers = {'content-type': content_type}
+        self.content = content
 
     def json(self):
         return self._payload
@@ -318,6 +319,89 @@ def test_extract_structured_includes_supporting_library_evidence_when_provided(m
     assert 'Supporting evidence for terminology.' in captured['json']['messages'][1]['content']
 
 
+def test_generate_image_uses_openai_v1_image_api(monkeypatch):
+    config_manager.set('beep_ai_server_url', 'http://localhost:5000')
+    config_manager.set('beep_ai_server_token', 'researcher-token')
+
+    captured = {}
+
+    def fake_post(url, json=None, headers=None, timeout=None):
+        captured['url'] = url
+        captured['json'] = json
+        captured['headers'] = headers
+        captured['timeout'] = timeout
+        return _FakeResponse(payload={'created': 1, 'data': [{'b64_json': 'abc'}]})
+
+    monkeypatch.setattr(beep_ai_client.requests, 'post', fake_post)
+
+    ok, result = beep_ai_client.generate_image('draw a lab', width=512, height=768, model='local-sdxl')
+
+    assert ok is True
+    assert result['data'][0]['b64_json'] == 'abc'
+    assert captured['url'] == 'http://localhost:5000/v1/images/generations'
+    assert captured['json']['prompt'] == 'draw a lab'
+    assert captured['json']['size'] == '512x768'
+    assert captured['json']['response_format'] == 'b64_json'
+    assert captured['json']['model'] == 'local-sdxl'
+    assert captured['headers']['Authorization'] == 'Bearer researcher-token'
+
+
+def test_synthesize_speech_uses_openai_v1_audio_api(monkeypatch):
+    config_manager.set('beep_ai_server_url', 'http://localhost:5000')
+    config_manager.set('beep_ai_server_token', 'researcher-token')
+
+    captured = {}
+
+    def fake_post(url, json=None, headers=None, timeout=None):
+        captured['url'] = url
+        captured['json'] = json
+        captured['headers'] = headers
+        captured['timeout'] = timeout
+        return _FakeResponse(content_type='audio/mpeg', content=b'audio-bytes')
+
+    monkeypatch.setattr(beep_ai_client.requests, 'post', fake_post)
+
+    ok, result = beep_ai_client.synthesize_speech('hello', voice='alloy', speed=1.2)
+
+    assert ok is True
+    assert result['audio'] == 'YXVkaW8tYnl0ZXM='
+    assert result['audio_content'] == b'audio-bytes'
+    assert captured['url'] == 'http://localhost:5000/v1/audio/speech'
+    assert captured['json']['input'] == 'hello'
+    assert captured['json']['voice'] == 'alloy'
+    assert captured['json']['model'] == 'tts-1'
+    assert captured['json']['speed'] == 1.2
+    assert captured['headers']['Authorization'] == 'Bearer researcher-token'
+
+
+def test_transcribe_audio_uses_openai_v1_audio_api(monkeypatch):
+    config_manager.set('beep_ai_server_url', 'http://localhost:5000')
+    config_manager.set('beep_ai_server_token', 'researcher-token')
+
+    captured = {}
+
+    def fake_post(url, files=None, data=None, headers=None, timeout=None):
+        captured['url'] = url
+        captured['files'] = files
+        captured['data'] = data
+        captured['headers'] = headers
+        captured['timeout'] = timeout
+        return _FakeResponse(payload={'text': 'transcribed text'})
+
+    monkeypatch.setattr(beep_ai_client.requests, 'post', fake_post)
+
+    ok, result = beep_ai_client.transcribe_audio(b'audio-bytes', format='wav', language='en', model_size='base')
+
+    assert ok is True
+    assert result['text'] == 'transcribed text'
+    assert captured['url'] == 'http://localhost:5000/v1/audio/transcriptions'
+    assert captured['files']['file'] == ('audio.wav', b'audio-bytes', 'audio/wav')
+    assert captured['data']['model'] == 'whisper-1'
+    assert captured['data']['model_size'] == 'base'
+    assert captured['data']['language'] == 'en'
+    assert captured['headers']['Authorization'] == 'Bearer researcher-token'
+
+
 
 def test_detect_contradictions_uses_rag_query_and_openai_v1(monkeypatch):
     config_manager.set('beep_ai_server_url', 'http://localhost:5000')
@@ -493,10 +577,32 @@ def test_check_health_falls_back_to_openai_health_endpoint(monkeypatch):
     assert ok is True
     assert result['status'] == 'ok'
     assert urls == [
-        'http://localhost:5000/ai-middleware/api/health',
-        'http://localhost:5000/ai-middleware/api/operational-status',
         'http://localhost:5000/v1/health',
     ]
+
+
+def test_connection_status_reports_ai_server_root_and_extension_endpoint(monkeypatch):
+    config_manager.set('beep_ai_server_url', 'http://localhost:5000/ai-middleware')
+    config_manager.set('beep_ai_server_token', 'researcher-token')
+
+    def fake_get(url, headers=None, timeout=None):
+        if url.endswith('/v1/health'):
+            return _FakeResponse(payload={'status': 'healthy'})
+        if url.endswith('/ai-middleware/api/tokens/check'):
+            return _FakeResponse(payload={'valid': True, 'user': {'user_id': 'app-user'}})
+        return _FakeResponse(payload={'error': 'not found'}, status_code=404)
+
+    monkeypatch.setattr(beep_ai_client.requests, 'get', fake_get)
+
+    status = beep_ai_client.get_connection_status()
+
+    assert status['configured'] is True
+    assert status['server_reachable'] is True
+    assert status['token_valid'] is True
+    assert status['server_url'] == 'http://localhost:5000'
+    assert status['canonical_api_health_endpoint'] == 'http://localhost:5000/v1/health'
+    assert status['extension_api_url'] == 'http://localhost:5000/ai-middleware'
+    assert status['token_validation_endpoint'] == 'http://localhost:5000/ai-middleware/api/tokens/check'
 
 
 def test_collection_organization_profile_routes_use_v1(monkeypatch):
@@ -592,7 +698,7 @@ def test_collection_document_inspection_routes_use_v1(monkeypatch):
     assert captured[1]['headers']['X-User-ID'] == '42'
 
 
-def test_graph_extraction_profile_options_use_middleware(monkeypatch):
+def test_graph_extraction_profile_options_use_v1_route(monkeypatch):
     config_manager.set('beep_ai_server_url', 'http://localhost:5000')
     config_manager.set('beep_ai_server_token', 'researcher-token')
 
@@ -617,7 +723,7 @@ def test_graph_extraction_profile_options_use_middleware(monkeypatch):
 
     assert ok is True
     assert profiles[0]['profile_id'] == 'system-balanced-graph-extraction'
-    assert captured['url'] == 'http://localhost:5000/ai-middleware/api/rag/runtime/graph-extraction-profiles/options'
+    assert captured['url'] == 'http://localhost:5000/v1/rag/runtime/graph-extraction-profiles/options'
     assert captured['headers']['Authorization'] == 'Bearer researcher-token'
 
 
@@ -712,6 +818,7 @@ def test_add_document_to_project_rag_sends_collection_and_reference_metadata(mon
     assert captured['json']['collection_id'] == 'collection-3'
     # Authorization uses application token
     assert captured['headers']['Authorization'] == 'Bearer researcher-token'
+    assert captured['headers']['X-User-ID'] == '7'
     # Stable document key must be forwarded
     doc = captured['json']
     assert doc['id'] == 'reference_42'
@@ -719,3 +826,53 @@ def test_add_document_to_project_rag_sends_collection_and_reference_metadata(mon
     assert doc['metadata']['reference_id'] == '42'
     assert doc['metadata']['citation_key'] == 'Darwin1859'
     assert doc['metadata']['source_type'] == 'reference'
+    assert doc['metadata']['app_user_id'] == '7'
+    assert doc['metadata']['user_id'] == '7'
+    assert doc['metadata']['owner_user_id'] == '7'
+    assert doc['metadata']['project_id'] == '3'
+    assert doc['metadata']['tenant_id'] == '5'
+
+
+def test_sync_document_to_rag_uses_stored_rag_tracking_fields(monkeypatch):
+    """ResearcherDocument sync must preserve the local AI Server tracking key."""
+    config_manager.set('beep_ai_server_url', 'http://localhost:5000')
+    config_manager.set('beep_ai_server_token', 'researcher-token')
+
+    captured = {}
+
+    def fake_post(url, json=None, headers=None, timeout=None):
+        captured['url'] = url
+        captured['json'] = json
+        captured['headers'] = headers
+        return _FakeResponse(payload={'success': True, 'indexed_count': 1})
+
+    monkeypatch.setattr(beep_ai_client.requests, 'post', fake_post)
+
+    project = SimpleNamespace(
+        id=7,
+        collection_id='collection-7',
+        tenant_id=9,
+        owner_id=42,
+        members=[],
+    )
+    researcher_doc = SimpleNamespace(
+        id=123,
+        filename='methods.pdf',
+        mime_type='application/pdf',
+        file_size=4096,
+        text_content='full extracted document text',
+        rag_document_id='researcher_doc_abc123',
+        rag_content_hash='sha256-content',
+    )
+
+    ok, result = beep_ai_client.sync_document_to_rag(project, researcher_doc, user_id=42)
+
+    assert ok is True
+    assert result['indexed_count'] == 1
+    assert captured['url'] == 'http://localhost:5000/v1/rag/documents'
+    assert captured['json']['id'] == 'researcher_doc_abc123'
+    assert captured['json']['collection_id'] == 'collection-7'
+    assert captured['json']['metadata']['researcher_doc_id'] == '123'
+    assert captured['json']['metadata']['rag_document_id'] == 'researcher_doc_abc123'
+    assert captured['json']['metadata']['content_hash'] == 'sha256-content'
+    assert captured['json']['metadata']['app_user_id'] == '42'

@@ -36,8 +36,8 @@
     color: var(--text-primary);
 }
 .project-sidebar .nav-link.active {
-    background: rgba(99,102,241,0.2);
-    color: #818cf8;
+    background: color-mix(in srgb, var(--color-primary) 20%, var(--bg-surface));
+    color: var(--color-primary);
 }
 .project-main {
     flex: 1;
@@ -327,9 +327,9 @@
     font-size: 0.75rem;
     padding: 0.35rem 0.7rem;
     border-radius: 999px;
-    background: rgba(99, 102, 241, 0.12);
-    color: #c7d2fe;
-    border: 1px solid rgba(99, 102, 241, 0.4);
+    background: color-mix(in srgb, var(--color-primary) 12%, var(--bg-surface));
+    color: color-mix(in srgb, var(--color-primary) 70%, var(--text-primary));
+    border: 1px solid color-mix(in srgb, var(--color-primary) 40%, transparent);
 }
 
 .dashboard-helper-grid {
@@ -460,21 +460,21 @@
 }
 
 .search-progress-pill.state-loading {
-    border-color: rgba(34, 197, 94, 0.6);
-    background: rgba(34, 197, 94, 0.08);
-    color: #86efac;
+    border-color: color-mix(in srgb, var(--color-success) 60%, transparent);
+    background: color-mix(in srgb, var(--color-success) 8%, var(--bg-surface));
+    color: var(--color-success);
 }
 
 .search-progress-pill.state-error {
-    border-color: rgba(239, 68, 68, 0.5);
-    background: rgba(239, 68, 68, 0.12);
-    color: #fecaca;
+    border-color: color-mix(in srgb, var(--color-error) 50%, transparent);
+    background: color-mix(in srgb, var(--color-error) 12%, var(--bg-surface));
+    color: var(--color-error);
 }
 
 .search-progress-pill.state-results {
-    border-color: rgba(59, 130, 246, 0.6);
-    background: rgba(59, 130, 246, 0.08);
-    color: #bfdbfe;
+    border-color: color-mix(in srgb, var(--color-info) 60%, transparent);
+    background: color-mix(in srgb, var(--color-info) 8%, var(--bg-surface));
+    color: var(--color-info);
 }
 
 .search-progress-pill.state-ready {
@@ -522,9 +522,9 @@
     font-weight: 600;
 }
 .task-count {
-    border: 1px solid rgba(129, 140, 248, 0.35);
-    background: rgba(129, 140, 248, 0.12);
-    color: #c7d2fe;
+    border: 1px solid color-mix(in srgb, var(--color-primary) 35%, transparent);
+    background: color-mix(in srgb, var(--color-primary) 12%, var(--bg-surface));
+    color: color-mix(in srgb, var(--color-primary) 70%, var(--text-primary));
 }
 .task-lane-body {
     flex: 1;
@@ -534,9 +534,9 @@
     padding: 0.25rem 0;
 }
 .task-lane-body.is-dragover {
-    background: rgba(129, 140, 248, 0.12);
+    background: color-mix(in srgb, var(--color-primary) 12%, var(--bg-surface));
     border-radius: 0.5rem;
-    outline: 1px dashed rgba(129, 140, 248, 0.5);
+    outline: 1px dashed color-mix(in srgb, var(--color-primary) 50%, transparent);
 }
 .task-lane-empty {
     padding: 0.35rem 0.5rem;
@@ -611,31 +611,31 @@
     line-height: 1;
 }
 .task-priority-low {
-    background-color: rgba(34, 197, 94, 0.15) !important;
-    border-color: rgba(34, 197, 94, 0.4) !important;
-    color: #86efac !important;
+    background-color: color-mix(in srgb, var(--color-success) 15%, var(--bg-surface)) !important;
+    border-color: color-mix(in srgb, var(--color-success) 40%, transparent) !important;
+    color: var(--color-success) !important;
 }
 .task-priority-normal {
-    background-color: rgba(59, 130, 246, 0.15) !important;
-    border-color: rgba(59, 130, 246, 0.4) !important;
-    color: #93c5fd !important;
+    background-color: color-mix(in srgb, var(--color-primary) 15%, var(--bg-surface)) !important;
+    border-color: color-mix(in srgb, var(--color-primary) 40%, transparent) !important;
+    color: var(--color-primary) !important;
 }
 .task-priority-high {
-    background-color: rgba(251, 191, 36, 0.2) !important;
-    border-color: rgba(251, 191, 36, 0.45) !important;
-    color: #fde68a !important;
+    background-color: color-mix(in srgb, var(--color-warning) 20%, var(--bg-surface)) !important;
+    border-color: color-mix(in srgb, var(--color-warning) 45%, transparent) !important;
+    color: var(--color-warning) !important;
 }
 .task-priority-urgent {
-    background-color: rgba(239, 68, 68, 0.2) !important;
-    border-color: rgba(239, 68, 68, 0.45) !important;
-    color: #fecaca !important;
+    background-color: color-mix(in srgb, var(--color-error) 20%, var(--bg-surface)) !important;
+    border-color: color-mix(in srgb, var(--color-error) 45%, transparent) !important;
+    color: var(--color-error) !important;
 }
 [data-theme="light"] .task-lane,
 [data-theme="light"] .task-card {
-    background: rgba(15, 23, 42, 0.04);
+    background: color-mix(in srgb, var(--text-primary) 4%, transparent);
 }
 [data-theme="light"] .task-lane-body.is-dragover {
-    background: rgba(99, 102, 241, 0.08);
+    background: color-mix(in srgb, var(--color-primary) 8%, var(--bg-surface));
 }
 
 .dashboard-hero-body {
@@ -866,16 +866,16 @@
     color: var(--text-primary);
 }
 .flow-status-info {
-    color: #cbd5f5;
+    color: var(--color-info);
 }
 .flow-status-success {
-    color: #86efac;
+    color: var(--color-success);
 }
 .flow-status-warning {
-    color: #fed7aa;
+    color: var(--color-warning);
 }
 .flow-status-danger {
-    color: #fecaca;
+    color: var(--color-error);
 }
 .flow-progress {
     width: 100%;
@@ -920,9 +920,9 @@
     transform: translateY(12px);
     padding: 0.75rem 1rem;
     border-radius: 0.75rem;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(15, 23, 42, 0.85);
-    color: #fff;
+    border: 1px solid var(--border-color);
+    background: var(--bg-surface);
+    color: var(--text-primary);
     transition: opacity 0.25s ease, transform 0.25s ease;
 }
 .flow-toast-show {
@@ -930,16 +930,16 @@
     transform: translateY(0);
 }
 .flow-toast-info {
-    background: rgba(59, 130, 246, 0.95);
+    background: color-mix(in srgb, var(--color-info) 95%, var(--bg-surface));
 }
 .flow-toast-success {
-    background: rgba(16, 185, 129, 0.95);
+    background: color-mix(in srgb, var(--color-success) 95%, var(--bg-surface));
 }
 .flow-toast-warning {
-    background: rgba(249, 115, 22, 0.95);
+    background: color-mix(in srgb, var(--color-warning) 95%, var(--bg-surface));
 }
 .flow-toast-danger {
-    background: rgba(239, 68, 68, 0.95);
+    background: color-mix(in srgb, var(--color-error) 95%, var(--bg-surface));
 }
 @media (max-width: 1200px) {
     .tasks-board { grid-template-columns: repeat(2, minmax(220px, 1fr)); }

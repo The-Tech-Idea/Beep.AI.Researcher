@@ -1,14 +1,14 @@
 """Grounding client — calls Beep.AI.Server anti-hallucination endpoints.
 
 Provides wrappers for:
-  - POST /ai-middleware/api/rag/evaluate_grounding
-  - POST /ai-middleware/api/rag/contradiction
+  - POST /v1/rag/evaluate-grounding
+  - POST /v1/rag/contradiction
 """
 import hashlib
 import logging
 from typing import Optional, List, Dict, Any
 
-from app.services.beep_ai_client import _post, is_configured
+from app.services.beep_ai_client import _post_v1, is_configured
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +33,7 @@ def evaluate_grounding(
     if not is_configured():
         return {'grounding_score': None, 'error': 'Server not configured'}
 
-    ok, result = _post('/api/rag/evaluate_grounding', json_data={
+    ok, result = _post_v1('/v1/rag/evaluate-grounding', json_data={
         'answer': answer_text,
         'sources': sources,
         'threshold': threshold,
@@ -64,7 +64,7 @@ def detect_contradictions(
     if not is_configured():
         return {'severity': None, 'error': 'Server not configured'}
 
-    ok, result = _post('/api/rag/contradiction', json_data={
+    ok, result = _post_v1('/v1/rag/contradiction', json_data={
         'statement': statement,
         'sources': sources,
     })

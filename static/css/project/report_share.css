@@ -94,7 +94,7 @@
     border: none;
     border-radius: var(--spa-radius);
     background: var(--spa-primary);
-    color: #fff;
+    color: var(--spa-on-primary, var(--text-inverse));
     font-weight: 600;
     cursor: pointer;
     transition: background 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
@@ -103,7 +103,7 @@
 .report-share-email-button:hover,
 .report-share-email-button:focus-visible {
     background: var(--spa-primary-hover);
-    color: #fff;
+    color: var(--spa-on-primary, var(--text-inverse));
     transform: translateY(-1px);
 }
 

@@ -322,6 +322,7 @@
                     return;
                 }
 
+                try {
                 var response = await fetch('/projects/' + projectId + '/code', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -340,6 +341,9 @@
                 }
 
                 notifyUser(config.codeApplyFailed || 'Could not save the highlighted passage right now.', 'error');
+                } catch (error) {
+                    notifyUser(config.codeApplyFailed || 'Could not save the highlighted passage right now.', 'error');
+                }
             });
         }
 
@@ -501,6 +505,7 @@
 
         Array.prototype.forEach.call(document.querySelectorAll('.removeRef'), function (button) {
             button.addEventListener('click', async function () {
+            try {
                 var refId = button.dataset.refId;
                 var response = await fetch('/projects/' + projectId + '/code/' + refId, { method: 'DELETE' });
                 if (response.ok) {
@@ -512,6 +517,12 @@
                     config.codedPassageDeleteFailed || 'Could not remove the saved passage right now.',
                     'error'
                 );
+                } catch (error) {
+                    notifyUser(
+                        config.codedPassageDeleteFailed || 'Could not remove the saved passage right now.',
+                        'error'
+                    );
+                }
             });
         });
     });

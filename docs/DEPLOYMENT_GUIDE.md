@@ -216,6 +216,14 @@ python -m flask db upgrade
 python scripts/seed_staging_data.py
 ```
 
+### Startup Dependency and Schema Bootstrap
+
+`run.py`, `run.bat`, and `run.sh` start the application from the active Python environment. On Windows, `run.bat` downloads Python Embedded only to create and run the local `.venv`; runtime packages are installed into that `.venv`, not into the Python Embedded directory and not into the system Python.
+
+At app startup, `startup_dependency_bootstrap.py` reads `requirements.txt`, checks installed distributions, and installs missing packages with the active interpreter (`sys.executable -m pip install <requirement>`). The default is enabled through `auto_install_requirements_on_startup=true`; set `AUTO_INSTALL_REQUIREMENTS_ON_STARTUP=0` to disable it. If required packages remain missing or an install fails, startup exits instead of running with a partial document-management stack.
+
+Database startup is handled by `app/services/startup/database_bootstrap.py`. It imports all SQLAlchemy models, runs `db.create_all()` for missing tables, applies additive startup migrations for quota, document extraction, RAG sync, and ingestion tracking columns, and seeds the default plan tiers. Alembic migrations remain the production migration path, but the startup bootstrap protects fresh local installs and older development databases.
+
 ### 3.2 Run Full Test Suite
 
 Verify all Phase 2 functionality:

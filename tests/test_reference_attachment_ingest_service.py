@@ -1,9 +1,10 @@
 from types import SimpleNamespace
+import hashlib
 
 import pytest
 
 from app.database import db
-from app.models.researcher import ResearcherDocument
+from app.models.researcher import DocumentIngestionState, ResearcherDocument
 from app.models.researcher.researcher_references import DocumentReference, Reference, ReferenceSourceType
 from app.services.reference_attachment_ingest_service import import_project_reference_attachment
 
@@ -101,19 +102,23 @@ def test_import_project_reference_attachment_creates_document_links_reference_an
     )
     monkeypatch.setattr(
         "app.services.reference_attachment_ingest_service.quota_service.check_quota",
-        lambda user_id, upload_size_bytes=0: quota_calls.__setitem__("checked", upload_size_bytes),
+        lambda user_id, upload_size_bytes=0, tenant_id=None: quota_calls.__setitem__("checked", upload_size_bytes),
     )
     monkeypatch.setattr(
         "app.services.reference_attachment_ingest_service.quota_service.record_upload",
-        lambda user_id, file_size_bytes=0: quota_calls.__setitem__("recorded", file_size_bytes),
+        lambda user_id, file_size_bytes=0, tenant_id=None: quota_calls.__setitem__("recorded", file_size_bytes),
     )
     monkeypatch.setattr(
         "app.services.reference_attachment_ingest_service.is_configured",
         lambda: True,
     )
+    synced_documents = []
     monkeypatch.setattr(
         "app.services.reference_attachment_ingest_service.sync_document_to_rag",
-        lambda project, document, user_id=None: sync_calls.append(document.id) or (True, {"ok": True}),
+        lambda project, document, user_id=None: (
+            sync_calls.append(document.id),
+            synced_documents.append(document),
+        ) and (True, {"ok": True}),
     )
 
     result = import_project_reference_attachment(
@@ -139,8 +144,23 @@ def test_import_project_reference_attachment_creates_document_links_reference_an
     assert created_document.source_type == "zotero_attachment"
     assert created_document.source_id == "ATT-42"
     assert created_document.source_url == "https://www.zotero.org/users/123/items/ATT-42"
+    assert created_document.rag_document_id.startswith("researcher_doc_")
+    assert created_document.rag_collection_id == "library-collection-42"
+    assert created_document.rag_content_hash == hashlib.sha256(
+        b"attachment body for grounded review"
+    ).hexdigest()
+    assert created_document.rag_sync_status == "indexed"
+    assert created_document.rag_sync_message == "File indexed for library search."
+    assert created_document.rag_synced_at is not None
+    ingestion_state = DocumentIngestionState.query.filter_by(document_id=created_document.id).first()
+    assert ingestion_state is not None
+    assert ingestion_state.ingestion_status == "synced"
+    assert ingestion_state.document_hash == created_document.document_hash
+    assert ingestion_state.content_hash == created_document.rag_content_hash
+    assert ingestion_state.rag_document_id == created_document.rag_document_id
     assert reference.document_id == created_document.id
     assert sync_calls == [created_document.id]
+    assert synced_documents[0].rag_document_id == created_document.rag_document_id
 
     document_link = DocumentReference.query.filter_by(
         reference_id=reference.id,

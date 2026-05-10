@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/jenni-theme.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/chat-panel.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/project/layout.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/package_availability.css') }}">
     {% block extra_css %}{% endblock %}
 </head>
 
@@ -56,6 +57,9 @@
                 <a href="/references" class="spa-nav-item" data-spa-link data-spa-id="library">
                     <i class="bi bi-journal-text"></i><span>{{ t('base.nav.library') }}</span>
                 </a>
+                <a href="/researcher/documents" class="spa-nav-item" data-spa-link data-spa-id="documents">
+                    <i class="bi bi-files"></i><span>{{ t('sidebar.nav.documents') if t('sidebar.nav.documents') != 'sidebar.nav.documents' else 'Documents' }}</span>
+                </a>
                 {% if ui_features.chat_enabled %}
                 <a href="#" class="spa-nav-item" data-open-chat-panel data-spa-id="ai-chat">
                     <i class="bi bi-stars"></i><span>{{ t('base.nav.ai_assistant') }}</span>
@@ -73,6 +77,16 @@
                 </a>
                 <a href="/alerts" class="spa-nav-item" data-spa-link data-spa-id="alerts">
                     <i class="bi bi-bell"></i><span>{{ t('sidebar.nav.alerts') if t('sidebar.nav.alerts') != 'sidebar.nav.alerts' else 'Alerts' }}</span><span id="alerts-nav-count" class="badge bg-danger ms-2 d-none" aria-live="polite"></span>
+                </a>
+                {% endif %}
+                {% if ui_features.evidence_synthesis_enabled %}
+                <a href="/synthesis" class="spa-nav-item" data-spa-link data-spa-id="synthesis">
+                    <i class="bi bi-diagram-3"></i><span>{{ t('sidebar.nav.synthesis') if t('sidebar.nav.synthesis') != 'sidebar.nav.synthesis' else 'Synthesis' }}</span>
+                </a>
+                {% endif %}
+                {% if ui_features.knowledge_map_enabled %}
+                <a href="/knowledge-map" class="spa-nav-item" data-spa-link data-spa-id="knowledge-map">
+                    <i class="bi bi-graph-up"></i><span>{{ t('sidebar.nav.knowledge_map') if t('sidebar.nav.knowledge_map') != 'sidebar.nav.knowledge_map' else 'Knowledge Map' }}</span>
                 </a>
                 {% endif %}
             </nav>
@@ -136,9 +150,9 @@
                 </div>
                 <div class="spa-topbar-right">
                     {% if current_user.is_authenticated %}
-                    <div class="ai-status-indicator" id="ai-server-status" title="Checking AI Server...">
+                    <div class="ai-status-indicator" id="ai-server-status" title="{{ t('base.ai.checking', 'Checking AI Server...') }}">
                         <span class="status-dot"></span>
-                        <span class="small" id="ai-status-text">AI</span>
+                        <span class="small" id="ai-status-text">{{ t('base.ai.label', 'AI') }}</span>
                     </div>
                     {% endif %}
                     <div class="dropdown">
@@ -184,12 +198,14 @@
                     {% if session.get('impersonating_as') %}
                     <div class="alert alert-warning d-flex justify-content-between align-items-center mb-3" role="alert">
                         <span><i class="bi bi-person-fill-exclamation me-2"></i>
-                            You are impersonating <strong>{{ current_user.username }}</strong>.
-                            Your actions affect this user's account.
+                            {{ t('base.impersonation.warning', 'You are impersonating') }} <strong>{{ current_user.username }}</strong>.
+                            {{ t('base.impersonation.warning_detail', 'Your actions affect this user\'s account.') }}
                         </span>
-                        <a href="{{ url_for('admin.impersonate_stop') }}" class="btn btn-sm btn-warning ms-3">
-                            <i class="bi bi-box-arrow-right me-1"></i>Stop impersonating
-                        </a>
+                        <form method="post" action="{{ url_for('admin.impersonate_stop') }}" class="d-inline ms-3">
+                            <button type="submit" class="btn btn-sm btn-warning">
+                                <i class="bi bi-box-arrow-right me-1"></i>{{ t('base.impersonation.stop', 'Stop impersonating') }}
+                            </button>
+                        </form>
                     </div>
                     {% endif %}
                     {% block content %}{% endblock %}
@@ -248,6 +264,12 @@
     <script src="{{ url_for('static', filename='vendor/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/base_shell.js') }}?v={{ config.APP_VERSION or '1.0' }}"></script>
     <script src="{{ url_for('static', filename='js/flow_notifications.js') }}?v={{ config.APP_VERSION or '1.0' }}"></script>
+
+    {# Package availability status for UI feature gating #}
+    <script>
+    window.BEEP_PACKAGES = {{ packages | default({}) | tojson }};
+    </script>
+    <script src="{{ url_for('static', filename='js/package_availability.js') }}?v={{ config.APP_VERSION or '1.0' }}"></script>
 
     {% if current_user.is_authenticated %}
     <!-- SPA Navigation Controller -->

@@ -6,7 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    const config = JSON.parse(configNode.textContent);
+    let config;
+    try {
+        config = JSON.parse(configNode.textContent);
+    } catch (e) {
+        return;
+    }
     const codesBox = document.getElementById('codesBox');
     const copyButton = document.getElementById('copyBackupCodesBtn');
     const printButton = document.getElementById('printBackupCodesBtn');

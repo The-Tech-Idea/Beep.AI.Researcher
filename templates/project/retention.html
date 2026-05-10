@@ -83,7 +83,7 @@
 <script id="retention-config" type="application/json">
 {{ {
     "projectId": project.id,
-    "retentionUrl": url_for('compliance.get_retention_compat', project_id=project.id),
+    "retentionUrl": url_for('retention.get_retention', project_id=project.id),
     "documentsUrl": url_for('researcher.project_documents', project_id=project.id),
     "strings": {
         "noPolicyConfigured": "No policy configured.",

@@ -107,7 +107,7 @@
                     <div class="text-end">
                         <span class="admin-governance-count-badge admin-governance-count-badge--action">{{ entry.action }}</span>
                         {% if entry.project_id %}
-                        <a href="/projects/{{ entry.project_id }}/export?format=bundle" class="btn btn-sm mt-2 admin-governance-action-link">{{ t('admin.governance.export_history.view') }}</a>
+                        <a href="{{ url_for('export.export_project', project_id=entry.project_id, format='bundle') }}" class="btn btn-sm mt-2 admin-governance-action-link">{{ t('admin.governance.export_history.view') }}</a>
                         {% endif %}
                     </div>
                 </div>

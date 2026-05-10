@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Login - Beep.AI.Researcher{% endblock %}
+{% block title %}{{ t('auth.login.title') }} - Beep.AI.Researcher{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/auth_entry.css') }}">
@@ -14,8 +14,8 @@
             <span>Beep.AI</span>
         </a>
 
-        <h1 class="auth-title">Welcome back</h1>
-        <p class="auth-subtitle">Sign in to your intelligent research workspace</p>
+        <h1 class="auth-title">{{ t('auth.login.title') }}</h1>
+        <p class="auth-subtitle">{{ t('auth.login.subtitle') }}</p>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -33,33 +33,39 @@
             {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
 
             <div class="auth-input-group">
-                <label class="auth-label" for="loginUsername">Username or Email</label>
+                <label class="auth-label" for="loginUsername">{{ t('auth.login.username_label') }}</label>
                 <input type="text" id="loginUsername" name="username" class="form-control auth-input"
-                    placeholder="Enter your username"
+                    placeholder="{{ t('auth.login.username_placeholder') }}"
                     required autofocus>
             </div>
 
             <div class="auth-input-group">
                 <label class="auth-label d-flex justify-content-between" for="loginPassword">
-                    <span>Password</span>
-                    <!-- Optional: <a href="#" class="text-decoration-none fw-normal text-muted small">Forgot?</a> -->
+                    <span>{{ t('auth.login.password_label') }}</span>
                 </label>
                 <input type="password" id="loginPassword" name="password" class="form-control auth-input"
-                    placeholder="••••••••" required>
+                    placeholder="{{ t('auth.login.password_placeholder') }}" required>
             </div>
 
             <div class="mb-4 form-check d-flex align-items-center">
                 <input type="checkbox" name="remember" class="form-check-input mt-0 me-2" id="remember">
-                <label class="form-check-label text-muted small pt-1" for="remember">Keep me signed in</label>
+                <label class="form-check-label text-muted small pt-1" for="remember">{{ t('auth.login.remember') }}</label>
             </div>
 
             <button type="submit" class="btn btn-primary w-100 auth-btn">
-                Sign In <i class="bi bi-arrow-right ms-1"></i>
+                {{ t('auth.login.submit') }} <i class="bi bi-arrow-right ms-1"></i>
             </button>
         </form>
 
         <div class="auth-footer">
-            New to Beep.AI? <a href="{{ url_for('auth.register') }}">Create an account</a>
+            {% if not has_admin %}
+            <p class="auth-message auth-message--warning mb-3">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                {{ t('auth.login.no_admin_warning') }}
+                <a href="{{ url_for('setup.index') }}">{{ t('auth.login.no_admin_action') }}</a> {{ t('auth.login.setup_link') }}.
+            </p>
+            {% endif %}
+            {{ t('auth.login.register_prompt') }} <a href="{{ url_for('auth.register') }}">{{ t('auth.login.register_action') }}</a>
         </div>
     </div>
 </div>

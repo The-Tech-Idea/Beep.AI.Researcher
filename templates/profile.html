@@ -1,6 +1,6 @@
-{% extends base_template or "base.html" %}
+{% extends base_template|default("base.html") %}
 
-{% block title %}Profile - Beep.AI.Researcher{% endblock %}
+{% block title %}{{ t('auth.profile.title') }} - Beep.AI.Researcher{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
@@ -11,13 +11,13 @@
     <div class="col-lg-8 col-xl-7">
 
         <div class="page-header mb-4">
-            <h1><i class="bi bi-person-circle me-2"></i>Your Profile</h1>
-            <p class="mb-0 text-muted">Manage your account settings and security preferences.</p>
+            <h1><i class="bi bi-person-circle me-2"></i>{{ t('auth.profile.title') }}</h1>
+            <p class="mb-0 text-muted">{{ t('auth.profile.subtitle') }}</p>
         </div>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}{% for cat, msg in messages %}
-        <div class="alert alert-{{ 'danger' if cat == 'error' else cat }} alert-dismissible" role="alert">
+        <div class="alert alert-{{ 'danger' if cat == 'error' else cat }} alert-dismissible fade show" role="alert">
             {{ msg }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
@@ -30,21 +30,21 @@
                 <button class="nav-link active" id="ptab-profile" data-bs-toggle="tab"
                     data-bs-target="#ptab-profile-pane" type="button" role="tab"
                     aria-selected="true" aria-controls="ptab-profile-pane">
-                    <i class="bi bi-person me-1"></i>Profile
+                    <i class="bi bi-person me-1"></i>{{ t('auth.profile.tab_profile') }}
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="ptab-security" data-bs-toggle="tab"
                     data-bs-target="#ptab-security-pane" type="button" role="tab"
                     aria-selected="false" aria-controls="ptab-security-pane">
-                    <i class="bi bi-shield-lock me-1"></i>Security &amp; MFA
+                    <i class="bi bi-shield-lock me-1"></i>{{ t('auth.profile.tab_security') }}
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="ptab-sessions" data-bs-toggle="tab"
                     data-bs-target="#ptab-sessions-pane" type="button" role="tab"
                     aria-selected="false" aria-controls="ptab-sessions-pane">
-                    <i class="bi bi-laptop me-1"></i>Sessions
+                    <i class="bi bi-laptop me-1"></i>{{ t('auth.profile.tab_sessions') }}
                 </button>
             </li>
         </ul>
@@ -58,43 +58,43 @@
                     <div class="card-body">
                         <form method="post" action="{{ url_for('auth.profile') }}">
                             <div class="mb-3">
-                                <label for="p_username" class="form-label">Username</label>
+                                <label for="p_username" class="form-label">{{ t('auth.profile.username_label') }}</label>
                                 <input type="text" class="form-control" id="p_username"
                                     value="{{ user.username }}" disabled>
                             </div>
                             <div class="mb-3">
-                                <label for="p_display_name" class="form-label">Display name</label>
+                                <label for="p_display_name" class="form-label">{{ t('auth.profile.display_name_label') }}</label>
                                 <input type="text" name="display_name" class="form-control"
                                     id="p_display_name"
                                     value="{{ user.display_name or '' }}"
-                                    placeholder="Optional — shown to other users">
+                                    placeholder="{{ t('auth.profile.display_name_placeholder') }}">
                             </div>
                             <div class="mb-3">
-                                <label for="p_email" class="form-label">Email</label>
+                                <label for="p_email" class="form-label">{{ t('auth.profile.email_label') }}</label>
                                 <input type="email" name="email" class="form-control"
                                     id="p_email" required value="{{ user.email or '' }}">
                                 {% if not user.email_verified %}
                                 <div class="form-text profile-email-status profile-email-status--warning">
                                     <i class="bi bi-exclamation-triangle me-1"></i>
-                                    Email not verified.
-                                    <a href="{{ url_for('auth.resend_verification') }}">Send verification link</a>
+                                    {{ t('auth.profile.email_not_verified') }}.
+                                    <a href="{{ url_for('auth.resend_verification') }}">{{ t('auth.profile.email_send_verification') }}</a>
                                 </div>
                                 {% else %}
                                 <div class="form-text profile-email-status profile-email-status--success">
-                                    <i class="bi bi-check-circle me-1"></i>Verified
+                                    <i class="bi bi-check-circle me-1"></i>{{ t('auth.profile.email_verified') }}
                                 </div>
                                 {% endif %}
                             </div>
                             <div class="mb-3">
                                 <label for="p_phone_number" class="form-label">
-                                    Phone number
-                                    <span class="text-muted fw-normal small">(E.164 format — required for SMS OTP)</span>
+                                    {{ t('auth.profile.phone_label') }}
+                                    <span class="text-muted fw-normal small">({{ t('auth.profile.phone_hint') }})</span>
                                 </label>
                                 <input type="tel" name="phone_number" class="form-control"
                                     id="p_phone_number" value="{{ user.phone_number or '' }}"
-                                    placeholder="+15551234567">
+                                    placeholder="{{ t('auth.profile.phone_placeholder') }}">
                             </div>
-                            <button type="submit" class="btn btn-primary">Save profile</button>
+                            <button type="submit" class="btn btn-primary">{{ t('auth.profile.save') }}</button>
                         </form>
                     </div>
                 </div>
@@ -106,22 +106,22 @@
 
                 <!-- Change password -->
                 <div class="card mb-3">
-                    <div class="card-header"><strong>Change Password</strong></div>
+                    <div class="card-header"><strong>{{ t('auth.profile.change_password_title') }}</strong></div>
                     <div class="card-body">
                         <form method="post" action="{{ url_for('auth.profile') }}">
                             <div class="mb-3">
-                                <label for="p_new_password" class="form-label">New password</label>
+                                <label for="p_new_password" class="form-label">{{ t('auth.profile.new_password_label') }}</label>
                                 <input type="password" name="new_password" class="form-control"
                                     id="p_new_password" autocomplete="new-password"
-                                    placeholder="Leave blank to keep current">
+                                    placeholder="{{ t('auth.profile.new_password_placeholder') }}">
                             </div>
                             <div class="mb-3">
-                                <label for="p_confirm_password" class="form-label">Confirm new password</label>
+                                <label for="p_confirm_password" class="form-label">{{ t('auth.profile.confirm_password_label') }}</label>
                                 <input type="password" name="confirm_password" class="form-control"
                                     id="p_confirm_password" autocomplete="new-password"
-                                    placeholder="Leave blank to keep current">
+                                    placeholder="{{ t('auth.profile.new_password_placeholder') }}">
                             </div>
-                            <button type="submit" class="btn btn-warning">Update password</button>
+                            <button type="submit" class="btn btn-warning">{{ t('auth.profile.update_password') }}</button>
                         </form>
                     </div>
                 </div>
@@ -129,48 +129,46 @@
                 <!-- MFA status -->
                 <div class="card mb-3">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <strong>Two-Factor Authentication (MFA)</strong>
+                        <strong>{{ t('auth.profile.mfa_title') }}</strong>
                         {% if user.mfa_enabled %}
-                        <span class="badge profile-status-badge profile-status-badge--enabled"><i class="bi bi-shield-check me-1"></i>Enabled</span>
+                        <span class="badge profile-status-badge profile-status-badge--enabled"><i class="bi bi-shield-check me-1"></i>{{ t('auth.profile.mfa_enabled') }}</span>
                         {% else %}
-                        <span class="badge profile-status-badge profile-status-badge--disabled">Disabled</span>
+                        <span class="badge profile-status-badge profile-status-badge--disabled">{{ t('auth.profile.mfa_disabled') }}</span>
                         {% endif %}
                     </div>
                     <div class="card-body">
                         {% if user.mfa_enabled %}
                         <p class="text-muted small mb-3">
-                            MFA is active. Active methods:
+                            {{ t('auth.profile.mfa_active_text') }}
                             <strong>{{ user.mfa_methods or 'none' }}</strong>.
-                            Backup codes remaining: <strong>{{ user.mfa_backup_codes_remaining or 0 }}</strong>.
+                            {{ t('auth.profile.mfa_backup_codes') }}: <strong>{{ user.mfa_backup_codes_remaining or 0 }}</strong>.
                         </p>
                         <div class="d-flex flex-wrap gap-2">
                             <a href="{{ url_for('auth.mfa_backup_codes') }}" class="btn btn-outline-secondary btn-sm">
-                                <i class="bi bi-key me-1"></i>View / regenerate backup codes
+                                <i class="bi bi-key me-1"></i>{{ t('auth.profile.mfa_view_backup_codes') }}
                             </a>
                             {% if 'sms' not in (user.mfa_methods or '') %}
                             <a href="{{ url_for('auth.mfa_setup_sms') }}" class="btn btn-outline-primary btn-sm">
-                                <i class="bi bi-chat-dots me-1"></i>{% if user.phone_number %}Add SMS OTP{% else %}Set up SMS OTP{% endif %}
+                                <i class="bi bi-chat-dots me-1"></i>{% if user.phone_number %}{{ t('auth.profile.mfa_add_sms') }}{% else %}{{ t('auth.profile.mfa_setup_sms') }}{% endif %}
                             </a>
                             {% endif %}
                             <form method="post" action="{{ url_for('auth.mfa_disable') }}" class="d-inline profile-confirm-form"
-                                  data-confirm-message="Disable MFA? Your account will be less secure.">
-                                <button type="submit" class="btn btn-outline-danger btn-sm"
-                                    >
-                                    <i class="bi bi-shield-x me-1"></i>Disable MFA
+                                  data-confirm-message="{{ t('auth.profile.mfa_disable_confirm') }}">
+                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                    <i class="bi bi-shield-x me-1"></i>{{ t('auth.profile.mfa_disable') }}
                                 </button>
                             </form>
                         </div>
                         {% else %}
                         <p class="text-muted small mb-3">
-                            Add a second factor to protect your account even if your password is compromised.
-                            Supports authenticator apps (TOTP), email OTP, SMS OTP, and backup recovery codes.
+                            {{ t('auth.profile.mfa_setup_description') }}
                         </p>
                         <div class="d-flex flex-wrap gap-2">
                             <a href="{{ url_for('auth.mfa_setup') }}" class="btn btn-primary btn-sm">
-                                <i class="bi bi-shield-plus me-1"></i>Set up authenticator app
+                                <i class="bi bi-shield-plus me-1"></i>{{ t('auth.profile.mfa_setup_authenticator') }}
                             </a>
                             <a href="{{ url_for('auth.mfa_setup_sms') }}" class="btn btn-outline-primary btn-sm">
-                                <i class="bi bi-chat-dots me-1"></i>Set up SMS OTP
+                                <i class="bi bi-chat-dots me-1"></i>{{ t('auth.profile.mfa_setup_sms_btn') }}
                             </a>
                         </div>
                         {% endif %}
@@ -184,15 +182,14 @@
                  role="tabpanel" aria-labelledby="ptab-sessions">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <strong>Active Sessions</strong>
+                        <strong>{{ t('auth.profile.sessions_title') }}</strong>
                         <a href="{{ url_for('auth.my_sessions') }}" class="btn btn-sm btn-outline-secondary">
-                            <i class="bi bi-box-arrow-right me-1"></i>Manage sessions
+                            <i class="bi bi-box-arrow-right me-1"></i>{{ t('auth.profile.sessions_manage') }}
                         </a>
                     </div>
                     <div class="card-body">
                         <p class="text-muted small mb-0">
-                            View all devices where you are logged in and revoke any session remotely.
-                            Use <strong>Manage sessions</strong> to see per-device details.
+                            {{ t('auth.profile.sessions_description') }}
                         </p>
                     </div>
                 </div>
@@ -204,7 +201,7 @@
 </div>
 <script id="profile-config" type="application/json">
 {{ {
-    "disableMfaConfirm": "Disable MFA? Your account will be less secure."
+    "disableMfaConfirm": t('auth.profile.mfa_disable_confirm')
 } | tojson | safe }}
 </script>
 {% endblock %}

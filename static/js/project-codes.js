@@ -74,8 +74,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, color: selectedColor })
             })
-                .then(r => r.json())
-                .then(() => location.reload());
+                .then(r => { if (!r.ok) throw new Error('Failed to create code'); return r.json(); })
+                .then(() => location.reload())
+                .catch(err => alert(err.message));
         });
     }
 
@@ -103,7 +104,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 const id = deleteBtn.dataset.codeId;
                 const projectId = window.CODES_I18N.projectId;
                 fetch(`/api/projects/${projectId}/codes/${id}`, { method: 'DELETE' })
-                    .then(() => location.reload());
+                    .then(() => location.reload())
+                    .catch(() => alert(window.CODES_I18N.delete_failed || 'Failed to delete code.'));
             }
             return;
         }
@@ -114,7 +116,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const id = removeExcerptBtn.dataset.excerptId;
             const projectId = window.CODES_I18N.projectId;
             fetch(`/api/projects/${projectId}/excerpts/${id}`, { method: 'DELETE' })
-                .then(() => location.reload());
+                .then(() => location.reload())
+                .catch(() => alert(window.CODES_I18N.delete_failed || 'Failed to remove excerpt.'));
             return;
         }
 
@@ -128,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!projectId) return;
 
             fetch(`/api/projects/${projectId}/codes/${codeId}`)
-                .then(r => r.json())
+                .then(r => { if (!r.ok) throw new Error('Failed to load code'); return r.json(); })
                 .then(code => {
                     document.getElementById('detailName').textContent = code.name;
                     document.getElementById('detailDescription').textContent = code.description || window.CODES_I18N.no_description || 'No description';
@@ -152,6 +155,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         c.innerHTML = `<div class="spa-empty"><i class="bi bi-quote"></i><p>${emptyTitle}</p><span>${emptyDesc}</span></div>`;
                     }
                     applyDynamicCodeStyles(document);
+                })
+                .catch(() => {
+                    document.getElementById('detailName').textContent = window.CODES_I18N.load_error || 'Failed to load';
+                    document.getElementById('codeExcerpts').innerHTML = '';
                 });
         }
     });

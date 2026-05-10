@@ -35,6 +35,32 @@ class ResearcherDocument(db.Model):
 
     # Phase C.4 — Ingest/processing status
     status = db.Column(db.String(30), default='pending')  # pending | processing | ready | error
+    archived_at = db.Column(db.DateTime)
+    deleted_at = db.Column(db.DateTime)
+
+    # Document-manager extraction metadata
+    parser_name = db.Column(db.String(100))
+    parser_version = db.Column(db.String(100))
+    extraction_status = db.Column(db.String(30), default='pending')
+    extraction_quality = db.Column(db.String(50))
+    page_count = db.Column(db.Integer)
+    table_count = db.Column(db.Integer)
+    image_count = db.Column(db.Integer)
+    formula_count = db.Column(db.Integer)
+    chart_count = db.Column(db.Integer)
+    audio_duration_seconds = db.Column(db.Float)
+    document_hash = db.Column(db.String(64))
+    language = db.Column(db.String(50))
+    extraction_warnings = db.Column(db.Text)
+
+    # AI Server RAG indexing status
+    rag_document_id = db.Column(db.String(255))
+    rag_collection_id = db.Column(db.String(255))
+    rag_content_hash = db.Column(db.String(64))
+    rag_sync_status = db.Column(db.String(30), default='not_indexed')
+    # not_indexed | indexed | failed | unavailable
+    rag_sync_message = db.Column(db.Text)
+    rag_synced_at = db.Column(db.DateTime)
 
     project = db.relationship('ResearchProject', backref='documents')
 
@@ -68,6 +94,27 @@ class ResearcherDocument(db.Model):
             'file_path': self.file_path, 'mime_type': self.mime_type,
             'file_size': self.file_size,
             'status': self.status,
+            'archived_at': self.archived_at.isoformat() if self.archived_at else None,
+            'deleted_at': self.deleted_at.isoformat() if self.deleted_at else None,
+            'parser_name': self.parser_name,
+            'parser_version': self.parser_version,
+            'extraction_status': self.extraction_status,
+            'extraction_quality': self.extraction_quality,
+            'page_count': self.page_count,
+            'table_count': self.table_count,
+            'image_count': self.image_count,
+            'formula_count': self.formula_count,
+            'chart_count': self.chart_count,
+            'audio_duration_seconds': self.audio_duration_seconds,
+            'document_hash': self.document_hash,
+            'language': self.language,
+            'extraction_warnings': self.extraction_warnings,
+            'rag_document_id': self.rag_document_id,
+            'rag_collection_id': self.rag_collection_id,
+            'rag_content_hash': self.rag_content_hash,
+            'rag_sync_status': self.rag_sync_status,
+            'rag_sync_message': self.rag_sync_message,
+            'rag_synced_at': self.rag_synced_at.isoformat() if self.rag_synced_at else None,
             'phi_detected': self.phi_detected,
             'phi_redacted': self.phi_redacted,
             'contains_student_data': self.contains_student_data,

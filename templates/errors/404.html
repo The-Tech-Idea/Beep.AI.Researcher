@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}404 — Page Not Found{% endblock %}
+{% block content %}
+<div class="container text-center py-5">
+    <h1 class="display-1 text-muted">404</h1>
+    <p class="lead">{{ t('errors.not_found', 'The page you are looking for could not be found.') }}</p>
+    <a href="/" class="btn btn-primary mt-3">{{ t('errors.back_home', 'Back to Home') }}</a>
+</div>
+{% endblock %}

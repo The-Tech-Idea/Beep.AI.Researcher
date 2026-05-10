@@ -1,0 +1,266 @@
+{% extends base_template|default("base.html") %}
+
+{% block title %}My Documents - Beep.AI.Researcher{% endblock %}
+
+{% block content %}
+<div class="page-header mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div>
+        <h1><i class="bi bi-files me-2"></i>My Documents</h1>
+        <p class="mb-0">Browse and upload documents across projects you own or belong to.</p>
+    </div>
+    <a href="{{ url_for('researcher.index') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i>Back to Dashboard
+    </a>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ 'danger' if category in ['error', 'danger'] else category }}" role="alert">
+        {{ message }}
+    </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="row g-3 mb-3">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="small text-muted">Documents</div>
+                <div class="h4 mb-0">{{ total_count }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="small text-muted">Storage Used</div>
+                <div class="h4 mb-0">{{ total_storage | filesizeformat }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="small text-muted">Projects</div>
+                <div class="h4 mb-0">{{ projects | length }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-upload me-1"></i>Upload Document</h5>
+    </div>
+    <div class="card-body">
+        {% if projects %}
+        <form method="post" action="{{ url_for('researcher.upload_my_document') }}" enctype="multipart/form-data" class="row g-2 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label small mb-1" for="upload-project">Project</label>
+                <select name="project_id" id="upload-project" class="form-select form-select-sm" required>
+                    {% for project in projects %}
+                    <option value="{{ project.id }}" {% if project_filter == project.id %}selected{% endif %}>
+                        {{ project.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-5">
+                <label class="form-label small mb-1" for="upload-file">Document</label>
+                <input type="file" name="file" id="upload-file" class="form-control form-control-sm"
+                       accept=".pdf,.txt,.text,.md,.html,.htm,.docx,.doc,.pptx,.xlsx,.xls,.csv,.json,.png,.jpg,.jpeg,.tif,.tiff,.bmp,.webp,.wav,.mp3,.m4a,.flac,.ogg,.webm,.vtt,.srt,.tex,.xml,.xbrl" required>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary btn-sm w-100">
+                    <i class="bi bi-cloud-arrow-up me-1"></i>Upload and Index
+                </button>
+            </div>
+        </form>
+        <p class="small text-muted mb-0 mt-2">
+            Supported files include PDFs, Office files, text/HTML/CSV/JSON, images, audio, subtitles, LaTeX, and XBRL. Extracted text is indexed for AI research when the project has an AI Server document library.
+        </p>
+        {% else %}
+        <div class="text-muted">Create or join a project before uploading documents.</div>
+        {% endif %}
+    </div>
+</div>
+
+<form method="get" class="card mb-3">
+    <div class="card-body">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label small mb-1" for="doc-search">Search filename</label>
+                <input type="text" name="q" id="doc-search" class="form-control form-control-sm"
+                       value="{{ search }}" placeholder="filename">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small mb-1" for="doc-project">Project</label>
+                <select name="project_id" id="doc-project" class="form-select form-select-sm">
+                    <option value="">All projects</option>
+                    {% for project in projects %}
+                    <option value="{{ project.id }}" {% if project_filter == project.id %}selected{% endif %}>
+                        {{ project.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small mb-1" for="doc-status">Status</label>
+                <select name="status" id="doc-status" class="form-select form-select-sm">
+                    <option value="">All statuses</option>
+                    {% for status in ['pending', 'processing', 'ready', 'error'] %}
+                    <option value="{{ status }}" {% if status_filter == status %}selected{% endif %}>{{ status }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-1">
+                <label class="form-label small mb-1" for="doc-type">Type</label>
+                <input type="text" name="file_type" id="doc-type" class="form-control form-control-sm"
+                       value="{{ file_type }}" placeholder="pdf">
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+                <a href="{{ url_for('researcher.my_documents') }}" class="btn btn-outline-secondary btn-sm">Clear</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="card">
+    <div class="card-body p-0">
+        {% if documents %}
+        <div class="table-responsive">
+            <table class="table table-hover table-sm mb-0 align-middle">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Project</th>
+                        <th>Status</th>
+                        <th>Extraction</th>
+                        <th>AI Search</th>
+                        <th class="text-end">Size</th>
+                        <th>Uploaded</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for doc in documents %}
+                    <tr>
+                        <td>
+                            <i class="bi bi-file-earmark me-1"></i>
+                            <span>{{ doc.filename }}</span>
+                            <div class="small text-muted">{{ doc.file_type | upper }}</div>
+                        </td>
+                        <td>
+                            {% if doc.project %}
+                            <a href="{{ url_for('researcher.project_documents', project_id=doc.project.id) }}">
+                                {{ doc.project.name }}
+                            </a>
+                            {% else %}
+                            <span class="text-muted">No project</span>
+                            {% endif %}
+                        </td>
+                        <td><span class="badge bg-secondary">{{ doc.status or 'pending' }}</span></td>
+                        <td>
+                            {% set extraction_status = doc.extraction_status or ('ready' if doc.text_content else 'pending') %}
+                            {% if extraction_status == 'ready' %}
+                                <span class="badge bg-success">Ready</span>
+                            {% elif extraction_status == 'failed' %}
+                                <span class="badge bg-danger" title="{{ doc.extraction_warnings or '' }}">Failed</span>
+                            {% elif extraction_status == 'unavailable' %}
+                                <span class="badge bg-secondary" title="{{ doc.extraction_warnings or '' }}">Unavailable</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">{{ extraction_status }}</span>
+                            {% endif %}
+                            <div class="small text-muted">
+                                {{ doc.parser_name or 'parser pending' }}
+                                {% if doc.page_count %} · {{ doc.page_count }} pages{% endif %}
+                                {% if doc.table_count %} · {{ doc.table_count }} tables{% endif %}
+                                {% if doc.ingestion_state and doc.ingestion_state.ingestion_status == 'duplicate' %}
+                                    · duplicate of #{{ doc.ingestion_state.duplicate_of_document_id }}
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>
+                            {% set rag_status = doc.rag_sync_status or 'not_indexed' %}
+                            {% if rag_status == 'indexed' %}
+                                <span class="badge bg-success" title="{{ doc.rag_sync_message or '' }}">Indexed</span>
+                            {% elif rag_status == 'failed' %}
+                                <span class="badge bg-danger" title="{{ doc.rag_sync_message or '' }}">Failed</span>
+                            {% elif rag_status == 'unavailable' %}
+                                <span class="badge bg-secondary" title="{{ doc.rag_sync_message or '' }}">Unavailable</span>
+                            {% elif rag_status == 'skipped_duplicate' %}
+                                <span class="badge bg-info text-dark" title="{{ doc.rag_sync_message or '' }}">Duplicate</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark" title="{{ doc.rag_sync_message or '' }}">Not indexed</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">{{ doc.size_formatted }}</td>
+                        <td class="text-muted">{{ doc.created_at.strftime('%Y-%m-%d %H:%M') if doc.created_at else '-' }}</td>
+                        <td class="text-center">
+                            <div class="d-inline-flex gap-1">
+                                {% if doc.project %}
+                                <a class="btn btn-sm btn-outline-secondary"
+                                   href="{{ url_for('researcher.project_documents', project_id=doc.project.id) }}"
+                                   aria-label="Open project documents for {{ doc.filename }}">
+                                    <i class="bi bi-folder2-open"></i>
+                                </a>
+                                <a class="btn btn-sm btn-outline-primary"
+                                   href="{{ url_for('documents.download_document', project_id=doc.project.id, doc_id=doc.id) }}"
+                                   aria-label="Download {{ doc.filename }}">
+                                    <i class="bi bi-download"></i>
+                                </a>
+                                <form method="post" action="{{ url_for('researcher.sync_my_document_rag', document_id=doc.id) }}">
+                                    <button class="btn btn-sm btn-outline-success"
+                                            type="submit"
+                                            aria-label="Index {{ doc.filename }} for AI search">
+                                        <i class="bi bi-arrow-repeat"></i>
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if pagination.pages > 1 %}
+        <div class="d-flex justify-content-between align-items-center px-3 py-2 border-top">
+            <small class="text-muted">
+                Showing {{ (pagination.page - 1) * 50 + 1 }}-{{ [pagination.page * 50, pagination.total] | min }}
+                of {{ pagination.total }}
+            </small>
+            <nav>
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                        <a class="page-link" href="{{ url_for('researcher.my_documents', page=pagination.prev_num, q=search, project_id=project_filter or '', status=status_filter, file_type=file_type) }}">Prev</a>
+                    </li>
+                    {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                        {% if p %}
+                        <li class="page-item {% if p == pagination.page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('researcher.my_documents', page=p, q=search, project_id=project_filter or '', status=status_filter, file_type=file_type) }}">{{ p }}</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                        {% endif %}
+                    {% endfor %}
+                    <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                        <a class="page-link" href="{{ url_for('researcher.my_documents', page=pagination.next_num, q=search, project_id=project_filter or '', status=status_filter, file_type=file_type) }}">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="text-center p-5">
+            <i class="bi bi-inbox fs-1 d-block mb-2 text-muted"></i>
+            <h5>No documents found</h5>
+            <p class="text-muted mb-0">Upload a document above to add it to a project.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

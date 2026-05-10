@@ -3,5 +3,13 @@
 }
 
 .my-sessions-header-icon {
-    color: var(--color-accent-strong);
+    color: var(--color-primary);
+}
+
+.table-header-themed {
+    background: color-mix(in srgb, var(--bg-surface) 92%, var(--text-muted) 8%);
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }

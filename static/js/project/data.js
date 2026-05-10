@@ -57,6 +57,7 @@
         chartSource.value = sourceId;
         updateDataStatus(strings.loadingChart, 'info');
 
+        try {
         const response = await fetch(config.chartUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -87,6 +88,9 @@
         }
 
         updateDataStatus(strings.chartFailed, 'danger');
+        } catch (error) {
+            updateDataStatus(strings.chartFailed, 'danger');
+        }
     }
 
     function refreshChart() {

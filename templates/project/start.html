@@ -27,53 +27,52 @@
     data-initial-quality-mode="{{ project.rag_quality_mode or 'balanced' }}"
 >
     <section class="project-start__hero">
-        <p class="project-start__kicker">First step</p>
-        <h2>Choose how this project should read your files</h2>
+        <p class="project-start__kicker">{{ t('project_start.kicker', 'First step') }}</p>
+        <h2>{{ t('project_start.hero_title', 'Choose how this project should read your files') }}</h2>
         <p class="project-start__copy">
-            Start with a document library, answer style, main file type, and file connections.
-            The app will use those choices to set up the best starting point for this project.
+            {{ t('project_start.hero_copy', 'Start with a document library, answer style, main file type, and file connections. The app will use those choices to set up the best starting point for this project.') }}
         </p>
         <ol class="project-start__steps" aria-label="Project setup steps">
-            <li>Choose the document library this project should use.</li>
-            <li>Pick the answer style that fits the kind of work you are doing.</li>
-            <li>Tell the app what kind of files you mostly have.</li>
-            <li>Save and open the project.</li>
+            <li>{{ t('project_start.step1', 'Choose the document library this project should use.') }}</li>
+            <li>{{ t('project_start.step2', 'Pick the answer style that fits the kind of work you are doing.') }}</li>
+            <li>{{ t('project_start.step3', 'Tell the app what kind of files you mostly have.') }}</li>
+            <li>{{ t('project_start.step4', 'Save and open the project.') }}</li>
         </ol>
     </section>
 
     <div class="project-start__status" id="projectStartStatus" aria-live="polite">
-        Loading setup choices...
+        {{ t('project_start.loading', 'Loading setup choices...') }}
     </div>
 
     <form id="projectStartForm" class="project-start__form">
         <section class="project-start__panel" aria-labelledby="projectStartLibraryTitle">
-            <h3 id="projectStartLibraryTitle">Document library</h3>
+            <h3 id="projectStartLibraryTitle">{{ t('project_start.library.title', 'Document library') }}</h3>
             <p class="project-start__panel-copy">
-                Pick the shared library this project should use when reading files and answering questions.
+                {{ t('project_start.library.desc', 'Pick the shared library this project should use when reading files and answering questions.') }}
             </p>
-            <label class="form-label" for="projectStartCollection">Choose document library</label>
+            <label class="form-label" for="projectStartCollection">{{ t('project_settings.library.select_label') }}</label>
             <select class="form-select" id="projectStartCollection" required>
                 <option value="">Loading document libraries...</option>
             </select>
         </section>
 
         <section class="project-start__panel" aria-labelledby="projectStartReadingTitle">
-            <h3 id="projectStartReadingTitle">Reading choices</h3>
+            <h3 id="projectStartReadingTitle">{{ t('project_start.reading.title', 'Reading choices') }}</h3>
             <p class="project-start__panel-copy">
-                These choices set the starting behavior. You can fine-tune details later in full settings.
+                {{ t('project_start.reading.desc', 'These choices set the starting behavior. You can fine-tune details later in full settings.') }}
             </p>
             <div class="project-start__grid">
                 <div>
-                    <label class="form-label" for="projectStartQualityMode">Answer style</label>
+                    <label class="form-label" for="projectStartQualityMode">{{ t('project_settings.quality.label') }}</label>
                     <select class="form-select" id="projectStartQualityMode">
-                        <option value="fast">Quick summaries</option>
-                        <option value="balanced" selected>Balanced help</option>
-                        <option value="deep">Careful reading</option>
+                        <option value="fast">{{ t('project_settings.quality.fast') }}</option>
+                        <option value="balanced" selected>{{ t('project_settings.quality.balanced') }}</option>
+                        <option value="deep">{{ t('project_settings.quality.deep') }}</option>
                     </select>
-                    <div class="form-text">Balanced help is the best starting point for most projects.</div>
+                    <div class="form-text">{{ t('project_start.reading.balanced_hint', 'Balanced help is the best starting point for most projects.') }}</div>
                 </div>
                 <div>
-                    <label class="form-label" for="projectStartDocumentType">Most common file type</label>
+                    <label class="form-label" for="projectStartDocumentType">{{ t('project_start.reading.file_type_label', 'Most common file type') }}</label>
                     <select class="form-select" id="projectStartDocumentType">
                         <option value="">Loading file types...</option>
                     </select>
@@ -81,7 +80,7 @@
                         type="text"
                         class="form-control mt-2"
                         id="projectStartDocumentTypeCustom"
-                        placeholder="Describe the main file type for this project"
+                        placeholder="{{ t('project_settings.metadata.doc_type_placeholder') }}"
                         hidden
                     >
                     <div class="form-text" id="projectStartDocumentTypeHint">
@@ -89,35 +88,35 @@
                     </div>
                 </div>
                 <div>
-                    <label class="form-label" for="projectStartGraphMode">How files connect</label>
+                    <label class="form-label" for="projectStartGraphMode">{{ t('project_settings.graph.label') }}</label>
                     <select class="form-select" id="projectStartGraphMode">
-                        <option value="">Loading file connection options...</option>
+                        <option value="">{{ t('project_settings.connection.loading') }}</option>
                     </select>
                     <div class="form-text" id="projectStartGraphModeHint">
-                        Choose how much help the assistant should use when connecting related files.
+                        {{ t('project_settings.graph.hint') }}
                     </div>
                 </div>
             </div>
         </section>
 
         <section class="project-start__panel" aria-labelledby="projectStartSuggestedTitle">
-            <h3 id="projectStartSuggestedTitle">Suggested reading setup</h3>
+            <h3 id="projectStartSuggestedTitle">{{ t('project_start.suggested.title', 'Suggested reading setup') }}</h3>
             <p class="project-start__panel-copy">
-                The app will try to apply this setup automatically when you save.
+                {{ t('project_start.suggested.desc', 'The app will try to apply this setup automatically when you save.') }}
             </p>
             <div class="project-start__suggestion" id="projectStartSuggestion">
-                <strong id="projectStartSuggestionName">Loading suggested setup...</strong>
-                <span id="projectStartSuggestionDescription">The best reading setup depends on the file type you choose.</span>
+                <strong id="projectStartSuggestionName">{{ t('project_start.suggested.loading', 'Loading suggested setup...') }}</strong>
+                <span id="projectStartSuggestionDescription">{{ t('project_start.suggested.depends', 'The best reading setup depends on the file type you choose.') }}</span>
                 <span class="project-start__suggestion-note" id="projectStartSuggestionNote"></span>
             </div>
         </section>
 
         <div class="project-start__actions">
             <button type="submit" class="btn btn-primary" id="projectStartSaveBtn">
-                <i class="bi bi-check2-circle me-1"></i>Save Setup And Open Project
+                <i class="bi bi-check2-circle me-1"></i>{{ t('project_start.save_btn', 'Save Setup And Open Project') }}
             </button>
             <a href="/researcher/projects/{{ project.id }}/overview" class="btn btn-outline-secondary">
-                Open Project For Now
+                {{ t('project_start.open_now', 'Open Project For Now') }}
             </a>
         </div>
     </form>

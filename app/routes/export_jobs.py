@@ -1,4 +1,5 @@
 """Export job routes — trigger and download export bundles (Phase 05)."""
+
 from __future__ import annotations
 
 import os
@@ -7,14 +8,10 @@ import pathlib
 from flask import Blueprint, jsonify, request, send_file
 from flask_login import current_user, login_required
 
-from app.routes.route_entity_lookup import get_entity_or_404
+from app.routes.route_entity_lookup import get_entity_or_404, get_project_or_404
 from app.models.researcher import ResearchProject
 
 export_jobs_bp = Blueprint("export_jobs", __name__)
-
-
-def _get_project_or_404(project_id: int) -> ResearchProject:
-    return get_entity_or_404(ResearchProject, project_id)
 
 
 def _auth_project(project: ResearchProject):
@@ -23,13 +20,11 @@ def _auth_project(project: ResearchProject):
     return None
 
 
-@export_jobs_bp.route(
-    "/projects/<int:project_id>/export-jobs", methods=["GET"]
-)
+@export_jobs_bp.route("/projects/<int:project_id>/export-jobs", methods=["GET"])
 @login_required
 def list_jobs(project_id: int):
     """List the 20 most recent export jobs for the project."""
-    project = _get_project_or_404(project_id)
+    project = get_project_or_404(project_id)
     denied = _auth_project(project)
     if denied:
         return denied
@@ -40,9 +35,7 @@ def list_jobs(project_id: int):
     return jsonify({"jobs": [j.to_dict() for j in jobs]})
 
 
-@export_jobs_bp.route(
-    "/projects/<int:project_id>/export-jobs", methods=["POST"]
-)
+@export_jobs_bp.route("/projects/<int:project_id>/export-jobs", methods=["POST"])
 @login_required
 def create_job(project_id: int):
     """Start an export job (runs synchronously in this MVP).
@@ -56,7 +49,7 @@ def create_job(project_id: int):
 
     Response: job dict (status will be "done" or "failed" immediately).
     """
-    project = _get_project_or_404(project_id)
+    project = get_project_or_404(project_id)
     denied = _auth_project(project)
     if denied:
         return denied
@@ -77,7 +70,7 @@ def create_job(project_id: int):
 @login_required
 def get_job(project_id: int, job_id: int):
     """Get export job status."""
-    project = _get_project_or_404(project_id)
+    project = get_project_or_404(project_id)
     denied = _auth_project(project)
     if denied:
         return denied
@@ -97,7 +90,7 @@ def get_job(project_id: int, job_id: int):
 @login_required
 def download_job(project_id: int, job_id: int):
     """Download the artifact produced by a completed export job."""
-    project = _get_project_or_404(project_id)
+    project = get_project_or_404(project_id)
     denied = _auth_project(project)
     if denied:
         return denied

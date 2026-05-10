@@ -11,7 +11,7 @@
 
 {% block header_actions %}
 <button type="button" class="btn btn-sm scheduled-report-primary-action" data-bs-toggle="modal" data-bs-target="#addReportModal">
-    <i class="bi bi-plus-lg me-1"></i>{{ t('extraction.new') }}
+    <i class="bi bi-plus-lg me-1"></i>{{ t('scheduled_reports.new', 'New Report') }}
 </button>
 {% endblock %}
 
@@ -93,9 +93,9 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn scheduled-report-secondary-action" data-bs-dismiss="modal">{{ t('extraction.modal.cancel')
+                <button type="button" class="btn scheduled-report-secondary-action" data-bs-dismiss="modal">{{ t('scheduled_reports.modal.cancel', 'Cancel')
                     }}</button>
-                <button type="button" class="btn scheduled-report-primary-action" id="btnCreateReport">{{ t('extraction.modal.create')
+                <button type="button" class="btn scheduled-report-primary-action" id="btnCreateReport">{{ t('scheduled_reports.modal.create', 'Create')
                     }}</button>
             </div>
         </div>

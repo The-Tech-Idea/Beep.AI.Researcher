@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block workspace_content %}
-<div class="container-fluid py-4 max-w-1200 mx-auto">
+<div class="container-fluid py-4 mx-auto" style="max-width: 1200px">
     <div
         data-library-setup-summary
         data-project-api-base="/projects/{{ project.id }}"
@@ -39,8 +39,8 @@
     </div>
 
     <div class="share-guide-card">
-        <h5>Check the draft before sending or downloading it</h5>
-        <p class="mb-0">This page uses the latest saved draft for the project. If you changed the report a moment ago, return to the editor and save once before exporting.</p>
+        <h5>{{ t('report_share.guide.title', 'Check the draft before sending or downloading it') }}</h5>
+        <p class="mb-0">{{ t('report_share.guide.desc', 'This page uses the latest saved draft for the project. If you changed the report a moment ago, return to the editor and save once before exporting.') }}</p>
     </div>
 
     <div class="row g-4">
@@ -49,8 +49,8 @@
                 <div class="card-body p-4 d-flex align-items-start gap-3">
                     <div class="display-6 text-danger"><i class="bi bi-file-earmark-pdf-fill"></i></div>
                     <div>
-                        <h5 class="mb-1">Download PDF</h5>
-                        <p class="small mb-0">Create a read-only PDF for sharing, submission, or archiving.</p>
+                        <h5 class="mb-1">{{ t('report_share.download_pdf', 'Download PDF') }}</h5>
+                        <p class="small mb-0">{{ t('report_share.download_pdf.desc', 'Create a read-only PDF for sharing, submission, or archiving.') }}</p>
                     </div>
                 </div>
             </div>
@@ -59,16 +59,16 @@
                 <div class="card-body p-4 d-flex align-items-start gap-3">
                     <div class="display-6 text-primary"><i class="bi bi-file-earmark-word-fill"></i></div>
                     <div>
-                        <h5 class="mb-1">Download Word File</h5>
-                        <p class="small mb-0">Create an editable Word document for review or formatting changes.</p>
+                        <h5 class="mb-1">{{ t('report_share.download_word', 'Download Word File') }}</h5>
+                        <p class="small mb-0">{{ t('report_share.download_word.desc', 'Create an editable Word document for review or formatting changes.') }}</p>
                     </div>
                 </div>
             </div>
 
             <div class="card border-0 rounded-4">
                 <div class="card-body p-4">
-                    <h5 class="fw-bold mb-3"><i class="bi bi-envelope-paper me-2 text-info"></i>Email this report</h5>
-                    <p class="text-muted small">Send the current draft directly to a colleague or reviewer.</p>
+                    <h5 class="fw-bold mb-3"><i class="bi bi-envelope-paper me-2 text-info"></i>{{ t('report_share.email.title', 'Email this report') }}</h5>
+                    <p class="text-muted small">{{ t('report_share.email.desc', 'Send the current draft directly to a colleague or reviewer.') }}</p>
 
                     <form id="emailForm">
                         <div class="mb-3">

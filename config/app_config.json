@@ -1,14 +1,50 @@
 {
   "features": {
-    "ai_discovery_enabled": false,
-    "auto_extract": false,
-    "web_search_enabled": false,
-    "plugins_enabled": false,
-    "chat_enabled": false,
-    "code_generation_enabled": false,
-    "rag_enabled": false,
-    "notifications_enabled": false,
-    "audit_logging_enabled": false
+    "ai_discovery_enabled": {
+      "enabled": false,
+      "description": "Enable research-interest inference, personalized feed, and alerts",
+      "level": "optional"
+    },
+    "auto_extract": {
+      "enabled": true,
+      "description": "Automatically extract data from uploaded documents",
+      "level": "core"
+    },
+    "web_search_enabled": {
+      "enabled": false,
+      "description": "Enable web/academic search integration",
+      "level": "optional"
+    },
+    "plugins_enabled": {
+      "enabled": false,
+      "description": "Enable plugin system for extensibility",
+      "level": "optional"
+    },
+    "chat_enabled": {
+      "enabled": true,
+      "description": "Enable chat interface",
+      "level": "core"
+    },
+    "code_generation_enabled": {
+      "enabled": false,
+      "description": "Enable code generation from documents",
+      "level": "core"
+    },
+    "rag_enabled": {
+      "enabled": false,
+      "description": "Enable RAG (Retrieval-Augmented Generation) support",
+      "level": "core"
+    },
+    "notifications_enabled": {
+      "enabled": false,
+      "description": "Enable notification system",
+      "level": "optional"
+    },
+    "audit_logging_enabled": {
+      "enabled": false,
+      "description": "Enable audit logging for security tracking",
+      "level": "core"
+    }
   },
   "hooks": {
     "auto_extraction_hook": {
@@ -106,11 +142,11 @@
     "request_timeout_seconds": 30,
     "database_timeout_seconds": 10
   },
-  "SQLALCHEMY_DATABASE_URI": "sqlite:///C:/Users/f_ald/source/repos/The-Tech-Idea/Beep.AI.Server/Beep.AI.Researcher/data/researcher.db",
+  "SQLALCHEMY_DATABASE_URI": "sqlite:///C:/Users/f_ald/source/repos/The-Tech-Idea/Beep.AI.Researcher/data/researcher.db?timeout=5000&check_same_thread=False",
   "auth_mode": "local",
   "ENABLE_IDENTITYSERVER_AUTH": false,
   "is_configured": true,
-  "secret_key": "a641045a75abccae0da144fca646f8ddc4363871105b18f2",
+  "secret_key": "1426bfdfc8f3485bfa64b11237ebcdda4c1a71528ffa5ebb",
   "server_port": 5005,
   "dashboard_project_limit": 20,
   "search_result_limit": 50,
@@ -208,5 +244,34 @@
   "registration_auto_tenant": "",
   "password_require_lowercase": false,
   "mfa_otp_validity_minutes": 10,
-  "mfa_totp_issuer": "Beep.AI.Researcher"
+  "mfa_totp_issuer": "Beep.AI.Researcher",
+  "auto_install_requirements_on_startup": true,
+  "mail_ms365_tenant_id": "",
+  "mail_ms365_client_id": "",
+  "mail_ms365_client_secret": "",
+  "mail_google_client_id": "",
+  "mail_google_client_secret": "",
+  "mail_google_refresh_token": "",
+  "storage_smb_server": "",
+  "storage_s3_bucket": "",
+  "storage_azure_container": "",
+  "storage_azure_account_name": "",
+  "storage_azure_account_key": "",
+  "storage_azure_sas_token": "",
+  "quota_default_storage_bytes": 1073741824,
+  "quota_default_document_count": 500,
+  "quota_default_max_upload_bytes": 52428800,
+  "saml2_idp_metadata_url": "",
+  "saml2_sp_entity_id": "",
+  "saml2_sp_acs_url": "",
+  "oidc_redirect_uri": "",
+  "ldap_base_dn": "",
+  "ldap_use_ssl": false,
+  "login_captcha_enabled": false,
+  "captcha_method": "math",
+  "captcha_hcaptcha_site_key": "",
+  "captcha_hcaptcha_secret": "",
+  "captcha_recaptcha_site_key": "",
+  "captcha_recaptcha_secret": "",
+  "session_remember_duration_days": 30
 }

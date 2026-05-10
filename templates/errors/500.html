@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}500 — Server Error{% endblock %}
+{% block content %}
+<div class="container text-center py-5">
+    <h1 class="display-1 text-muted">500</h1>
+    <p class="lead">{{ t('errors.server_error', 'Something went wrong on our end. Please try again later.') }}</p>
+    <a href="/" class="btn btn-primary mt-3">{{ t('errors.back_home', 'Back to Home') }}</a>
+</div>
+{% endblock %}

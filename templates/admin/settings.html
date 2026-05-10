@@ -1,4 +1,4 @@
-﻿{% extends "base.html" %}
+{% extends "base.html" %}
 
 {% block title %}{{ t('settings.title') }} - Admin - Beep.AI.Researcher{% endblock %}
 
@@ -20,7 +20,7 @@
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     {% for category, message in messages %}
-    <div class="admin-settings-message admin-settings-message--{{ 'error' if category == 'error' else category }}" role="alert">
+    <div class="admin-settings-message admin-settings-message--{{ category }}" role="alert">
       {{ message }}
     </div>
     {% endfor %}
@@ -600,9 +600,9 @@
                     <label class="form-label">Registration Mode</label>
                     <select class="form-select" name="registration_mode">
                         <option value="open"     {% if values.get('registration_mode','open')=='open' %}selected{% endif %}>Open — anyone can register</option>
-                        <option value="invite"   {% if values.get('registration_mode')=='invite' %}selected{% endif %}>Invite-only</option>
-                        <option value="approval" {% if values.get('registration_mode')=='approval' %}selected{% endif %}>Admin approval required</option>
-                        <option value="disabled" {% if values.get('registration_mode')=='disabled' %}selected{% endif %}>Disabled</option>
+                        <option value="invite_only"   {% if values.get('registration_mode')=='invite_only' %}selected{% endif %}>Invite-only</option>
+                        <option value="domain_allowlist" {% if values.get('registration_mode')=='domain_allowlist' %}selected{% endif %}>Domain allowlist only</option>
+                        <option value="admin_only" {% if values.get('registration_mode')=='admin_only' %}selected{% endif %}>Disabled — admin creates accounts</option>
                     </select>
                 </div>
                 <div class="col-md-4 mb-3">
@@ -628,7 +628,7 @@
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" role="switch" id="regEmailVerify"
                                name="registration_require_email_verification" value="true"
-                               {% if values.get('registration_require_email_verification', True) %}checked{% endif %}>
+                                {% if values.get('registration_require_email_verification', False) %}checked{% endif %}>
                         <label class="form-check-label" for="regEmailVerify">
                             <strong>Require Email Verification</strong>
                             <span class="admin-settings-helper-text admin-settings-helper-block">New users must verify their email before logging in</span>
@@ -871,12 +871,12 @@
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Idle Timeout <small class="admin-settings-helper-text">(minutes)</small></label>
                     <input type="number" class="form-control" name="session_idle_timeout_minutes"
-                           value="{{ values.get('session_idle_timeout_minutes', 120) }}" min="5">
+                            value="{{ values.get('session_idle_timeout_minutes', 0) }}" min="0">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Max Concurrent Sessions</label>
                     <input type="number" class="form-control" name="session_max_concurrent"
-                           value="{{ values.get('session_max_concurrent', 5) }}" min="1">
+                            value="{{ values.get('session_max_concurrent', 0) }}" min="0">
                 </div>
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Remember-Me Duration <small class="admin-settings-helper-text">(days)</small></label>
@@ -938,17 +938,11 @@
                 </div>
                 <div class="col-md-4 mb-3">
                     <label class="form-label">Cache TTL (sec)</label>
-                    <input type="number" min="60" class="form-control" name="cache_cache_ttl_seconds"
+                    <input type="number" min="60" class="form-control" name="cache_ttl_seconds"
                            value="{{ cache_config.get('cache_ttl_seconds', 86400) }}">
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Max Cache Entries</label>
-                    <input type="number" min="100" class="form-control" name="cache_max_cache_entries"
+                    <input type="number" min="100" class="form-control" name="cache_max_entries"
                            value="{{ cache_config.get('max_cache_entries', 10000) }}">
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Max Cache Size (MB)</label>
-                    <input type="number" min="50" class="form-control" name="cache_max_cache_size_mb"
+                    <input type="number" min="50" class="form-control" name="cache_max_size_mb"
                            value="{{ cache_config.get('max_cache_size_mb', 500) }}">
                 </div>
             </div>
@@ -959,11 +953,19 @@
 
 </div><!-- /tab-content -->
 
-<div class="d-flex justify-content-end gap-2 mt-3">
-    <a href="{{ url_for('admin.index') }}" class="btn admin-settings-secondary-button">{{ t('settings.button.cancel') }}</a>
-    <button type="submit" class="btn btn-primary">
-        <i class="bi bi-save me-1"></i>{{ t('settings.button.save') }}
-    </button>
+<div class="d-flex justify-content-between gap-2 mt-3">
+    <form method="post" action="{{ url_for('setup.reset') }}" class="d-inline"
+          onsubmit="return confirm('Reset the setup wizard? This will not delete existing data but will allow you to re-run the initial configuration.');">
+        <button type="submit" class="btn btn-outline-danger btn-sm">
+            <i class="bi bi-arrow-counterclockwise me-1"></i>Reset Setup Wizard
+        </button>
+    </form>
+    <div class="d-flex gap-2">
+        <a href="{{ url_for('admin.index') }}" class="btn admin-settings-secondary-button">{{ t('settings.button.cancel') }}</a>
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save me-1"></i>{{ t('settings.button.save') }}
+        </button>
+    </div>
 </div>
 </form>
 

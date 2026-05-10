@@ -13,6 +13,12 @@
         <p class="mb-0">Plan tiers, per-user and per-tenant storage quota overrides, and usage overview.</p>
     </div>
     <div class="d-flex gap-2">
+        <form method="post" action="{{ url_for('admin.quota_recalculate_all') }}"
+              data-admin-confirm="Recalculate quota counters for all users from document records?">
+            <button type="submit" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-arrow-repeat me-1"></i>Recalculate All
+            </button>
+        </form>
         <a href="{{ url_for('admin.settings') }}#tab-quota" class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-gear me-1"></i>Global Defaults
         </a>
@@ -82,6 +88,48 @@
 
 <!-- ── Usage Overview ────────────────────────────────────────────────────── -->
 <div class="tab-pane fade show active" id="qt-usage">
+    <div class="card mb-3">
+        <div class="card-header"><h5 class="mb-0"><i class="bi bi-person-gear me-1"></i>User Quota Override</h5></div>
+        <div class="card-body">
+            <form method="post" id="userQuotaOverrideForm" class="row g-2 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label small mb-1" for="quotaUserSelect">User</label>
+                    <select id="quotaUserSelect" class="form-select form-select-sm" required>
+                        <option value="">Choose user</option>
+                        {% for user in users %}
+                        <option value="{{ user.id }}"
+                                data-storage="{{ user.storage_quota_bytes or '' }}"
+                                data-documents="{{ user.document_quota or '' }}"
+                                data-plan="{{ user.plan_tier_id or '' }}">
+                            {{ user.username }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small mb-1" for="quotaUserPlan">Plan</label>
+                    <select id="quotaUserPlan" name="plan_tier_id" class="form-select form-select-sm">
+                        <option value="">Inherit</option>
+                        {% for tier in plan_tiers %}
+                        <option value="{{ tier.id }}">{{ tier.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small mb-1" for="quotaUserStorage">Storage bytes</label>
+                    <input id="quotaUserStorage" type="number" class="form-control form-control-sm" name="storage_quota_bytes" min="0" placeholder="0 = inherit">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small mb-1" for="quotaUserDocuments">Documents</label>
+                    <input id="quotaUserDocuments" type="number" class="form-control form-control-sm" name="document_quota" min="0" placeholder="0 = inherit">
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary btn-sm">Save Override</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="card">
         <div class="card-header"><h5 class="mb-0">Top Users by Storage Used</h5></div>
         <div class="card-body p-0">
@@ -96,6 +144,7 @@
                             <th class="text-end">Limit</th>
                             <th class="text-end">Documents</th>
                             <th class="text-center">Override</th>
+                            <th class="text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -131,6 +180,16 @@
                                     <span class="admin-quota-override-badge admin-quota-override-badge-global">Global</span>
                                 {% endif %}
                             </td>
+                            <td class="text-center">
+                                <form method="post"
+                                      action="{{ url_for('admin.quota_user_recalculate', user_id=stat.user_id) }}"
+                                      data-admin-confirm="Recalculate quota counters for {{ stat.username }}?">
+                                    <button type="submit" class="btn btn-sm btn-outline-primary py-0 px-2"
+                                            aria-label="Recalculate quota for {{ stat.username }}">
+                                        <i class="bi bi-arrow-repeat"></i>
+                                    </button>
+                                </form>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -152,11 +211,11 @@
         <div class="card-header"><h5 class="mb-0"><i class="bi bi-plus-circle me-1"></i>Add Plan Tier</h5></div>
         <div class="card-body">
             <form method="post" action="{{ url_for('admin.quota_plan_tier_add') }}" class="row g-2 align-items-end">
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="form-label small mb-1">Tier Name</label>
-                    <input type="text" class="form-control form-control-sm" name="name" placeholder="pro, enterprise…" required>
+                    <input type="text" class="form-control form-control-sm" name="name" placeholder="pro, enterprise" required>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="form-label small mb-1">Storage (bytes)</label>
                     <input type="number" class="form-control form-control-sm" name="storage_quota_bytes" min="0" placeholder="5368709120">
                 </div>
@@ -165,11 +224,33 @@
                     <input type="number" class="form-control form-control-sm" name="document_quota" min="0" placeholder="5000">
                 </div>
                 <div class="col-md-2">
+                    <label class="form-label small mb-1">Projects</label>
+                    <input type="number" class="form-control form-control-sm" name="project_quota" min="0" placeholder="25">
+                </div>
+                <div class="col-md-2">
                     <label class="form-label small mb-1">Max Upload (bytes)</label>
                     <input type="number" class="form-control form-control-sm" name="max_upload_size_bytes" min="0" placeholder="524288000">
                 </div>
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-primary btn-sm">Add Tier</button>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small mb-1">API Calls / Day</label>
+                    <input type="number" class="form-control form-control-sm" name="api_calls_per_day" min="0" placeholder="10000">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small mb-1">Price Display</label>
+                    <input type="text" class="form-control form-control-sm" name="price_display" maxlength="40" placeholder="$0/mo">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label small mb-1">Description</label>
+                    <input type="text" class="form-control form-control-sm" name="description" placeholder="Short admin-facing description">
+                </div>
+                <div class="col-md-2">
+                    <div class="form-check mt-4">
+                        <input class="form-check-input" type="checkbox" name="is_active" id="newTierActive" checked>
+                        <label class="form-check-label small" for="newTierActive">Active</label>
+                    </div>
                 </div>
             </form>
         </div>
@@ -184,8 +265,11 @@
                     <thead class="admin-quota-table-head">
                         <tr>
                             <th>Tier Name</th>
+                            <th>Status</th>
                             <th class="text-end">Storage Limit</th>
                             <th class="text-end">Document Limit</th>
+                            <th class="text-end">Projects</th>
+                            <th class="text-end">API Calls</th>
                             <th class="text-end">Max Upload</th>
                             <th class="text-center">Actions</th>
                         </tr>
@@ -193,7 +277,19 @@
                     <tbody>
                         {% for tier in plan_tiers %}
                         <tr>
-                            <td><strong>{{ tier.name }}</strong></td>
+                            <td>
+                                <strong>{{ tier.name }}</strong>
+                                {% if tier.price_display %}
+                                <div class="small admin-quota-muted-value">{{ tier.price_display }}</div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if tier.is_active %}
+                                    <span class="admin-quota-override-badge admin-quota-override-badge-global">Active</span>
+                                {% else %}
+                                    <span class="admin-quota-override-badge admin-quota-override-badge-inactive">Inactive</span>
+                                {% endif %}
+                            </td>
                             <td class="text-end small font-monospace">
                                 {% if tier.storage_quota_bytes %}
                                     {% if tier.storage_quota_bytes >= 1073741824 %}{{ (tier.storage_quota_bytes / 1073741824) | round(1) }} GB
@@ -201,18 +297,75 @@
                                 {% else %}—{% endif %}
                             </td>
                             <td class="text-end small">{{ tier.document_quota or '—' }}</td>
+                            <td class="text-end small">{{ tier.project_quota or '—' }}</td>
+                            <td class="text-end small">{{ tier.api_calls_per_day or '—' }}</td>
                             <td class="text-end small font-monospace">
                                 {% if tier.max_upload_size_bytes %}
                                     {{ (tier.max_upload_size_bytes / 1048576) | round(1) }} MB
                                 {% else %}—{% endif %}
                             </td>
                             <td class="text-center">
+                                <button class="btn btn-sm btn-outline-secondary py-0 px-2 admin-quota-tier-edit-toggle"
+                                        type="button" data-bs-toggle="collapse" data-bs-target="#tierEdit{{ tier.id }}"
+                                        aria-expanded="false" aria-controls="tierEdit{{ tier.id }}"
+                                        aria-label="Edit tier {{ tier.name }}">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
                                 <form method="post" action="{{ url_for('admin.quota_plan_tier_delete', tier_id=tier.id) }}"
-                                      class="admin-quota-tier-delete-form" data-tier-name="{{ tier.name }}">
+                                      class="admin-quota-tier-delete-form d-inline" data-tier-name="{{ tier.name }}">
                                     <button type="submit" class="btn btn-sm py-0 px-2 admin-quota-tier-delete-button"
                                             aria-label="Delete tier {{ tier.name }}">
                                         <i class="bi bi-trash" aria-hidden="true"></i>
                                     </button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr class="collapse admin-quota-tier-edit-row" id="tierEdit{{ tier.id }}">
+                            <td colspan="8">
+                                <form method="post" action="{{ url_for('admin.quota_plan_tier_update', tier_id=tier.id) }}"
+                                      class="row g-2 align-items-end"
+                                      data-admin-confirm="Update plan tier {{ tier.name }}?">
+                                    <div class="col-md-2">
+                                        <label class="form-label small mb-1">Tier Name</label>
+                                        <input type="text" class="form-control form-control-sm" name="name" value="{{ tier.name }}" required>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label small mb-1">Storage bytes</label>
+                                        <input type="number" class="form-control form-control-sm" name="storage_quota_bytes" min="0" value="{{ tier.storage_quota_bytes or '' }}" placeholder="0 = unlimited">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label small mb-1">Documents</label>
+                                        <input type="number" class="form-control form-control-sm" name="document_quota" min="0" value="{{ tier.document_quota or '' }}" placeholder="0 = unlimited">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label small mb-1">Projects</label>
+                                        <input type="number" class="form-control form-control-sm" name="project_quota" min="0" value="{{ tier.project_quota or '' }}" placeholder="0 = unlimited">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label small mb-1">API calls / day</label>
+                                        <input type="number" class="form-control form-control-sm" name="api_calls_per_day" min="0" value="{{ tier.api_calls_per_day or '' }}" placeholder="0 = unlimited">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label small mb-1">Max upload bytes</label>
+                                        <input type="number" class="form-control form-control-sm" name="max_upload_size_bytes" min="0" value="{{ tier.max_upload_size_bytes or '' }}" placeholder="0 = unlimited">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label small mb-1">Price display</label>
+                                        <input type="text" class="form-control form-control-sm" name="price_display" maxlength="40" value="{{ tier.price_display or '' }}">
+                                    </div>
+                                    <div class="col-md-8">
+                                        <label class="form-label small mb-1">Description</label>
+                                        <input type="text" class="form-control form-control-sm" name="description" value="{{ tier.description or '' }}">
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div class="form-check mt-4">
+                                            <input class="form-check-input" type="checkbox" name="is_active" id="tierActive{{ tier.id }}" {% if tier.is_active %}checked{% endif %}>
+                                            <label class="form-check-label small" for="tierActive{{ tier.id }}">Active</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button type="submit" class="btn btn-primary btn-sm w-100">Save</button>
+                                    </div>
                                 </form>
                             </td>
                         </tr>
@@ -231,6 +384,54 @@
 
 <!-- ── Tenant Quotas ──────────────────────────────────────────────────────── -->
 <div class="tab-pane fade" id="qt-tenant">
+    <div class="card mb-3">
+        <div class="card-header"><h5 class="mb-0"><i class="bi bi-building-gear me-1"></i>Tenant Quota Override</h5></div>
+        <div class="card-body">
+            <form method="post" id="tenantQuotaForm" class="row g-2 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label small mb-1" for="quotaTenantSelect">Tenant</label>
+                    <select id="quotaTenantSelect" class="form-select form-select-sm" required>
+                        <option value="">Choose tenant</option>
+                        {% for tenant in tenants %}
+                        {% set existing = (tenant_quotas | selectattr('tenant_id', 'equalto', tenant.id) | list | first) %}
+                        <option value="{{ tenant.id }}"
+                                data-plan="{{ existing.plan_tier_id if existing else tenant.plan_tier_id or '' }}"
+                                data-storage="{{ existing.storage_quota_bytes if existing and existing.storage_quota_bytes else '' }}"
+                                data-documents="{{ existing.document_quota if existing and existing.document_quota else '' }}"
+                                data-upload="{{ existing.max_upload_size_bytes if existing and existing.max_upload_size_bytes else '' }}">
+                            {{ tenant.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small mb-1" for="quotaTenantPlan">Plan</label>
+                    <select id="quotaTenantPlan" name="plan_tier_id" class="form-select form-select-sm">
+                        <option value="">Inherit</option>
+                        {% for tier in plan_tiers %}
+                        <option value="{{ tier.id }}">{{ tier.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small mb-1" for="quotaTenantStorage">Storage bytes</label>
+                    <input id="quotaTenantStorage" type="number" class="form-control form-control-sm" name="storage_quota_bytes" min="0" placeholder="0 = inherit">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small mb-1" for="quotaTenantDocuments">Documents</label>
+                    <input id="quotaTenantDocuments" type="number" class="form-control form-control-sm" name="document_quota" min="0" placeholder="0 = inherit">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small mb-1" for="quotaTenantUpload">Max upload bytes</label>
+                    <input id="quotaTenantUpload" type="number" class="form-control form-control-sm" name="max_upload_size_bytes" min="0" placeholder="0 = inherit">
+                </div>
+                <div class="col-md-1">
+                    <button type="submit" class="btn btn-primary btn-sm w-100">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="card">
         <div class="card-body p-0">
             {% if tenant_quotas %}
@@ -243,6 +444,8 @@
                             <th class="text-end">Storage Used</th>
                             <th class="text-end">Doc Limit</th>
                             <th class="text-end">Doc Count</th>
+                            <th>Last Recalculated</th>
+                            <th class="text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -263,6 +466,27 @@
                             </td>
                             <td class="text-end small">{{ tq.document_quota or '—' }}</td>
                             <td class="text-end small">{{ tq.document_count or 0 }}</td>
+                            <td class="small admin-quota-muted-value">
+                                {{ tq.last_recalculated_at.strftime('%Y-%m-%d %H:%M') if tq.last_recalculated_at else '—' }}
+                            </td>
+                            <td class="text-center">
+                                <form method="post"
+                                      action="{{ url_for('admin.quota_tenant_recalculate', tenant_id=tq.tenant_id) }}"
+                                      data-admin-confirm="Recalculate tenant quota counters from document records?">
+                                    <button type="submit" class="btn btn-sm btn-outline-primary py-0 px-2"
+                                            aria-label="Recalculate tenant quota {{ tq.tenant_id }}">
+                                        <i class="bi bi-arrow-repeat"></i>
+                                    </button>
+                                </form>
+                                <form method="post"
+                                      action="{{ url_for('admin.quota_tenant_delete', tenant_id=tq.tenant_id) }}"
+                                      data-admin-confirm="Delete this tenant quota override?">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2"
+                                            aria-label="Delete tenant quota {{ tq.tenant_id }}">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>

@@ -1,4 +1,5 @@
 """Phase 1 AI Discovery – personalised feed routes."""
+
 from __future__ import annotations
 
 import logging
@@ -7,6 +8,7 @@ from flask import Blueprint, Response, abort, jsonify, render_template, request
 from flask_login import current_user, login_required
 
 from app.config_manager import is_feature_enabled
+from app.routes.route_entity_lookup import _base_template
 from app.services.ai_discovery_payloads import (
     feed_recommendation_to_payload,
     reading_list_item_to_payload,
@@ -19,15 +21,6 @@ logger = logging.getLogger(__name__)
 def _require_feature():
     if not is_feature_enabled("ai_discovery_enabled"):
         abort(404)
-
-
-def _is_partial() -> bool:
-    partial_flag = (request.args.get("partial") or "").strip().lower()
-    return partial_flag in {"1", "true"} or request.headers.get("X-Requested-With") == "SPA"
-
-
-def _base_template() -> str:
-    return "base_embed.html" if _is_partial() else "base.html"
 
 
 @feed_bp.route("", methods=["GET"])
@@ -57,10 +50,12 @@ def refresh_feed():
 
     try:
         items = RecommendationService().refresh_feed(current_user.id, force=True)
-        return jsonify({
-            "items": [feed_recommendation_to_payload(item) for item in items],
-            "count": len(items),
-        })
+        return jsonify(
+            {
+                "items": [feed_recommendation_to_payload(item) for item in items],
+                "count": len(items),
+            }
+        )
     except Exception:
         logger.exception("Feed refresh failed for user %s", current_user.id)
         return jsonify({"error": "Feed refresh failed"}), 500
@@ -73,7 +68,9 @@ def dismiss_item(item_id: int):
     from app.services.recommendation_service import RecommendationService
 
     try:
-        RecommendationService().dismiss_recommendation(current_user.id, recommendation_id=item_id)
+        RecommendationService().dismiss_recommendation(
+            current_user.id, recommendation_id=item_id
+        )
         return jsonify({"ok": True})
     except LookupError:
         return jsonify({"error": "not found"}), 404

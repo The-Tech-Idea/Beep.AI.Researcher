@@ -165,7 +165,8 @@
                     '</label><input type="text" id="describeColsInput" class="form-control form-control-sm" placeholder="col1,col2">';
                 document.getElementById('rowCol').innerHTML = '<option value="">' + (strings.selectColumn || 'Select') + '</option>' + opts;
                 document.getElementById('colCol').innerHTML = '<option value="">' + (strings.selectColumn || 'Select') + '</option>' + opts;
-            });
+            })
+            .catch(function () { /* silently fail — columns will be empty */ });
     }
 
     if (sourceSelect) {
@@ -179,6 +180,7 @@
             if (!sid) { describeResults.textContent = strings.selectSource || 'Select a data source.'; return; }
             var colInput = document.getElementById('describeColsInput');
             var cols = colInput ? colInput.value.split(',').map(function (s) { return s.trim(); }).filter(Boolean) : [];
+            try {
             var r = await fetch('/projects/' + projectId + '/stats/describe', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -186,6 +188,9 @@
             });
             var j = await r.json();
             describeResults.textContent = JSON.stringify(j.stats || {}, null, 2);
+            } catch (e) {
+                describeResults.textContent = strings.describeFailed || 'Describe failed: ' + e.message;
+            }
         });
     }
 
@@ -196,6 +201,7 @@
             var col = document.getElementById('colCol').value;
             var crosstabResults = document.getElementById('crosstabResults');
             if (!sid || !row || !col) { crosstabResults.textContent = strings.selectBoth || 'Select source and both columns.'; return; }
+            try {
             var r = await fetch('/projects/' + projectId + '/stats/crosstab', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -203,6 +209,9 @@
             });
             var j = await r.json();
             crosstabResults.textContent = JSON.stringify(j, null, 2);
+            } catch (e) {
+                crosstabResults.textContent = strings.crosstabFailed || 'Crosstab failed: ' + e.message;
+            }
         });
     }
 

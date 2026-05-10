@@ -1,4 +1,5 @@
 """Declared interest profile management for Phase 1 AI discovery."""
+
 from __future__ import annotations
 
 from typing import Any
@@ -18,23 +19,40 @@ class InterestProfileService:
     DEFAULT_SOURCES = ["semantic_scholar", "pubmed", "arxiv", "crossref"]
     ALLOWED_SOURCES = set(DEFAULT_SOURCES)
 
-    def __init__(self, inference_service=None, recommendation_service=None, job_queue_factory=get_job_queue):
+    def __init__(
+        self,
+        inference_service=None,
+        recommendation_service=None,
+        job_queue_factory=get_job_queue,
+        profile_repo=None,
+    ):
         self._inference_service = inference_service
         self._recommendation_service = recommendation_service
         self._job_queue_factory = job_queue_factory
+        self._profile_repo = profile_repo
+
+    @property
+    def _repo(self):
+        if self._profile_repo is None:
+            from app.repositories.interest_profile_repository import (
+                InterestProfileRepository,
+            )
+
+            self._profile_repo = InterestProfileRepository()
+        return self._profile_repo
 
     def get_or_create_profile(self, user_id: int) -> ResearchInterestProfile:
-        profile = ResearchInterestProfile.query.filter_by(user_id=user_id).first()
+        profile = self._repo.get_by_user(user_id)
         if profile is None:
             profile = ResearchInterestProfile(
                 user_id=user_id,
                 preferred_sources=list(self.DEFAULT_SOURCES),
             )
-            db.session.add(profile)
-            db.session.commit()
+            self._repo.add(profile)
+            self._repo.commit()
         elif not profile.preferred_sources:
             profile.preferred_sources = list(self.DEFAULT_SOURCES)
-            db.session.commit()
+            self._repo.commit()
         return profile
 
     def get_profile_dict(self, user_id: int) -> dict[str, Any]:
@@ -59,8 +77,7 @@ class InterestProfileService:
         if inference_enabled is not None:
             profile.inference_enabled = bool(inference_enabled)
 
-        db.session.add(profile)
-        db.session.commit()
+        self._repo.commit()
 
         self._get_recommendation_service().invalidate_user_feed(user_id)
 
@@ -125,20 +142,26 @@ class InterestProfileService:
     def _get_inference_service(self):
         if self._inference_service is None:
             from app.services.interest_inference_service import InterestInferenceService
+
             self._inference_service = InterestInferenceService()
         return self._inference_service
 
     def _get_recommendation_service(self):
         if self._recommendation_service is None:
             from app.services.recommendation_service import RecommendationService
+
             self._recommendation_service = RecommendationService()
         return self._recommendation_service
 
 
 def handle_interest_profile_inference_job(input_data: dict[str, Any]) -> dict[str, Any]:
     user_id = int(input_data.get("user_id"))
-    inferred_topics = InterestProfileService().trigger_inference(user_id, run_async=False)
+    inferred_topics = InterestProfileService().trigger_inference(
+        user_id, run_async=False
+    )
     return {"user_id": user_id, "inferred_topics": inferred_topics}
 
 
-get_job_registry().register(INTEREST_INFERENCE_JOB_TYPE, handle_interest_profile_inference_job)
+get_job_registry().register(
+    INTEREST_INFERENCE_JOB_TYPE, handle_interest_profile_inference_job
+)

@@ -45,7 +45,7 @@
     {% if u.must_change_password %}
     <span class="admin-user-detail-status-badge admin-user-detail-status-badge--warning"><i class="bi bi-key me-1"></i>Must Change Password</span>
     {% endif %}
-    {% if u.locked_until and u.locked_until > now %}
+    {% if u.locked_until is defined and u.locked_until and u.locked_until > now %}
     <span class="admin-user-detail-status-badge admin-user-detail-status-badge--locked"><i class="bi bi-lock me-1"></i>Locked</span>
     {% endif %}
     {% if u.role %}
@@ -238,9 +238,9 @@
                     <div class="card-header"><strong>Account Lockout</strong></div>
                     <div class="card-body">
                         <p class="small admin-user-detail-helper-text mb-1">Failed login attempts:
-                            <strong>{{ u.failed_login_attempts or 0 }}</strong></p>
+                            <strong>{{ u.failed_login_attempts if u.failed_login_attempts is defined else 0 }}</strong></p>
                         <p class="small admin-user-detail-helper-text mb-3">Locked until:
-                            <strong>{{ u.locked_until.strftime('%Y-%m-%d %H:%M') if u.locked_until else 'Not locked' }}</strong></p>
+                            <strong>{{ u.locked_until.strftime('%Y-%m-%d %H:%M') if u.locked_until is defined and u.locked_until else 'Not locked' }}</strong></p>
                         <form method="post" action="{{ url_for('admin.user_unlock', user_id=u.id) }}">
                             <button type="submit" class="btn admin-user-detail-action-button admin-user-detail-action-button--success">
                                 <i class="bi bi-unlock me-1"></i>Unlock account
@@ -261,9 +261,9 @@
                             <span class="admin-user-detail-inline-badge admin-user-detail-inline-badge--mfa-off">Disabled</span>
                             {% endif %}
                         </p>
-                        <p class="small admin-user-detail-helper-text mb-1">Methods: <strong>{{ u.mfa_methods or '—' }}</strong></p>
+                        <p class="small admin-user-detail-helper-text mb-1">Methods: <strong>{{ u.mfa_methods if u.mfa_methods is defined else '—' }}</strong></p>
                         <p class="small admin-user-detail-helper-text mb-3">Backup codes remaining:
-                            <strong>{{ u.mfa_backup_codes_remaining or 0 }}</strong></p>
+                            <strong>{{ u.mfa_backup_codes_remaining if u.mfa_backup_codes_remaining is defined else 0 }}</strong></p>
                         <form method="post" action="{{ url_for('admin.user_mfa_reset', user_id=u.id) }}"
                             data-admin-confirm="Clear all MFA for {{ u.username }}? They will need to re-enroll.">
                             <button type="submit" class="btn admin-user-detail-action-button admin-user-detail-action-button--outline-warning">

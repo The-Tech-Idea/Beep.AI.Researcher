@@ -1,0 +1,96 @@
+/**
+ * Phase 3 — Knowledge Map CSS.
+ * All tokens from design-system.css and jenni-theme.css.
+ */
+
+.knowledge-map-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  min-height: 70vh;
+}
+
+.knowledge-map-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+}
+
+.knowledge-map-canvas {
+  flex: 1;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface-secondary);
+  min-height: 500px;
+  overflow: hidden;
+  position: relative;
+}
+
+.knowledge-map-canvas canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.knowledge-map-sidepanel {
+  width: 320px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  padding: var(--space-md);
+  overflow-y: auto;
+  max-height: 600px;
+}
+
+.knowledge-map-node {
+  padding: var(--space-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-sm);
+  cursor: pointer;
+  transition: border-color var(--transition-fast) ease,
+              background var(--transition-fast) ease;
+}
+
+.knowledge-map-node:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-hover);
+}
+
+.knowledge-map-node--ghost {
+  border-style: dashed;
+  opacity: 0.7;
+}
+
+.knowledge-map-node__title {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.knowledge-map-node__meta {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.knowledge-map-detail {
+  padding: var(--space-md);
+}
+
+.knowledge-map-detail__title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+@media (max-width: 992px) {
+  .knowledge-map-sidepanel {
+    width: 100%;
+    max-height: none;
+  }
+}

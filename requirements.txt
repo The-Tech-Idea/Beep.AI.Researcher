@@ -9,6 +9,7 @@ openpyxl>=3.1.0
 python-docx>=0.8.11
 xhtml2pdf>=0.2.14
 markdown>=3.4.0
+pypdf>=4.0.0
 
 psutil>=5.9.0
 alembic>=1.12.0
@@ -18,15 +19,35 @@ cryptography>=41.0.0
 pyotp>=2.9.0
 qrcode[pil]>=7.4.2
 
-# Storage backends (optional — only needed for non-local storage)
+# Phase 3 — Knowledge Map clustering (K-Means, silhouette scoring)
+scikit-learn>=1.3.0
+
+# Phase 6 — Citation Style Language (50+ bibliography styles)
+citeproc-py>=0.6.0
+
+# Storage backends (lightweight — only loaded when configured)
 boto3>=1.34.0                   # S3-compatible / MinIO backend
 azure-storage-blob>=12.19.0     # Azure Blob Storage backend
 smbprotocol>=1.13.0             # SMB / NAS backend
 
-# OAuth2 email (optional — only needed when email auth method is ms365 or google)
+# OAuth2 email (lightweight — only loaded when configured)
 msal>=1.26.0                    # Microsoft 365 / Entra ID mail via Graph API
 google-api-python-client>=2.100.0  # Google Gmail API
 google-auth>=2.22.0             # Google OAuth2 credentials
 google-auth-httplib2>=0.1.1     # httplib2 transport for google-auth
+google-auth-oauthlib>=1.2.0     # Google OAuth2 browser/app flow helpers
 
 pytest>=7.0.0
+
+# ── Optional heavy packages — install via Admin > Optional Packages ──────
+# docling[easyocr,rapidocr,htmlrender,onnxruntime,asr,xbrl,vlm]>=2.8.0
+# pymupdf4llm>=0.0.27
+# PyMuPDF>=1.25.0
+# unstructured[all-docs,local-inference]>=0.16.0
+# pdfplumber>=0.11.0
+# pytesseract>=0.3.10
+# Pillow>=10.0.0
+# llama-index-core>=0.12.0
+# llama-index-readers-file>=0.4.0
+# llama-index-storage-docstore-redis>=0.3.0
+# llama-index-storage-docstore-mongodb>=0.3.0

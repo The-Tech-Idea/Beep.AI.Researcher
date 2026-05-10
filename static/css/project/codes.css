@@ -88,35 +88,35 @@
 }
 
 .codes-color-swatch-indigo {
-    background: #6366f1;
+    background: var(--color-primary);
 }
 
 .codes-color-swatch-green {
-    background: #22c55e;
+    background: var(--color-success);
 }
 
 .codes-color-swatch-amber {
-    background: #f59e0b;
+    background: var(--color-warning);
 }
 
 .codes-color-swatch-red {
-    background: #ef4444;
+    background: var(--color-error);
 }
 
 .codes-color-swatch-pink {
-    background: #ec4899;
+    background: var(--color-accent);
 }
 
 .codes-color-swatch-purple {
-    background: #8b5cf6;
+    background: var(--color-secondary);
 }
 
 .codes-color-swatch-cyan {
-    background: #06b6d4;
+    background: var(--color-info);
 }
 
 .codes-color-swatch-slate {
-    background: #64748b;
+    background: var(--text-muted);
 }
 
 .codes-empty-sidebar {

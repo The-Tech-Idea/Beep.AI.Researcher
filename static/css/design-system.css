@@ -81,8 +81,8 @@ body {
   border-radius: var(--radius-lg);
   border: 1px solid color-mix(in srgb, var(--border-color) 75%, transparent);
   box-shadow: var(--shadow-lg);
-  color: #fff;
-  background: rgba(15, 23, 42, 0.92);
+  color: var(--text-inverse);
+  background: color-mix(in srgb, var(--text-primary) 92%, var(--bg-surface));
   opacity: 0;
   transform: translateY(0.75rem);
   transition: opacity var(--transition-fast), transform var(--transition-fast);
@@ -184,7 +184,7 @@ body {
 
 .nav-link-btn.active {
   color: var(--color-primary);
-  background: rgba(99, 102, 241, 0.12);
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--bg-surface));
   border-color: var(--color-primary);
 }
 
@@ -266,7 +266,7 @@ body {
 
 .theme-btn.active {
   background: var(--color-primary);
-  color: white;
+  color: var(--text-inverse);
   box-shadow: var(--shadow-sm);
 }
 
@@ -275,17 +275,31 @@ body {
    ============================================ */
 
 :root {
+  /* ============================================
+     DESIGN TOKENS (CSS Custom Properties)
+     ============================================ */
+
   /* Colors - Primary Palette */
   --color-primary: #6366f1;
   --color-primary-hover: #4f46e5;
   --color-secondary: #a855f7;
+  --color-secondary-hover: #9333ea;
+  --color-tertiary: #f59e0b;
+  --color-tertiary-hover: #d97706;
   --color-accent: #d946ef;
   --color-cta: #6366f1;
   --color-cta-hover: #4f46e5;
   --color-success: #22c55e;
-  --color-warning: #ffc107;
+  --color-success-hover: #16a34a;
+  --color-warning: #f59e0b;
+  --color-warning-hover: #d97706;
   --color-error: #ef4444;
+  --color-error-hover: #dc2626;
   --color-info: #6366f1;
+  --color-info-hover: #4f46e5;
+  --color-dark: #424242;
+  --color-light: #f8fafc;
+  --color-default: #64748b;
   --gradient-primary: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #d946ef 100%);
   
   /* Backgrounds - Light Theme */
@@ -296,6 +310,8 @@ body {
   --bg-hover: #e2e8f0;
   --bg-body: #f8fafc;
   --bg-surface-secondary: #f1f5f9;
+  --bg-appbar: #ffffff;
+  --bg-drawer: #ffffff;
   
   /* Text - Light Theme */
   --text-primary: #0f172a;
@@ -308,6 +324,11 @@ body {
   --border-color: rgba(15, 23, 42, 0.12);
   --border-hover: rgba(15, 23, 42, 0.2);
   --border-focus: #6366f1;
+  
+  /* MudBlazor Input/Field borders */
+  --input-border: rgba(15, 23, 42, 0.24);
+  --input-border-hover: rgba(15, 23, 42, 0.87);
+  --input-border-focused: #6366f1;
 
   /* Legacy landing.css variable mappings */
   --color-text: var(--text-primary);
@@ -316,10 +337,22 @@ body {
   --color-surface: var(--bg-secondary);
   
   /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+  --shadow-0: none;
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-2: 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-3: 0 3px 6px rgba(0, 0, 0, 0.08);
+  --shadow-4: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-6: 0 6px 10px rgba(0, 0, 0, 0.12);
+  --shadow-8: 0 8px 12px rgba(0, 0, 0, 0.14);
+  --shadow-12: 0 12px 16px rgba(0, 0, 0, 0.16);
+  --shadow-16: 0 16px 20px rgba(0, 0, 0, 0.18);
+  --shadow-24: 0 20px 25px rgba(0, 0, 0, 0.2);
+  
+  /* Legacy shadow aliases */
+  --shadow-sm: var(--shadow-1);
+  --shadow-md: var(--shadow-4);
+  --shadow-lg: var(--shadow-8);
+  --shadow-xl: var(--shadow-16);
   
   /* Spacing Scale */
   --space-xs: 0.25rem;   /* 4px */
@@ -388,26 +421,33 @@ body {
 /* Dark Theme */
 [data-bs-theme="dark"] {
   /* Backgrounds - Dark Theme */
-  --bg-primary: #030305;
-  --bg-secondary: #0a0a12;
-  --bg-tertiary: #161625;
-  --bg-surface: rgba(18, 18, 28, 0.7);
-  --bg-hover: #1f1f2d;
-  --bg-body: #030305;
-  --bg-surface-secondary: #0a0a12;
+  --bg-primary: #0a0a1a;
+  --bg-secondary: #12122a;
+  --bg-tertiary: #1e1e3a;
+  --bg-surface: rgba(18, 18, 42, 0.85);
+  --bg-hover: #2a2a4a;
+  --bg-body: #0a0a1a;
+  --bg-surface-secondary: #12122a;
+  --bg-appbar: #12122a;
+  --bg-drawer: #12122a;
   
   /* Text - Dark Theme */
   --text-primary: #e2e8f0;
-  --text-secondary: rgba(255, 255, 255, 0.6);
-  --text-muted: rgba(255, 255, 255, 0.45);
-  --text-inverse: #0f172a;
+  --text-secondary: rgba(226, 232, 240, 0.7);
+  --text-muted: rgba(226, 232, 240, 0.5);
+  --text-inverse: #0a0a1a;
   --active-link-dark: #818cf8;
   
   /* Borders - Dark */
-  --border-color: rgba(255, 255, 255, 0.08);
+  --border-color: rgba(255, 255, 255, 0.1);
   --border-hover: rgba(255, 255, 255, 0.16);
   
-  /* Shadows - Dark */
+  /* MudBlazor Input/Field borders - Dark */
+  --input-border: rgba(255, 255, 255, 0.24);
+  --input-border-hover: rgba(255, 255, 255, 0.87);
+  --input-border-focused: #818cf8;
+  
+  /* Shadows - Dark (stronger for depth) */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);

@@ -31,6 +31,7 @@
     const SPA_ROUTES = {
         'dashboard': () => '/researcher/?partial=1',
         'library': () => '/references?partial=1',
+        'documents': () => '/researcher/documents?partial=1',
         'agent-plans': () => '/researcher/agent-plans?partial=1',
         'feed': () => '/feed?partial=1',
         'reading-list': () => '/reading-list?partial=1',
@@ -72,6 +73,7 @@
     const LABELS = {
         'dashboard': 'Home',
         'library': 'Library',
+        'documents': 'Documents',
         'agent-plans': 'Guided AI Plans',
         'feed': 'My Feed',
         'reading-list': 'Reading List',

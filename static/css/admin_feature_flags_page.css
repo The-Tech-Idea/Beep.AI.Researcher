@@ -1,0 +1,197 @@
+/* Admin Feature Flags Page */
+
+.admin-feature-flags-subtitle {
+    color: var(--text-secondary, #adb5bd);
+}
+
+.admin-feature-flags-secondary-button {
+    background-color: var(--bg-surface, #2d3748);
+    border-color: var(--border-color, #4a5568);
+    color: var(--text-primary, #e2e8f0);
+}
+
+.admin-feature-flags-secondary-button:hover {
+    background-color: var(--bg-hover, #374151);
+    color: var(--text-primary, #e2e8f0);
+}
+
+.admin-feature-flags-message {
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md, 8px);
+    margin-bottom: 1rem;
+}
+
+.admin-feature-flags-message--success {
+    background-color: color-mix(in srgb, var(--color-success, #22c55e) 15%, var(--bg-surface, #1a202c));
+    border: 1px solid color-mix(in srgb, var(--color-success, #22c55e) 40%, transparent);
+    color: var(--color-success, #22c55e);
+}
+
+.admin-feature-flags-message--error {
+    background-color: color-mix(in srgb, var(--color-error, #ef4444) 15%, var(--bg-surface, #1a202c));
+    border: 1px solid color-mix(in srgb, var(--color-error, #ef4444) 40%, transparent);
+    color: var(--color-error, #ef4444);
+}
+
+.admin-feature-flags-summary .badge {
+    font-size: 1.1rem;
+    padding: 0.4em 0.8em;
+}
+
+/* Category cards */
+.admin-feature-flags-category-card {
+    border: 1px solid var(--border-color, #4a5568);
+}
+
+.admin-feature-flags-category-card .card-header {
+    background-color: var(--bg-surface, #2d3748);
+    border-bottom: 1px solid var(--border-color, #4a5568);
+}
+
+/* Feature flag cards */
+.admin-feature-flag-card {
+    padding: 1rem;
+    border-radius: var(--radius-md, 8px);
+    border: 1px solid var(--border-color, #4a5568);
+    background-color: var(--bg-surface, #2d3748);
+    transition: all var(--transition-base, 200ms) ease;
+}
+
+.admin-feature-flag-card:hover {
+    border-color: color-mix(in srgb, var(--color-primary, #6366f1) 40%, var(--border-color, #4a5568));
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-primary, #6366f1) 20%, transparent);
+}
+
+.admin-feature-flag-card--enabled {
+    border-color: color-mix(in srgb, var(--color-success, #22c55e) 30%, var(--border-color, #4a5568));
+    background-color: color-mix(in srgb, var(--color-success, #22c55e) 5%, var(--bg-surface, #2d3748));
+}
+
+.admin-feature-flag-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm, 8px);
+    background-color: color-mix(in srgb, var(--color-primary, #6366f1) 15%, var(--bg-surface, #2d3748));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: var(--color-primary, #6366f1);
+    flex-shrink: 0;
+}
+
+.admin-feature-flag-card--enabled .admin-feature-flag-icon {
+    background-color: color-mix(in srgb, var(--color-success, #22c55e) 20%, var(--bg-surface, #2d3748));
+    color: var(--color-success, #22c55e);
+}
+
+.admin-feature-flag-content {
+    margin-left: 0.75rem;
+}
+
+.admin-feature-flag-label {
+    color: var(--text-primary, #e2e8f0);
+    font-weight: 600;
+}
+
+.admin-feature-flag-description {
+    color: var(--text-secondary, #adb5bd);
+    line-height: 1.4;
+}
+
+.admin-feature-flag-meta {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.admin-feature-flag-level {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.admin-feature-flag-level--core {
+    background-color: color-mix(in srgb, var(--color-primary, #6366f1) 25%, transparent);
+    color: var(--color-primary, #6366f1);
+}
+
+.admin-feature-flag-level--optional {
+    background-color: color-mix(in srgb, var(--color-info, #3b82f6) 25%, transparent);
+    color: var(--color-info, #3b82f6);
+}
+
+.admin-feature-flag-level--experimental {
+    background-color: color-mix(in srgb, var(--color-warning, #f59e0b) 25%, transparent);
+    color: var(--color-warning, #f59e0b);
+}
+
+.admin-feature-flag-category {
+    background-color: var(--bg-hover, #374151);
+    color: var(--text-secondary, #adb5bd);
+}
+
+/* Table */
+.admin-feature-flags-table th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary, #adb5bd);
+    border-bottom: 2px solid var(--border-color, #4a5568);
+}
+
+.admin-feature-flags-table td {
+    border-bottom: 1px solid var(--border-color, #4a5568);
+    vertical-align: middle;
+}
+
+.admin-feature-flags-table td i.bi {
+    color: var(--text-secondary, #adb5bd);
+    font-size: 1.1rem;
+}
+
+.admin-feature-flag-status {
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm, 8px);
+}
+
+.admin-feature-flag-status--enabled {
+    color: var(--color-success, #22c55e);
+    background-color: color-mix(in srgb, var(--color-success, #22c55e) 10%, transparent);
+}
+
+.admin-feature-flag-status--disabled {
+    color: var(--text-muted, #6c757d);
+    background-color: color-mix(in srgb, var(--text-muted, #6c757d) 10%, transparent);
+}
+
+/* Toggle switch styling */
+.form-check-input:checked {
+    background-color: var(--color-success, #22c55e);
+    border-color: var(--color-success, #22c55e);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .admin-feature-flag-card {
+        margin-bottom: 0.75rem;
+    }
+
+    .admin-feature-flag-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+
+    .admin-feature-flags-summary {
+        margin-bottom: 0.5rem;
+    }
+}

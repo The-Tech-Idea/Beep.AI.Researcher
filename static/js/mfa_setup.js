@@ -9,19 +9,26 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    const config = JSON.parse(configNode.textContent);
-    const originalMarkup = copyButton.innerHTML;
+    let config;
+    try {
+        config = JSON.parse(configNode.textContent);
+    } catch (e) {
+        return;
+    }
+
+    const originalText = copyButton.textContent.trim();
 
     copyButton.addEventListener('click', async () => {
         if (!navigator.clipboard?.writeText) {
+            copyButton.setAttribute('title', config.copyUnavailable);
             return;
         }
 
         try {
             await navigator.clipboard.writeText(secretInput.value);
-            copyButton.innerHTML = config.copySuccessIcon;
+            copyButton.textContent = config.copySuccess;
             window.setTimeout(() => {
-                copyButton.innerHTML = originalMarkup;
+                copyButton.innerHTML = '<i class="bi bi-clipboard"></i> ' + originalText;
             }, 1500);
         } catch (error) {
             copyButton.setAttribute('title', config.copyUnavailable);

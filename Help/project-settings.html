@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Settings - Beep.AI.Researcher Help</title>
+    <link rel="stylesheet" href="sphinx-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+</head>
+<body>
+    <button class="mobile-menu-toggle" onclick="toggleSidebar()" aria-label="Toggle menu"><i class="bi bi-list"></i></button>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"><i class="bi bi-moon"></i></button>
+
+    <div class="container">
+        <aside class="sidebar" id="sidebar"></aside>
+
+        <main class="content">
+            <div class="content-wrapper">
+                <nav class="breadcrumb-nav">
+                    <a href="index.html">Home</a>
+                    <span>&#8250;</span>
+                    <span>Projects</span>
+                    <span>&#8250;</span>
+                    <span>Project Settings</span>
+                </nav>
+
+                <div class="page-header">
+                    <h1>Project Settings</h1>
+                    <p class="page-subtitle">Configure project name, RAG settings, and quality modes</p>
+                </div>
+
+                <section class="section">
+                    <h2>Basic Settings</h2>
+                    <ul><li><strong>Name</strong> -- Project display name</li><li><strong>Description</strong> -- Brief project summary</li></ul>
+                </section>
+
+                <section class="section">
+                    <h2>Reading Setup</h2>
+                    <p>Configure how AI reads and retrieves information:</p><ul><li><strong>Document Library</strong> -- Select which library to use</li><li><strong>Answer Style</strong> -- Fast summaries, balanced help, or careful reading</li><li><strong>File Type</strong> -- Optimize chunking for your document type</li><li><strong>Context Window</strong> -- Use nearby paragraphs for better context</li></ul>
+                </section>
+
+                <div class="nav-links">
+                    <a href="project-overview.html"><i class="bi bi-arrow-left"></i> Project Overview</a>
+                    <a href="project-members.html">Members & Collaboration <i class="bi bi-arrow-right"></i></a>
+                </div>
+
+                <footer class="documentation-footer">
+                    <div class="footer-content">
+                        <div><p>&copy; 2026 The Tech Idea &mdash; Beep.AI.Researcher Help</p></div>
+                        <div class="footer-links">
+                            <a href="https://github.com/The-Tech-Idea/Beep.AI.Researcher">GitHub</a>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+    <script src="navigation.js"></script>
+</body>
+</html>

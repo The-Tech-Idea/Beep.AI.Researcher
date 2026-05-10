@@ -1,0 +1,118 @@
+/**
+ * Phase 6 — References / Citation Intelligence CSS.
+ * All tokens from design-system.css and jenni-theme.css.
+ */
+
+.references-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+}
+
+.references-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  margin-bottom: var(--space-md);
+}
+
+.references-search {
+  flex: 1;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface-secondary);
+  color: var(--text-primary);
+  font-size: var(--text-sm);
+}
+
+.references-search:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 25%, transparent);
+}
+
+.references-list {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  overflow: hidden;
+}
+
+.references-list__item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  border-bottom: 1px solid var(--border-color);
+  transition: background var(--transition-fast) ease;
+}
+
+.references-list__item:hover {
+  background: var(--bg-hover);
+}
+
+.references-list__item:last-child {
+  border-bottom: none;
+}
+
+.references-list__content {
+  flex: 1;
+}
+
+.references-list__title {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.references-list__meta {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.references-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+}
+
+.references-badge--duplicate {
+  background: color-mix(in srgb, var(--color-warning) 15%, var(--bg-surface));
+  color: var(--color-warning);
+}
+
+.references-badge--retracted {
+  background: color-mix(in srgb, var(--color-error) 15%, var(--bg-surface));
+  color: var(--color-error);
+}
+
+.analytics-card {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.analytics-card__title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.analytics-chart {
+  width: 100%;
+  min-height: 200px;
+}

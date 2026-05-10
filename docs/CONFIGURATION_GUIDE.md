@@ -481,6 +481,20 @@ def process_request(tenant_id, request_data):
 
 ## Environment Variables
 
+### Startup Dependency Installation
+
+`AUTO_INSTALL_REQUIREMENTS_ON_STARTUP` controls whether the app installs missing runtime packages from `requirements.txt` during startup.
+
+| Value | Behavior |
+|-------|----------|
+| `1`, `true`, `yes`, `on` | Install missing packages using the active Python executable. |
+| `0`, `false`, `no`, `off` | Do not install packages; startup fails if required packages are missing. |
+| unset | Use `auto_install_requirements_on_startup` from app config, default `true`. |
+
+The installer targets the interpreter that launched the app. For the normal Windows workflow, `run.bat` creates `.venv` from Python Embedded and starts the app with `.venv\Scripts\python.exe`, so packages are installed into `.venv`.
+
+Database schema startup is automatic through `app/services/startup/database_bootstrap.py`. It creates missing tables, adds additive document-management/quota/RAG columns, and seeds default plan tiers. Keep behavior definitions in Python modules and migrations; JSON configuration only controls runtime settings.
+
 Configure settings without changing code:
 
 ```bash

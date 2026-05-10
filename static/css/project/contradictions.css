@@ -240,7 +240,7 @@
 
 .contradictions-severity-pill.contradictions-severity-high {
     background: var(--spa-danger);
-    color: #fff;
+    color: var(--spa-danger-contrast, var(--text-inverse));
 }
 
 .contradictions-severity-pill.contradictions-severity-medium {

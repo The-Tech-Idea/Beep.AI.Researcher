@@ -97,8 +97,10 @@ echo [INFO] Embedded Python installed successfully!
 echo.
 
 :run_launcher
-REM Install/upgrade pip and install requirements
-echo [INFO] Installing required packages...
+REM Install/upgrade pip in embedded Python only so it can bootstrap .venv.
+REM Application packages are installed into .venv by run_hostadmin.py and by
+REM run.py startup dependency bootstrap, not into python-embedded.
+echo [INFO] Preparing embedded Python bootstrap tools...
 python-embedded\python.exe -m pip install --upgrade pip --quiet --no-warn-script-location
 if errorlevel 1 (
     echo [ERROR] Failed to upgrade pip!
@@ -108,16 +110,15 @@ if errorlevel 1 (
 
 REM Install virtualenv package by default (for reliable venv creation)
 python-embedded\python.exe -m pip install virtualenv --quiet --no-warn-script-location
-
-python-embedded\python.exe -m pip install -r requirements.txt --quiet --no-warn-script-location
 if errorlevel 1 (
-    echo [ERROR] Failed to install required packages!
-    echo Please check your internet connection and requirements.txt file.
+    echo [ERROR] Failed to install virtualenv bootstrap package!
+    echo Please check your internet connection.
     pause
     exit /b 1
 )
 
-REM Run the launcher with embedded Python
+REM Run the launcher with embedded Python. It creates/uses .venv and installs
+REM requirements.txt there before starting the app.
 python-embedded\python.exe run_hostadmin.py %*
 
 if errorlevel 1 (

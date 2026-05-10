@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Installation - Beep.AI.Researcher Help</title>
+    <link rel="stylesheet" href="sphinx-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+</head>
+<body>
+    <button class="mobile-menu-toggle" onclick="toggleSidebar()" aria-label="Toggle menu"><i class="bi bi-list"></i></button>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"><i class="bi bi-moon"></i></button>
+
+    <div class="container">
+        <aside class="sidebar" id="sidebar"></aside>
+
+        <main class="content">
+            <div class="content-wrapper">
+                <nav class="breadcrumb-nav">
+                    <a href="index.html">Home</a>
+                    <span>&#8250;</span>
+                    <span>Getting Started</span>
+                    <span>&#8250;</span>
+                    <span>Installation</span>
+                </nav>
+
+                <div class="page-header">
+                    <h1>Installation</h1>
+                    <p class="page-subtitle">Install Beep.AI.Researcher on your system</p>
+                </div>
+
+                <section class="section">
+                    <h2>Prerequisites</h2>
+                    <ul><li><strong>Python 3.10+</strong> -- The application is built on Flask</li><li><strong>SQLite or PostgreSQL</strong> -- SQLite is used by default for development</li><li><strong>Beep.AI.Server</strong> (optional but recommended) -- For AI features like RAG chat, code suggestions, and extraction</li><li><strong>Web browser</strong> -- Chrome, Firefox, Safari, or Edge</li></ul>
+                </section>
+
+                <section class="section">
+                    <h2>Step-by-Step Installation</h2>
+                    <ol class="steps"><li>Clone the repository and navigate to the project directory</li><li>Create a virtual environment: <code>python -m venv venv</code></li><li>Activate the virtual environment:<br>  Linux/Mac: <code>source venv/bin/activate</code><br>  Windows: <code>venv\Scripts\activate</code></li><li>Install dependencies: <code>pip install -r requirements.txt</code></li><li>Initialize the database: <code>flask init-db</code></li><li>Start the server: <code>flask run</code></li><li>Open <code>http://localhost:5000</code> in your browser</li></ol>
+                </section>
+
+                <section class="section">
+                    <h2>Configuring Beep.AI.Server</h2>
+                    <p>If you want AI features, you need to configure the connection to Beep.AI.Server:</p><ol class="steps"><li>Log in as an admin user</li><li>Go to <strong>Admin Dashboard</strong> > <strong>Settings</strong></li><li>Enter the Beep.AI.Server URL (e.g., <code>http://localhost:8000</code>)</li><li>Test the connection and save</li></ol><div class="note"><strong>Note:</strong> Without Beep.AI.Server, you can still use document management, coding, and reporting features. AI features like chat, code suggestions, and extraction will show as unavailable.</div>
+                </section>
+
+                <div class="nav-links">
+                    <a href="getting-started.html"><i class="bi bi-arrow-left"></i> Getting Started</a>
+                    <a href="first-login.html">First Login <i class="bi bi-arrow-right"></i></a>
+                </div>
+
+                <footer class="documentation-footer">
+                    <div class="footer-content">
+                        <div><p>&copy; 2026 The Tech Idea &mdash; Beep.AI.Researcher Help</p></div>
+                        <div class="footer-links">
+                            <a href="https://github.com/The-Tech-Idea/Beep.AI.Researcher">GitHub</a>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+    <script src="navigation.js"></script>
+</body>
+</html>

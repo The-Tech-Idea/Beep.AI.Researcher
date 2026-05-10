@@ -1,4 +1,4 @@
-﻿{% extends base_template or "base.html" %}
+{% extends base_template or "base.html" %}
 
 {% block title %}{{ t('dashboard.heading') }} - Beep.AI.Researcher{% endblock %}
 
@@ -166,8 +166,8 @@
             <li class="spa-timeline-item">
                 <div class="spa-timeline-dot"></div>
                 <div class="spa-timeline-content">
-                    <p class="spa-timeline-text">{{ activity.text }}</p>
-                    <span class="spa-timeline-time">{{ activity.time_ago }}</span>
+                    <p class="spa-timeline-text">{{ activity.type|title }}: {{ activity.title }}</p>
+                    <span class="spa-timeline-time">{{ activity.created_at.strftime('%Y-%m-%d %H:%M') if activity.created_at else '' }}</span>
                 </div>
             </li>
             {% endfor %}

@@ -66,7 +66,7 @@
     <div class="spa-chat-footer">
         <div class="research-chat-setup">
             <div class="research-chat-setup-copy">
-                <strong>Ask in natural language.</strong> The assistant will look through this project’s files, answer as clearly as it can, and show which files it relied on when support is available.
+                <strong>{{ t('project_search.intro_title', 'Ask in natural language.') }}</strong> {{ t('project_search.intro_body', 'The assistant will look through this project\'s files, answer as clearly as it can, and show which files it relied on when support is available.') }}
             </div>
         </div>
         <div class="project-search-quality-panel">
@@ -75,7 +75,7 @@
                 <div class="flex-grow-1">
                     <div class="d-flex justify-content-between align-items-center mb-1">
                         <label class="form-label mb-0 project-search-quality-heading" for="answerQualitySlider">
-                            Answer style
+                            {{ t('project_search.rag_mode', 'Answer style') }}
                         </label>
                         <span id="qualityLabel" class="project-search-quality-label">{{ t('project_search.rag_mode.balanced') }}</span>
                     </div>
@@ -122,18 +122,18 @@
     "confirm_clear": t("project_search.confirm.clear"),
     "error_generic": t("project_search.error.generic") | default("An error occurred.", true),
     "sources_label": t("project_search.sources") | default("Used from your files", true),
-    "support_title": "Why this answer",
-    "support_files_used": "Files used",
-    "support_open_file": "Open file",
+    "support_title": t("project_search.support.title") | default("Why this answer", true),
+    "support_files_used": t("project_search.support.files_used") | default("Files used", true),
+    "support_open_file": t("project_search.support.open_file") | default("Open file", true),
     "add_to_report": t("project_search.add_to_report") | default("+ Add to Report", true),
-    "add_to_report_done": "Added",
+    "add_to_report_done": t("project_search.add_to_report_done") | default("Added", true),
     "report_append_url": "/researcher/api/projects/" ~ project.id ~ "/report/append",
     "grounding": {
-        "label": "Support in your project files",
-        "high": "Strong support",
-        "medium": "Some support",
-        "low": "Limited support",
-        "flagged": "Review carefully"
+        "label": t("project_search.grounding.label") | default("Support in your project files", true),
+        "high": t("project_search.grounding.high") | default("Strong support", true),
+        "medium": t("project_search.grounding.medium") | default("Some support", true),
+        "low": t("project_search.grounding.low") | default("Limited support", true),
+        "flagged": t("project_search.grounding.flagged") | default("Review carefully", true)
     }
 } | tojson | safe }}
 </script>

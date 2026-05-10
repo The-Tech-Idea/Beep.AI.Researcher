@@ -36,8 +36,10 @@
         <h4 class="documents-upload-title">{{ t('documents.upload.drag') }}</h4>
         <p class="documents-upload-description">{{
             t('documents.upload.browse') }}</p>
-        <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.txt,.md,.csv,.xlsx" hidden>
-        <p class="documents-upload-formats">{{ t('documents.upload.formats') }}</p>
+        <input type="file" id="fileInput" multiple
+               accept=".pdf,.txt,.text,.md,.html,.htm,.docx,.doc,.pptx,.xlsx,.xls,.csv,.json,.png,.jpg,.jpeg,.tif,.tiff,.bmp,.webp,.wav,.mp3,.m4a,.flac,.ogg,.webm,.vtt,.srt,.tex,.xml,.xbrl"
+               hidden>
+        <p class="documents-upload-formats">{{ t('documents.formats') }}</p>
     </div>
 </div>
 
@@ -71,6 +73,8 @@
                     <th class="documents-select-column"><input type="checkbox" class="form-check-input" id="selectAll"></th>
                     <th>{{ t('documents.table.name') }}</th>
                     <th>{{ t('documents.table.status') }}</th>
+                    <th>{{ t('documents.table.extraction') }}</th>
+                    <th>{{ t('documents.table.ai_search') }}</th>
                     <th>{{ t('documents.table.size') }}</th>
                     <th>{{ t('documents.table.uploaded') }}</th>
                     <th>{{ t('documents.table.activity') }}</th>
@@ -105,6 +109,32 @@
                             doc.status in ['pending', 'processing'] else t('documents.status.failed')) }}
                         </span>
                     </td>
+                    <td>
+                        {% set extraction_status = doc.extraction_status or ('ready' if doc.text_content else 'pending') %}
+                        <span class="spa-badge {{ 'active' if extraction_status == 'ready' else ('archived' if extraction_status in ['pending', 'processing'] else 'draft') }}"
+                              title="{{ doc.extraction_warnings or '' }}">
+                            <i class="bi bi-{{ 'check-circle' if extraction_status == 'ready' else ('hourglass' if extraction_status in ['pending', 'processing'] else 'exclamation-circle') }}"></i>
+                            {{ extraction_status }}
+                        </span>
+                        <div class="documents-muted-cell">
+                            {{ doc.parser_name or t('documents.status.parser_pending') }}
+                            {% if doc.page_count %} · {{ doc.page_count }} pages{% endif %}
+                            {% if doc.table_count %} · {{ doc.table_count }} tables{% endif %}
+                            {% if doc.image_count %} · {{ doc.image_count }} images{% endif %}
+                            {% if doc.ingestion_state and doc.ingestion_state.ingestion_status == 'duplicate' %}
+                                · duplicate of #{{ doc.ingestion_state.duplicate_of_document_id }}
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td>
+                        {% set rag_status = doc.rag_sync_status or 'not_indexed' %}
+                        <span class="spa-badge {{ 'active' if rag_status == 'indexed' else ('archived' if rag_status in ['not_indexed', 'unavailable', 'skipped_duplicate'] else 'draft') }}"
+                              title="{{ doc.rag_sync_message or '' }}">
+                            <i class="bi bi-{{ 'database-check' if rag_status == 'indexed' else ('database-dash' if rag_status in ['not_indexed', 'unavailable'] else 'database-x') }}"></i>
+                            {{ 'duplicate' if rag_status == 'skipped_duplicate' else rag_status }}
+                        </span>
+                        <div class="documents-muted-cell">{{ doc.rag_collection_id or t('documents.status.no_library') }}</div>
+                    </td>
                     <td class="documents-muted-cell">{{ doc.size_formatted }}</td>
                     <td class="documents-muted-cell">{{ doc.created_at.strftime('%b %d, %Y') }}</td>
                     <td>
@@ -130,11 +160,19 @@
                                 title="{{ t('documents.action.ask_ai') }}"
                                 href="{{ url_for('researcher.project_search', project_id=project.id) }}?doc={{ doc.id }}"><i
                                     class="bi bi-chat-left-text" aria-hidden="true"></i></a>
-                            {# Extract data from this document #}
+                            {# Extract data from this document — requires docling #}
+                            {% if packages.docling_extraction %}
                             <a class="documents-action-button documents-action-button--primary"
                                 title="{{ t('documents.action.extract') }}"
                                 href="{{ url_for('researcher.extraction_page', project_id=project.id) }}?doc={{ doc.id }}"><i
                                     class="bi bi-table" aria-hidden="true"></i></a>
+                            {% else %}
+                            <span class="documents-action-button documents-action-button--primary btn--package-disabled feature-tooltip"
+                                title="{{ t('feature.disabled.docling') }}">
+                                <i class="bi bi-table" aria-hidden="true"></i>
+                                <span class="feature-tooltip__content">{{ t('feature.disabled.docling') }}</span>
+                            </span>
+                            {% endif %}
                             {# Generate flashcards from this document #}
                             <a class="documents-action-button documents-action-button--neutral"
                                 title="{{ t('documents.action.flashcards') }}"
@@ -143,6 +181,12 @@
                             <button class="documents-action-button documents-action-button--neutral download-doc-btn"
                                 title="{{ t('documents.action.download') }}" data-doc-id="{{ doc.id }}" type="button"><i
                                     class="bi bi-download" aria-hidden="true"></i></button>
+                            <button class="documents-action-button documents-action-button--info sync-rag-doc-btn"
+                                title="{{ t('documents.action.sync_ai') }}" data-doc-id="{{ doc.id }}" type="button"><i
+                                    class="bi bi-arrow-repeat" aria-hidden="true"></i></button>
+                            <button class="documents-action-button documents-action-button--primary repair-doc-btn"
+                                title="{{ t('documents.action.repair') }}" data-doc-id="{{ doc.id }}" type="button"><i
+                                    class="bi bi-tools" aria-hidden="true"></i></button>
                             <button class="documents-action-button documents-action-button--danger delete-doc-btn"
                                 title="{{ t('documents.action.delete') }}" data-doc-id="{{ doc.id }}" type="button"><i
                                     class="bi bi-trash" aria-hidden="true"></i></button>
@@ -167,9 +211,8 @@
 
 <div id="bulkActionsBar" class="documents-bulk-bar" hidden>
     <span class="documents-bulk-count"><strong id="selectedCount">0</strong> {{ t('documents.bulk.selected') }}</span>
-    <button class="documents-bulk-button documents-bulk-button--neutral" type="button"><i class="bi bi-download documents-button-icon" aria-hidden="true"></i><span>{{ t('documents.bulk.download')
-        }}</span></button>
-    <button class="documents-bulk-button documents-bulk-button--danger" type="button"><i class="bi bi-trash documents-button-icon" aria-hidden="true"></i><span>{{ t('documents.bulk.delete')
+    <button class="documents-bulk-button documents-bulk-button--neutral bulk-repair-docs-btn" type="button"><i class="bi bi-tools documents-button-icon" aria-hidden="true"></i><span>{{ t('documents.action.repair_selected') }}</span></button>
+    <button class="documents-bulk-button documents-bulk-button--danger bulk-delete-docs-btn" type="button"><i class="bi bi-trash documents-button-icon" aria-hidden="true"></i><span>{{ t('documents.bulk.delete')
         }}</span></button>
 </div>
 {% endblock %}

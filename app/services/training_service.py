@@ -6,7 +6,13 @@ import re
 from typing import Any
 
 from app.database import db
-from app.models.researcher import Flashcard, Quiz, QuizAttempt, QuizQuestion, ResearcherDocument
+from app.models.researcher import (
+    Flashcard,
+    Quiz,
+    QuizAttempt,
+    QuizQuestion,
+    ResearcherDocument,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +25,7 @@ def chunk_text(text, size=200):
         return []
     chunks = []
     for index in range(0, len(text), size):
-        chunks.append((text[index:index + size], f"chunk-{index}"))
+        chunks.append((text[index : index + size], f"chunk-{index}"))
     return chunks
 
 
@@ -51,7 +57,9 @@ def generate_flashcards(
 
     documents_query = ResearcherDocument.query.filter_by(project_id=project.id)
     if document_ids:
-        documents_query = documents_query.filter(ResearcherDocument.id.in_(document_ids))
+        documents_query = documents_query.filter(
+            ResearcherDocument.id.in_(document_ids)
+        )
     documents = documents_query.limit(10).all()
 
     created = []
@@ -97,9 +105,13 @@ def generate_flashcards(
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt},
                 ]
-                ok, reply = beep_ai_client_module.chat_reply(messages, temperature=generation_temperature)
+                ok, reply = beep_ai_client_module.chat_reply(
+                    messages, temperature=generation_temperature
+                )
                 if not ok:
-                    logger.warning("Flashcard LLM failed for doc %s: %s", document.id, reply)
+                    logger.warning(
+                        "Flashcard LLM failed for doc %s: %s", document.id, reply
+                    )
                     continue
 
                 cards = extract_json_list(reply, "cards")
@@ -134,7 +146,9 @@ def generate_flashcards(
 
                     if len(created) >= limit:
                         break
-                supporting_sources = merge_supporting_sources_fn(supporting_sources, grounded_context)
+                supporting_sources = merge_supporting_sources_fn(
+                    supporting_sources, grounded_context
+                )
 
         if created:
             db.session.commit()
@@ -181,7 +195,12 @@ def generate_flashcards(
 
 
 def list_flashcards(project):
-    cards = Flashcard.query.filter_by(project_id=project.id).order_by(Flashcard.created_at.desc()).limit(200).all()
+    cards = (
+        Flashcard.query.filter_by(project_id=project.id)
+        .order_by(Flashcard.created_at.desc())
+        .limit(200)
+        .all()
+    )
     return {"flashcards": [card.to_dict() for card in cards]}, 200
 
 
@@ -203,7 +222,9 @@ def generate_quiz(
 
     documents_query = ResearcherDocument.query.filter_by(project_id=project.id)
     if document_ids:
-        documents_query = documents_query.filter(ResearcherDocument.id.in_(document_ids))
+        documents_query = documents_query.filter(
+            ResearcherDocument.id.in_(document_ids)
+        )
     documents = documents_query.limit(limit).all()
 
     quiz = Quiz(project_id=project.id, name=name)
@@ -255,7 +276,9 @@ def generate_quiz(
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt},
                 ]
-                ok, reply = beep_ai_client_module.chat_reply(messages, temperature=generation_temperature)
+                ok, reply = beep_ai_client_module.chat_reply(
+                    messages, temperature=generation_temperature
+                )
                 if not ok:
                     logger.warning("Quiz LLM failed for doc %s: %s", document.id, reply)
                     continue
@@ -268,7 +291,9 @@ def generate_quiz(
 
                     if not question_text or len(options) < 2:
                         continue
-                    if not isinstance(correct_index, int) or not 0 <= correct_index < len(options):
+                    if not isinstance(
+                        correct_index, int
+                    ) or not 0 <= correct_index < len(options):
                         correct_index = 0
 
                     try:
@@ -287,7 +312,9 @@ def generate_quiz(
 
                     if questions_created >= limit:
                         break
-                supporting_sources = merge_supporting_sources_fn(supporting_sources, grounded_context)
+                supporting_sources = merge_supporting_sources_fn(
+                    supporting_sources, grounded_context
+                )
 
         if questions_created > 0:
             db.session.commit()
@@ -308,7 +335,9 @@ def generate_quiz(
         question = QuizQuestion(
             quiz_id=quiz.id,
             question=f'What is the main point of: "{text}..."?',
-            options_json=json.dumps(["Option A", "Option B", "Option C", "See document"]),
+            options_json=json.dumps(
+                ["Option A", "Option B", "Option C", "See document"]
+            ),
             correct_index=3,
             source_chunk_id="chunk-0",
         )
@@ -327,7 +356,11 @@ def generate_quiz(
 
 
 def list_quizzes(project):
-    quizzes = Quiz.query.filter_by(project_id=project.id).order_by(Quiz.created_at.desc()).all()
+    quizzes = (
+        Quiz.query.filter_by(project_id=project.id)
+        .order_by(Quiz.created_at.desc())
+        .all()
+    )
     return {"quizzes": [quiz.to_dict() for quiz in quizzes]}, 200
 
 
@@ -404,3 +437,73 @@ def submit_quiz(project, quiz_id, data: dict[str, Any], *, user_id=None):
         "results": results,
         "attempt_id": attempt.id,
     }, 200
+
+
+class TrainingService:
+    """Phase 4: per-document flashcard generation and creation."""
+
+    def generate_flashcards_from_text(self, text: str, *, count: int = 6) -> list[dict]:
+        """Generate flashcards from raw text without requiring a project context.
+
+        Returns a list of {"question": ..., "answer": ...} dicts.
+        """
+        from app.services import beep_ai_client
+
+        if not beep_ai_client.is_configured():
+            return self._heuristic_flashcards(text, count)
+
+        system_prompt = (
+            "You are a study assistant. Given a research text excerpt, generate clear "
+            "question-and-answer flashcards that test understanding of key facts and concepts. "
+            'Respond with valid JSON: {"cards": [{"front": "...", "back": "..."}]}'
+        )
+        user_content = (
+            f'TEXT:\n"""{text[:4000].strip()}"""\n\n'
+            f"Generate {count} flashcards from this text."
+        )
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_content},
+        ]
+
+        ok, reply = beep_ai_client.chat_reply(messages, temperature=0.5)
+        if not ok:
+            return self._heuristic_flashcards(text, count)
+
+        cards = extract_json_list(reply, "cards")
+        result = []
+        for card in cards[:count]:
+            front = (card.get("front") or "").strip()
+            back = (card.get("back") or "").strip()
+            if front and back:
+                result.append({"question": front, "answer": back})
+        return result or self._heuristic_flashcards(text, count)
+
+    @staticmethod
+    def _heuristic_flashcards(text: str, count: int) -> list[dict]:
+        """Fallback: create simple flashcards from sentence chunks."""
+        sentences = re.split(r"(?<=[.!?])\s+", text)
+        sentences = [s.strip() for s in sentences if len(s.strip()) > 30]
+        result = []
+        for i, sent in enumerate(sentences[:count]):
+            result.append(
+                {
+                    "question": f"What does the text say about: {sent[:60]}...?",
+                    "answer": sent[:200],
+                }
+            )
+        return result
+
+    @staticmethod
+    def create_flashcard(project_id: int, document_id: int, question: str, answer: str):
+        """Create and persist a Flashcard record."""
+        flashcard = Flashcard(
+            project_id=project_id,
+            document_id=document_id,
+            front=question,
+            back=answer,
+            source_chunk_id="manual",
+        )
+        db.session.add(flashcard)
+        db.session.commit()
+        return flashcard

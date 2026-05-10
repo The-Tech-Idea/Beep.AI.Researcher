@@ -1,5 +1,5 @@
 {% extends base_template|default("base.html") %}
-{% block title %}Backup Codes — Beep.AI.Researcher{% endblock %}
+{% block title %}{{ t('auth.mfa_backup.title') }} - Beep.AI.Researcher{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/mfa_backup_codes.css') }}">
@@ -10,7 +10,7 @@
     <div class="card shadow-sm">
         <div class="card-header d-flex align-items-center gap-2">
             <i class="bi bi-life-preserver mfa-backup-codes-header-icon"></i>
-            <strong>MFA Backup Recovery Codes</strong>
+            <strong>{{ t('auth.mfa_backup.title') }}</strong>
         </div>
         <div class="card-body p-4">
             {% with messages = get_flashed_messages(with_categories=true) %}
@@ -24,8 +24,7 @@
             {% if new_codes %}
             <div class="alert alert-warning">
                 <i class="bi bi-exclamation-triangle-fill me-1"></i>
-                <strong>Save these codes now.</strong> They will not be displayed again.
-                Each code can only be used once.
+                <strong>{{ t('auth.mfa_backup.save_warning') }}</strong>
             </div>
 
             <div id="mfaBackupCodesStatus" class="mfa-backup-codes-status" hidden role="status" aria-live="polite"></div>
@@ -38,32 +37,32 @@
 
             <div class="d-flex gap-2 mb-3">
                 <button class="btn btn-outline-secondary btn-sm" id="copyBackupCodesBtn"
-                        type="button" aria-label="Copy all backup codes">
-                    <i class="bi bi-clipboard me-1"></i>Copy all
+                        type="button" aria-label="{{ t('auth.mfa_backup.copy_all') }}">
+                    <i class="bi bi-clipboard me-1"></i>{{ t('auth.mfa_backup.copy_all') }}
                 </button>
                 <button class="btn btn-outline-secondary btn-sm" id="printBackupCodesBtn"
-                        type="button" aria-label="Print backup codes">
-                    <i class="bi bi-printer me-1"></i>Print
+                        type="button" aria-label="{{ t('auth.mfa_backup.print') }}">
+                    <i class="bi bi-printer me-1"></i>{{ t('auth.mfa_backup.print') }}
                 </button>
             </div>
             {% else %}
-            <p class="text-muted small">You have <strong>{{ remaining }}</strong> backup code(s) remaining.</p>
+            <p class="text-muted small">{{ t('auth.mfa_backup.remaining').format(count=remaining) }}</p>
             {% if remaining == 0 %}
             <div class="alert alert-warning">
-                <i class="bi bi-exclamation-triangle me-1"></i>All backup codes have been used. Generate new ones below.
+                <i class="bi bi-exclamation-triangle me-1"></i>{{ t('auth.mfa_backup.all_used') }}
             </div>
             {% endif %}
             {% endif %}
 
             <form method="POST" id="mfaBackupCodesForm">
                 <button type="submit" class="btn btn-warning w-100 fw-semibold" id="generateBackupCodesBtn">
-                    <i class="bi bi-arrow-clockwise me-1"></i>Generate New Backup Codes
+                    <i class="bi bi-arrow-clockwise me-1"></i>{{ t('auth.mfa_backup.generate') }}
                 </button>
             </form>
 
             <div class="mt-3 text-center">
                 <a href="{{ url_for('auth.profile') }}" class="text-muted small">
-                    <i class="bi bi-arrow-left me-1"></i>Back to Profile
+                    <i class="bi bi-arrow-left me-1"></i>{{ t('auth.mfa_backup.back_to_profile') }}
                 </a>
             </div>
         </div>
@@ -71,9 +70,9 @@
 </div>
 <script id="mfa-backup-codes-config" type="application/json">
 {{ {
-    "confirmRegenerate": "This will invalidate all existing backup codes. Continue?",
-    "copySuccess": "Codes copied to clipboard.",
-    "copyUnavailable": "Copy is not available in this browser."
+    "confirmRegenerate": t('auth.mfa_backup.confirm_regenerate'),
+    "copySuccess": t('auth.mfa_backup.copy_success'),
+    "copyUnavailable": t('auth.mfa_backup.copy_unavailable')
 } | tojson | safe }}
 </script>
 {% endblock %}

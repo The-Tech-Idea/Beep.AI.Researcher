@@ -137,28 +137,28 @@
 
         <div class="spa-card mb-3">
             <div class="spa-card-header">
-                <div class="spa-card-title"><i class="bi bi-search-heart project-settings__title-icon" aria-hidden="true"></i>How The Assistant Uses Your Project Files</div>
+                <div class="spa-card-title"><i class="bi bi-search-heart project-settings__title-icon" aria-hidden="true"></i>{{ t('project_settings.ai_section.title') }}</div>
             </div>
             <div class="spa-card-body">
                 <div class="research-setup-intro mb-3">
-                    <h4>Keep answers easier to trust</h4>
-                    <p class="project-settings__intro-copy">These settings help the assistant read the right parts of your project files and answer in a way that fits your work.</p>
+                    <h4>{{ t('project_settings.ai_section.trust_title', 'Keep answers easier to trust') }}</h4>
+                    <p class="project-settings__intro-copy">{{ t('project_settings.ai_section.intro') }}</p>
                     <ul class="research-setup-list">
-                        <li>Choose the document library this project should use.</li>
-                        <li>Choose how careful the assistant should be when reading your material.</li>
-                        <li>Tell it what kind of files are most common in this project.</li>
-                        <li>Leave the expert options alone unless an administrator is tuning search quality.</li>
+                        <li>{{ t('project_settings.ai_section.bullet1') }}</li>
+                        <li>{{ t('project_settings.ai_section.bullet2') }}</li>
+                        <li>{{ t('project_settings.ai_section.bullet3') }}</li>
+                        <li>{{ t('project_settings.ai_section.bullet4', 'Leave the expert options alone unless an administrator is tuning search quality.') }}</li>
                     </ul>
                 </div>
                 <div class="library-connection-panel">
-                    <h4>Document Library Connection</h4>
-                    <p>Choose the shared file library this project should use when the assistant answers questions from your materials.</p>
+                    <h4>{{ t('project_settings.library.title') }}</h4>
+                    <p>{{ t('project_settings.library.desc', 'Choose the shared file library this project should use when the assistant answers questions from your materials.') }}</p>
                     <div class="mb-3">
-                        <label class="form-label" for="ragCollectionSelect">Choose document library</label>
+                        <label class="form-label" for="ragCollectionSelect">{{ t('project_settings.library.select_label') }}</label>
                         <select class="form-select" id="ragCollectionSelect">
                             <option value="">Loading document libraries...</option>
                         </select>
-                        <div class="form-text">You can change this later if the project should use a different file library.</div>
+                        <div class="form-text">{{ t('project_settings.library.change_later') }}</div>
                     </div>
                     <div id="ragLibraryStatus" class="project-settings__status project-settings__status--secondary">
                         Loading document libraries...
@@ -178,123 +178,123 @@
 
                 {# Document reading setup #}
                 <div class="library-connection-panel" id="chunkTemplatePanel">
-                    <h4><i class="bi bi-scissors project-settings__title-icon" aria-hidden="true"></i>Reading Setup</h4>
-                    <p>Different file types work better with different reading setups. Use the recommended option unless an administrator asks you to change it.</p>
+                    <h4><i class="bi bi-scissors project-settings__title-icon" aria-hidden="true"></i>{{ t('project_settings.reading.title', 'Reading Setup') }}</h4>
+                    <p>{{ t('project_settings.reading.desc', 'Different file types work better with different reading setups. Use the recommended option unless an administrator asks you to change it.') }}</p>
                     <div id="recommendedTemplateHint" class="research-note mb-3">
-                        Choose the most common file type below to see the suggested reading setup.
+                        {{ t('project_settings.reading.hint', 'Choose the most common file type below to see the suggested reading setup.') }}
                     </div>
                     <div class="project-settings__action-row project-settings__action-row--compact">
                         <button type="button" class="project-settings__button project-settings__button--accent" id="useRecommendedTemplateBtn" disabled>
-                            <i class="bi bi-magic project-settings__button-icon" aria-hidden="true"></i>Use Suggested Setup
+                            <i class="bi bi-magic project-settings__button-icon" aria-hidden="true"></i>{{ t('project_settings.reading.use_suggested') }}
                         </button>
                     </div>
                     <div class="mb-2">
-                        <label class="form-label" for="chunkTemplateSelect">Saved reading setup</label>
+                        <label class="form-label" for="chunkTemplateSelect">{{ t('project_settings.reading.saved_label') }}</label>
                         <select class="form-select" id="chunkTemplateSelect" disabled>
-                            <option value="">Use library default reading setup</option>
+                            <option value="">{{ t('project_settings.reading.use_library_default') }}</option>
                         </select>
                     </div>
                     <div id="chunkTemplateDescription" class="form-text mb-3 project-settings__template-description"></div>
                     <div id="chunkTemplateStatus" class="project-settings__status" hidden></div>
                     <div class="project-settings__action-row">
                         <button type="button" class="project-settings__button project-settings__button--accent" id="applyChunkTemplateBtn" disabled>
-                            <i class="bi bi-check2-circle project-settings__button-icon" aria-hidden="true"></i>Use This Setup
+                            <i class="bi bi-check2-circle project-settings__button-icon" aria-hidden="true"></i>{{ t('project_settings.reading.use_this_setup') }}
                         </button>
                         <button type="button" class="project-settings__button project-settings__button--neutral" id="refreshChunkTemplatesBtn" disabled>
-                            <i class="bi bi-arrow-repeat project-settings__button-icon" aria-hidden="true"></i>Refresh Setups
+                            <i class="bi bi-arrow-repeat project-settings__button-icon" aria-hidden="true"></i>{{ t('project_settings.reading.refresh_setups') }}
                         </button>
                         <button type="button" class="project-settings__button project-settings__button--danger-soft" id="removeChunkTemplateBtn" disabled>
-                            <i class="bi bi-x-circle project-settings__button-icon" aria-hidden="true"></i>Use Library Default
+                            <i class="bi bi-x-circle project-settings__button-icon" aria-hidden="true"></i>{{ t('project_settings.reading.use_library_default') }}
                         </button>
                     </div>
                 </div>
 
                 <div id="ragProfileStatus" class="project-settings__status project-settings__status--secondary">
                     {% if project.collection_id %}
-                    Loading document reading settings...
+                    {{ t('project_settings.reading.loading', 'Loading document reading settings...') }}
                     {% else %}
-                    Choose a document library before changing reading settings.
+                    {{ t('project_settings.reading.connect_first', 'Choose a document library before changing reading settings.') }}
                     {% endif %}
                 </div>
                 <div class="research-current-setup mb-3" id="currentLibrarySetup">
-                    <h4>Current Library Setup</h4>
-                    <p class="mb-3">Saved setup currently in use for this project. This helps you see what comes from the library default and what this project overrides.</p>
+                    <h4>{{ t('project_settings.reading.current_setup') }}</h4>
+                    <p class="mb-3">{{ t('project_settings.reading.current_setup.desc', 'Saved setup currently in use for this project. This helps you see what comes from the library default and what this project overrides.') }}</p>
                     <div class="research-current-setup-grid">
                         <div class="research-current-setup-item">
                             <span class="research-current-setup-label">Connected library</span>
                             <strong id="currentSetupCollection">No document library selected</strong>
-                            <span id="currentSetupCollectionNote">Connect a document library to see the saved setup.</span>
+                            <span id="currentSetupCollectionNote">{{ t('project_settings.reading.no_library') }}</span>
                         </div>
                         <div class="research-current-setup-item">
-                            <span class="research-current-setup-label">Reading setup</span>
-                            <strong id="currentSetupTemplate">Library default</strong>
-                            <span id="currentSetupTemplateNote">Using the library default reading setup.</span>
+                            <span class="research-current-setup-label">{{ t('project_settings.reading.setup_label', 'Reading setup') }}</span>
+                            <strong id="currentSetupTemplate">{{ t('project_settings.reading.library_default', 'Library default') }}</strong>
+                            <span id="currentSetupTemplateNote">{{ t('project_settings.reading.using_library_default') }}</span>
                         </div>
                         <div class="research-current-setup-item">
-                            <span class="research-current-setup-label">File connections</span>
-                            <strong id="currentSetupGraph">Library default</strong>
-                            <span id="currentSetupGraphNote">Using the library default file connection setup.</span>
+                            <span class="research-current-setup-label">{{ t('project_settings.reading.connections_label', 'File connections') }}</span>
+                            <strong id="currentSetupGraph">{{ t('project_settings.reading.library_default') }}</strong>
+                            <span id="currentSetupGraphNote">{{ t('project_settings.reading.using_default_connection') }}</span>
                         </div>
                         <div class="research-current-setup-item">
-                            <span class="research-current-setup-label">Answer style</span>
-                            <strong id="currentSetupQuality">Balanced help</strong>
-                            <span id="currentSetupBehavior">Reading style details will appear after the saved setup loads.</span>
+                            <span class="research-current-setup-label">{{ t('project_settings.quality.label') }}</span>
+                            <strong id="currentSetupQuality">{{ t('project_settings.quality.balanced') }}</strong>
+                            <span id="currentSetupBehavior">{{ t('project_settings.reading.reading_details_pending') }}</span>
                         </div>
                     </div>
                     <div class="research-current-setup-quickview" aria-label="Saved setup quick view">
-                        <span class="research-current-setup-chip" id="currentSetupChipQuality">Answer style: Balanced help</span>
-                        <span class="research-current-setup-chip" id="currentSetupChipFileStyle">File style: Research articles and narrative writing</span>
+                        <span class="research-current-setup-chip" id="currentSetupChipQuality">{{ t('project_settings.reading.chip_quality', 'Answer style') }}: {{ t('project_settings.quality.balanced') }}</span>
+                        <span class="research-current-setup-chip" id="currentSetupChipFileStyle">{{ t('project_settings.reading.chip_file_style', 'File style') }}: {{ t('project_settings.file_type.research') }}</span>
                         <span class="research-current-setup-chip" id="currentSetupChipDocumentType">Document type: Not set yet</span>
                         <span class="research-current-setup-chip" id="currentSetupChipFilters">Filters: Standard defaults</span>
                     </div>
                 </div>
-                <div class="research-focus-grid">
-                    <div class="research-focus-card">
-                        <strong>Quick summaries</strong>
-                        <span>Best when you want faster overviews and broad guidance.</span>
+                    <div class="research-focus-grid">
+                        <div class="research-focus-card">
+                            <strong>{{ t('project_settings.quality.fast', 'Quick summaries') }}</strong>
+                            <span>{{ t('project_settings.quality.fast_desc') }}</span>
+                        </div>
+                        <div class="research-focus-card">
+                            <strong>{{ t('project_settings.quality.balanced', 'Balanced help') }}</strong>
+                            <span>{{ t('project_settings.quality.balanced_desc') }}</span>
+                        </div>
+                        <div class="research-focus-card">
+                            <strong>{{ t('project_settings.quality.deep', 'Careful reading') }}</strong>
+                            <span>{{ t('project_settings.quality.deep_desc', 'Best for detailed reports, policy work, long papers, and higher-stakes reviews.') }}</span>
+                        </div>
                     </div>
-                    <div class="research-focus-card">
-                        <strong>Balanced help</strong>
-                        <span>Recommended for most projects. Good speed with grounded answers.</span>
-                    </div>
-                    <div class="research-focus-card">
-                        <strong>Careful reading</strong>
-                        <span>Best for detailed reports, policy work, long papers, and higher-stakes reviews.</span>
-                    </div>
-                </div>
-                <div class="row">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label" for="ragQualityMode">{{ t('project_settings.quality.label', 'Answer Style') }}</label>
+                            <select class="form-select" id="ragQualityMode">
+                                <option value="fast">{{ t('project_settings.quality.fast') }}</option>
+                                <option value="balanced" selected>{{ t('project_settings.quality.balanced') }}</option>
+                                <option value="deep">{{ t('project_settings.quality.deep') }}</option>
+                            </select>
+                            <div class="form-text">{{ t('project_settings.quality.balanced_default') }}</div>
+                        </div>
                     <div class="col-md-4 mb-3">
-                        <label class="form-label" for="ragQualityMode">Answer Style</label>
-                        <select class="form-select" id="ragQualityMode">
-                            <option value="fast">Quick summaries</option>
-                            <option value="balanced" selected>Balanced help</option>
-                            <option value="deep">Careful reading</option>
-                        </select>
-                        <div class="form-text">Start with <strong>Balanced help</strong> unless this project needs extra caution.</div>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label" for="ragChunkStrategy">Most Common File Style</label>
+                        <label class="form-label" for="ragChunkStrategy">{{ t('project_settings.file_type.label', 'Most Common File Style') }}</label>
                         <select class="form-select" id="ragChunkStrategy">
-                            <option value="semantic">Research articles and narrative writing</option>
-                            <option value="hierarchical">Long reports, books, and policy documents</option>
-                            <option value="fixed">Scanned text or inconsistent formatting</option>
+                            <option value="semantic">{{ t('project_settings.file_type.semantic', 'Research articles and narrative writing') }}</option>
+                            <option value="hierarchical">{{ t('project_settings.file_type.hierarchical', 'Long reports, books, and policy documents') }}</option>
+                            <option value="fixed">{{ t('project_settings.file_type.scanned') }}</option>
                         </select>
-                        <div class="form-text">Pick the option that best matches most of the material in this project.</div>
+                        <div class="form-text">{{ t('project_settings.file_type.hint') }}</div>
                     </div>
                     <div class="col-md-4 mb-3 d-flex align-items-end">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="ragEnrichContext">
-                            <label class="form-check-label" for="ragEnrichContext">Use nearby paragraphs to improve context</label>
+                            <label class="form-check-label" for="ragEnrichContext">{{ t('project_settings.context_window') }}</label>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-4 mb-3">
-                        <label class="form-label" for="ragMetadataLanguage">Main Language</label>
-                        <input type="text" class="form-control" id="ragMetadataLanguage" placeholder="English">
+                        <label class="form-label" for="ragMetadataLanguage">{{ t('project_settings.metadata.language', 'Main Language') }}</label>
+                        <input type="text" class="form-control" id="ragMetadataLanguage" placeholder="{{ t('project_settings.metadata.language_placeholder', 'English') }}">
                     </div>
                     <div class="col-md-4 mb-3">
-                        <label class="form-label" for="ragDocumentTypeSelect">Most Common Document Type</label>
+                        <label class="form-label" for="ragDocumentTypeSelect">{{ t('project_settings.metadata.doc_type', 'Most Common Document Type') }}</label>
                         <select class="form-select" id="ragDocumentTypeSelect">
                             <option value="">Loading document types...</option>
                         </select>
@@ -302,58 +302,58 @@
                             type="text"
                             class="form-control mt-2"
                             id="ragMetadataDocumentKindCustom"
-                            placeholder="Describe the main file type for this project"
+                            placeholder="{{ t('project_settings.metadata.doc_type_placeholder', 'Describe the main file type for this project') }}"
                             hidden
                         >
                         <div id="ragDocumentTypeHint" class="form-text mt-2">
-                            Choose the file type that best matches most of the material in this project.
+                            {{ t('project_settings.metadata.doc_type_hint', 'Choose the file type that best matches most of the material in this project.') }}
                         </div>
                     </div>
                     <div class="col-md-4 mb-3">
-                        <label class="form-label" for="ragMetadataSourceType">Usual File Source</label>
-                        <input type="text" class="form-control" id="ragMetadataSourceType" placeholder="uploaded, imported, web">
+                        <label class="form-label" for="ragMetadataSourceType">{{ t('project_settings.metadata.source_type', 'Usual File Source') }}</label>
+                        <input type="text" class="form-control" id="ragMetadataSourceType" placeholder="{{ t('project_settings.metadata.source_placeholder', 'uploaded, imported, web') }}">
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label class="form-label" for="graphReadingMode">How Files Connect</label>
+                        <label class="form-label" for="graphReadingMode">{{ t('project_settings.graph.label', 'How Files Connect') }}</label>
                         <select class="form-select" id="graphReadingMode">
-                            <option value="">Loading file connection options...</option>
+                            <option value="">{{ t('project_settings.connection.loading') }}</option>
                         </select>
                         <div id="graphReadingModeHint" class="form-text mt-2">
-                            Choose how much help the assistant should use when connecting related files.
+                            {{ t('project_settings.graph.hint', 'Choose how much help the assistant should use when connecting related files.') }}
                         </div>
                     </div>
                 </div>
                 <div class="research-note mb-3">
-                    These settings affect how the assistant finds useful passages inside your project library. They do not change your original files.
+                    {{ t('project_settings.note', 'These settings affect how the assistant finds useful passages inside your project library. They do not change your original files.') }}
                 </div>
                 {% if current_user.is_admin %}
                 <details class="research-expert-panel">
                     <summary class="research-expert-toggle list-unstyled">
-                        <i class="bi bi-chevron-right project-settings__title-icon" aria-hidden="true"></i>Expert Setup
+                        <i class="bi bi-chevron-right project-settings__title-icon" aria-hidden="true"></i>{{ t('project_settings.expert.title') }}
                     </summary>
-                    <p class="research-expert-copy">These are technical search-storage controls. Change them only when you are actively tuning document ingestion or troubleshooting answer quality.</p>
+                    <p class="research-expert-copy">{{ t('project_settings.expert.desc') }}</p>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label" for="ragChunkSize">Reading Window Size (chars)</label>
+                            <label class="form-label" for="ragChunkSize">{{ t('project_settings.expert.chunk_size', 'Reading Window Size (chars)') }}</label>
                             <input type="number" class="form-control" id="ragChunkSize" min="200" step="100">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label" for="ragChunkOverlap">Reading Window Overlap (chars)</label>
+                            <label class="form-label" for="ragChunkOverlap">{{ t('project_settings.expert.overlap_label') }}</label>
                             <input type="number" class="form-control" id="ragChunkOverlap" min="0" step="50">
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" for="ragFilterableFields">Indexed Detail Fields</label>
+                        <label class="form-label" for="ragFilterableFields">{{ t('project_settings.expert.filterable_fields', 'Indexed Detail Fields') }}</label>
                         <input type="text" class="form-control" id="ragFilterableFields"
                             placeholder="document_kind, source_type, language, authors, tags">
-                        <div class="form-text">Comma-separated metadata keys that should stay fast to narrow, group, and filter.</div>
+                        <div class="form-text">{{ t('project_settings.expert.filterable_hint', 'Comma-separated metadata keys that should stay fast to narrow, group, and filter.') }}</div>
                     </div>
                 </details>
                 {% endif %}
                 <button type="button" class="project-settings__button project-settings__button--accent" id="saveRagProfileBtn">
-                    <i class="bi bi-save project-settings__button-icon" aria-hidden="true"></i>Save Reading Settings
+                    <i class="bi bi-save project-settings__button-icon" aria-hidden="true"></i>{{ t('project_settings.save_reading', 'Save Reading Settings') }}
                 </button>
             </div>
         </div>

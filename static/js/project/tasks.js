@@ -131,7 +131,7 @@
                     return;
                 }
 
-                fetch(config.taskStatusUrlTemplate.replace('__TASK_ID__', taskId), {
+                fetch(config.taskUpdateUrlTemplate.replace('__TASK_ID__', taskId), {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ status: status })
@@ -139,7 +139,8 @@
                     .then(function (response) { return response.json(); })
                     .then(function () {
                         updateTaskCounts();
-                    });
+                    })
+                    .catch(function () { /* silently fail — counts will be stale */ });
             });
         });
     }
@@ -185,7 +186,8 @@
                             modal.hide();
                         }
                         window.location.reload();
-                    });
+                    })
+                    .catch(function () { /* silently fail — user can retry */ });
             });
         }
     }

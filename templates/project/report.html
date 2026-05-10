@@ -9,6 +9,9 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/project/library_setup_summary.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/project/supporting_sources_summary.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/project/report.css') }}">
+{% if is_feature_enabled('writing_assistant_enabled') %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/project/writing_assistant.css') }}">
+{% endif %}
 {% endblock %}
 
 {% block header_actions %}
@@ -16,6 +19,14 @@
     <button class="report-header-button report-header-button--neutral" type="button" data-bs-toggle="modal" data-bs-target="#insertDataModal">
         <i class="bi bi-plus-square-dotted report-button-icon" aria-hidden="true"></i><span>{{ t('report.insert_data') }}</span>
     </button>
+    {% if is_feature_enabled('writing_assistant_enabled') %}
+    <button class="report-header-button report-header-button--neutral" type="button" id="analyseSelectedBtn" title="{{ t('writing_assistant.analyse_label', 'Analyse writing quality') }}">
+        <i class="bi bi-graph-up report-button-icon" aria-hidden="true"></i><span>{{ t('writing.analyse') }}</span>
+    </button>
+    <button class="report-header-button report-header-button--neutral" type="button" data-bs-toggle="modal" data-bs-target="#citationDraftModal" title="{{ t('writing.cite_draft_label', 'Draft with citations') }}">
+        <i class="bi bi-journal-text report-button-icon" aria-hidden="true"></i><span>{{ t('writing.cite_draft') }}</span>
+    </button>
+    {% endif %}
     <button class="report-header-button report-header-button--accent" type="button" data-bs-toggle="modal" data-bs-target="#aiWriteModal">
         <i class="bi bi-stars report-button-icon" aria-hidden="true"></i><span>{{ t('report.ai_write') }}</span>
     </button>
@@ -45,12 +56,12 @@
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 
 <div class="report-guide-card">
-    <h5>Write your report in clear research language</h5>
-    <p class="report-guide-copy">Use the editor for your final draft, add project material from the side panel, and use the writing tools when you want help revising a section or finding supporting files.</p>
+    <h5>{{ t('report.guide.title') }}</h5>
+    <p class="report-guide-copy">{{ t('report.guide.desc') }}</p>
     <ul>
-        <li>Save often so your draft is stored for this project.</li>
-        <li>Use the writing tools on selected text when you want focused help.</li>
-        <li>Open Share &amp; Export when you are ready to send or download the report.</li>
+        <li>{{ t('report.guide.save_often') }}</li>
+        <li>{{ t('report.guide.writing_tools') }}</li>
+        <li>{{ t('report.guide.share_export') }}</li>
     </ul>
 </div>
 <div id="reportSupportingSources" data-supporting-sources-panel class="report-supporting-sources-panel" hidden></div>
@@ -66,6 +77,28 @@
         <div class="spa-report-wordcount" id="wordCount">
             <i class="bi bi-body-text report-wordcount-icon" aria-hidden="true"></i><span class="report-wordcount-label">0 {{ t('report.wordcount') }}</span>
         </div>
+        {% if is_feature_enabled('writing_assistant_enabled') %}
+        <div id="writingQualityBar" class="writing-quality-bar" hidden>
+            <div class="writing-quality-bar__scores">
+                <span class="writing-quality-bar__score" title="{{ t('report.writing.overall_score') }}">
+                    <i class="bi bi-award"></i> <span id="wqOverall">—</span>
+                </span>
+                <span class="writing-quality-bar__score" title="{{ t('report.writing.tone_score') }}">
+                    <i class="bi bi-chat-square-text"></i> <span id="wqTone">—</span>
+                </span>
+                <span class="writing-quality-bar__score" title="{{ t('report.writing.clarity_score') }}">
+                    <i class="bi bi-lightbulb"></i> <span id="wqClarity">—</span>
+                </span>
+                <span class="writing-quality-bar__score" title="{{ t('report.writing.grammar_score') }}">
+                    <i class="bi bi-spellcheck"></i> <span id="wqGrammar">—</span>
+                </span>
+            </div>
+            <span id="wqIssues" class="writing-quality-bar__issues"></span>
+            <button class="writing-quality-bar__btn" type="button" id="wqApplyFixBtn" hidden>
+                <i class="bi bi-check-lg"></i> {{ t('report.writing.apply_fix') }}
+            </button>
+        </div>
+        {% endif %}
     </div>
 
     <aside class="spa-data-sidebar" id="dataSidebar">
@@ -110,8 +143,8 @@
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content report-modal-shell">
             <div class="modal-header report-modal-header">
-                <h5 class="modal-title report-modal-title" id="insertDataModalLabel"><i class="bi bi-layout-text-window me-2 report-modal-title-icon"></i>Add project material</h5>
-                <button type="button" class="report-modal-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title report-modal-title" id="insertDataModalLabel"><i class="bi bi-layout-text-window me-2 report-modal-title-icon"></i>{{ t('report.insert.title') }}</h5>
+                <button type="button" class="report-modal-close" data-bs-dismiss="modal" aria-label="{{ t('common.close') }}"></button>
             </div>
             <div class="modal-body report-modal-body report-modal-body--insert">
                 <div class="report-insert-layout">
@@ -134,52 +167,52 @@
                     <div class="tab-content report-insert-content" id="insertDataContent">
                         <div class="tab-pane fade show active" id="pane-codes" role="tabpanel">
                             <div class="report-modal-pane-header">
-                                <h6 class="report-modal-pane-title">Project codes</h6>
+                                <h6 class="report-modal-pane-title">{{ t('report.insert.codes_title') }}</h6>
                                 <button class="report-refresh-button" type="button" data-insert-refresh="codes"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
                             </div>
                             <div id="insertCodesList" class="row g-3">
                                 <div class="report-loading-state report-loading-state--block">
                                     <div class="report-loading-spinner report-loading-spinner--inline" aria-hidden="true"></div>
-                                    <span class="report-loading-copy">Loading project material...</span>
+                                    <span class="report-loading-copy">{{ t('report.insert.loading') }}</span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="tab-pane fade" id="pane-extractions" role="tabpanel">
                             <div class="report-modal-pane-header">
-                                <h6 class="report-modal-pane-title">Saved data tables</h6>
+                                <h6 class="report-modal-pane-title">{{ t('report.insert.extractions_title') }}</h6>
                                 <button class="report-refresh-button" type="button" data-insert-refresh="extractions"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
                             </div>
                             <div id="insertExtractionsList" class="report-runtime-stack report-runtime-stack--spacious">
                                 <div class="report-modal-empty report-modal-empty--block">
                                     <i class="bi bi-inbox report-modal-empty-icon" aria-hidden="true"></i>
-                                    Loading saved data tables...
+                                    {{ t('report.insert.loading_extractions') }}
                                 </div>
                             </div>
                         </div>
 
                         <div class="tab-pane fade" id="pane-tasks" role="tabpanel">
                             <div class="report-modal-pane-header">
-                                <h6 class="report-modal-pane-title">Project tasks</h6>
+                                <h6 class="report-modal-pane-title">{{ t('report.insert.tasks_title') }}</h6>
                                 <button class="report-refresh-button" type="button" data-insert-refresh="tasks"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
                             </div>
                             <div id="insertTasksList" class="report-runtime-list">
                                 <div class="report-modal-empty report-modal-empty--block">
                                     <i class="bi bi-check-all report-modal-empty-icon" aria-hidden="true"></i>
-                                    Loading project tasks...
+                                    {{ t('report.insert.loading_tasks') }}
                                 </div>
                             </div>
                         </div>
 
                         <div class="tab-pane fade" id="pane-flashcards" role="tabpanel">
                             <div class="report-modal-pane-header">
-                                <h6 class="report-modal-pane-title">Study cards</h6>
+                                <h6 class="report-modal-pane-title">{{ t('report.insert.flashcards_title') }}</h6>
                                 <button class="report-refresh-button" type="button" data-insert-refresh="flashcards"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
                             </div>
                             <div id="insertFlashcardsList" class="report-runtime-stack">
                                 <div class="report-modal-empty report-modal-empty--block">
                                     <i class="bi bi-card-text report-modal-empty-icon" aria-hidden="true"></i>
-                                    Loading study cards...
+                                    {{ t('report.insert.loading_flashcards') }}
                                 </div>
                             </div>
                         </div>
@@ -192,16 +225,101 @@
 {% endblock %}
 
 {% block page_js %}
+{% if is_feature_enabled('writing_assistant_enabled') %}
+<div class="modal fade" id="analysisOverlayModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content report-modal-shell">
+            <div class="modal-header report-modal-header">
+                <h5 class="modal-title report-modal-title"><i class="bi bi-graph-up me-2 report-modal-title-icon"></i>{{ t('report.analysis.title') }}</h5>
+                <button type="button" class="report-modal-close" data-bs-dismiss="modal" aria-label="{{ t('common.close') }}"></button>
+            </div>
+            <div class="modal-body report-modal-body">
+                <div id="analysisOverlayLoading" class="report-loading-state">
+                    <div class="report-loading-spinner"></div>
+                    <span>{{ t('report.analysis.loading') }}</span>
+                </div>
+                <div id="analysisOverlayResult" hidden>
+                    <div class="writing-analysis-scores">
+                        <div class="writing-analysis-score-card">
+                            <div class="writing-analysis-score-value" id="analysisOverall">—</div>
+                            <div class="writing-analysis-score-label">{{ t('report.analysis.overall') }}</div>
+                        </div>
+                        <div class="writing-analysis-score-card">
+                            <div class="writing-analysis-score-value" id="analysisTone">—</div>
+                            <div class="writing-analysis-score-label">{{ t('report.analysis.tone') }}</div>
+                        </div>
+                        <div class="writing-analysis-score-card">
+                            <div class="writing-analysis-score-value" id="analysisClarity">—</div>
+                            <div class="writing-analysis-score-label">{{ t('report.analysis.clarity') }}</div>
+                        </div>
+                        <div class="writing-analysis-score-card">
+                            <div class="writing-analysis-score-value" id="analysisGrammar">—</div>
+                            <div class="writing-analysis-score-label">{{ t('report.analysis.grammar') }}</div>
+                        </div>
+                    </div>
+                    <h6 class="mt-3 mb-2">{{ t('report.analysis.issues_found') }}</h6>
+                    <div id="analysisIssues" class="writing-analysis-issues"></div>
+                    <h6 class="mt-3 mb-2">{{ t('report.analysis.suggestions') }}</h6>
+                    <ul id="analysisSuggestions" class="writing-analysis-suggestions"></ul>
+                </div>
+                <div id="analysisOverlayError" class="alert alert-danger" hidden></div>
+            </div>
+            <div class="modal-footer">
+                <button class="report-modal-button report-modal-button--cancel" type="button" data-bs-dismiss="modal">{{ t('common.close') }}</button>
+                <button class="report-modal-button report-modal-button--generate" type="button" id="btnReanalyse">
+                    <i class="bi bi-arrow-clockwise"></i> {{ t('report.analysis.re_analyse') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="modal fade" id="citationDraftModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content report-modal-shell">
+            <div class="modal-header report-modal-header">
+                <h5 class="modal-title report-modal-title"><i class="bi bi-journal-text me-2 report-modal-title-icon"></i>{{ t('report.citation_draft.title') }}</h5>
+                <button type="button" class="report-modal-close" data-bs-dismiss="modal" aria-label="{{ t('common.close') }}"></button>
+            </div>
+            <div class="modal-body report-modal-body">
+                <p class="report-ai-help-copy">{{ t('report.citation_draft.help') }}</p>
+                <label class="report-modal-label" for="citationDraftTheme">{{ t('report.citation_draft.theme_label') }}</label>
+                <input type="text" class="form-control" id="citationDraftTheme" placeholder="{{ t('report.citation_draft.theme_placeholder') }}">
+                <div id="citationDraftResult" class="report-ai-result" hidden>
+                    <div class="report-ai-result-card">
+                        <div id="citationDraftText" class="report-ai-result-text" style="white-space: pre-wrap;"></div>
+                        <button class="report-modal-button report-modal-button--insert report-ai-result-action" type="button" id="btnInsertCitationDraft">
+                            <i class="bi bi-plus-circle report-button-icon" aria-hidden="true"></i><span>{{ t('report.citation_draft.insert') }}</span>
+                        </button>
+                    </div>
+                    <div id="citationDraftCitations" class="mt-3" hidden>
+                        <h6>{{ t('report.citation_draft.formatted_citations') }}</h6>
+                        <div id="citationDraftCitationList"></div>
+                    </div>
+                </div>
+                <div id="citationDraftError" class="alert alert-danger" hidden></div>
+            </div>
+            <div class="modal-footer">
+                <button class="report-modal-button report-modal-button--cancel" type="button" data-bs-dismiss="modal">{{ t('project_tasks.modal.cancel') }}</button>
+                <button class="report-modal-button report-modal-button--generate" type="button" id="btnGenerateCitationDraft">
+                    <i class="bi bi-stars report-button-icon" aria-hidden="true"></i><span>{{ t('report.citation_draft.generate') }}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="aiWriteModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content report-modal-shell report-modal-shell--compact">
             <div class="modal-header report-modal-header">
-                <h5 class="modal-title report-modal-title"><i class="bi bi-stars me-2 report-modal-title-icon"></i>Draft a section</h5>
-                <button type="button" class="report-modal-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title report-modal-title"><i class="bi bi-stars me-2 report-modal-title-icon"></i>{{ t('report.ai_draft.title') }}</h5>
+                <button type="button" class="report-modal-close" data-bs-dismiss="modal" aria-label="{{ t('common.close') }}"></button>
             </div>
             <div class="modal-body report-modal-body">
-                <p class="report-ai-help-copy">Describe what you want this section to cover. The assistant will draft a clear section using the material already stored in this project.</p>
-                <label class="report-modal-label" for="aiWritePrompt">What should this section cover?</label>
+                <p class="report-ai-help-copy">{{ t('report.ai_draft.help') }}</p>
+                <label class="report-modal-label" for="aiWritePrompt">{{ t('report.ai_draft.prompt_label') }}</label>
                 <textarea class="form-control" id="aiWritePrompt" rows="4"></textarea>
                 <div id="aiWriteResult" class="report-ai-result" hidden>
                     <div class="report-ai-result-card">
@@ -233,25 +351,62 @@
     "citationEndpoint": {{ ("/researcher/projects/" ~ project.id ~ "/writing/citations") | tojson }},
     "shareUrl": {{ ("/researcher/projects/" ~ project.id ~ "/report/share") | tojson }},
     "writeSectionEndpoint": {{ ("/researcher/api/projects/" ~ project.id ~ "/write-section") | tojson }},
-    "ai_unavailable": "Writing help is not available right now.",
-    "loading_label": "Loading project material...",
-    "empty_codes": "No codes are available yet.",
-    "empty_extractions": "No saved data tables are available yet.",
-    "empty_tasks": "No project tasks are available yet.",
-    "empty_flashcards": "No study cards are available yet.",
-    "insert_label": "Insert",
-    "support_label": "Supporting files",
+    "ai_unavailable": {{ t('report.config.ai_unavailable') | tojson }},
+    "loading_label": {{ t('report.config.loading_label') | tojson }},
+    "empty_codes": {{ t('report.config.empty_codes') | tojson }},
+    "empty_extractions": {{ t('report.config.empty_extractions') | tojson }},
+    "empty_tasks": {{ t('report.config.empty_tasks') | tojson }},
+    "empty_flashcards": {{ t('report.config.empty_flashcards') | tojson }},
+    "insert_label": {{ t('report.sidebar.insert') | tojson }},
+    "support_label": {{ t('report.sidebar.supporting_files', 'Supporting files') | tojson }},
     "unitsCodes": {{ t("report.sidebar.codes_unit") | tojson }},
     "unitsExtractions": {{ t("report.sidebar.templates_unit") | tojson }},
     "unitsReferences": {{ t("report.sidebar.refs_unit") | tojson }},
     "unitsAnswers": {{ t("report.sidebar.answers_unit") | tojson }},
     "generatingLabel": {{ t("report.ai_write_modal.generating") | tojson }},
-    "generateButtonLabel": {{ t("report.ai_write_modal.generate") | tojson }}
+    "generateButtonLabel": {{ t("report.ai_write_modal.generate") | tojson }}{% if is_feature_enabled('writing_assistant_enabled') %},
+    "analyseEndpoint": {{ ("/researcher/projects/" ~ project.id ~ "/writing/analyse") | tojson }},
+    "citationDraftEndpoint": {{ ("/researcher/projects/" ~ project.id ~ "/writing/citations-draft") | tojson }},
+    "applyFixEndpoint": {{ ("/researcher/projects/" ~ project.id ~ "/manuscripts/sections/apply-fix") | tojson }},
+    "readabilityEndpoint": {{ ("/researcher/projects/" ~ project.id ~ "/readability") | tojson }},
+    "analysePrompt": {{ t('report.config.analyse_prompt') | tojson }},
+    "analyseComplete": {{ t('report.config.analyse_complete') | tojson }},
+    "draftGenerate": {{ t('report.config.draft_generate') | tojson }},
+    "draftGenerated": {{ t('report.config.draft_generated') | tojson }},
+    "noSelection": {{ t('report.config.no_selection') | tojson }}{% endif %}
 }
 </script>
 <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
 <script src="{{ url_for('static', filename='js/project/report_page.js') }}"></script>
 <script src="{{ url_for('static', filename='js/project/library_setup_summary.js') }}"></script>
 <script src="{{ url_for('static', filename='js/project/supporting_sources_summary.js') }}"></script>
+{% if is_feature_enabled('writing_assistant_enabled') %}
+<script>
+window.BEEP_I18N = {
+    'writing_assistant.toast.editor_not_ready': {{ t('writing_assistant.toast.editor_not_ready') | tojson }},
+    'writing_assistant.toast.select_text': {{ t('writing_assistant.toast.select_text') | tojson }},
+    'writing_assistant.error.analysis_failed': {{ t('writing_assistant.error.analysis_failed') | tojson }},
+    'writing_assistant.score_suffix': {{ t('writing_assistant.score_suffix') | tojson }},
+    'writing_assistant.score_not_available': {{ t('writing_assistant.score_not_available') | tojson }},
+    'writing_assistant.no_issues': {{ t('writing_assistant.no_issues') | tojson }},
+    'writing_assistant.button.applied': {{ t('writing_assistant.button.applied') | tojson }},
+    'writing_assistant.toast.fix_applied': {{ t('writing_assistant.toast.fix_applied') | tojson }},
+    'writing_assistant.issues_found': {{ t('writing_assistant.issues_found') | tojson }},
+    'writing_assistant.toast.enter_theme': {{ t('writing_assistant.toast.enter_theme') | tojson }},
+    'writing_assistant.button.generating': {{ t('writing_assistant.button.generating') | tojson }},
+    'writing_assistant.button.generate_draft': {{ t('writing_assistant.button.generate_draft') | tojson }},
+    'writing_assistant.error.draft_failed': {{ t('writing_assistant.error.draft_failed') | tojson }},
+    'writing_assistant.toast.draft_inserted': {{ t('writing_assistant.toast.draft_inserted') | tojson }},
+    'writing_assistant.issue_type.passive_voice': {{ t('writing_assistant.issue_type.passive_voice') | tojson }},
+    'writing_assistant.issue_type.hedge': {{ t('writing_assistant.issue_type.hedge') | tojson }},
+    'writing_assistant.issue_type.wordy': {{ t('writing_assistant.issue_type.wordy') | tojson }},
+    'writing_assistant.issue_type.clarity': {{ t('writing_assistant.issue_type.clarity') | tojson }},
+    'writing_assistant.issue_type.grammar': {{ t('writing_assistant.issue_type.grammar') | tojson }},
+    'writing_assistant.issue_type.tone': {{ t('writing_assistant.issue_type.tone') | tojson }}
+};
+</script>
+<script src="{{ url_for('static', filename='js/components/stance_badge.js') }}"></script>
+<script src="{{ url_for('static', filename='js/project/writing_assistant.js') }}?v={{ config.APP_VERSION or '1.0' }}"></script>
+{% endif %}
 <script src="{{ url_for('static', filename='js/project-report.js') }}?v={{ config.APP_VERSION or '1.0' }}"></script>
 {% endblock %}

@@ -1,10 +1,12 @@
-"""Beep.AI Middleware HTTP client — RAG, chat, token validation (config via config_manager).
+"""Beep.AI.Server HTTP client — RAG, chat, token validation (config via config_manager).
 
-This client connects to Beep.AI.Server middleware APIs and the canonical OpenAI chat route.
-Middleware URL pattern: {beep_ai_server_url}/ai-middleware/api/...
+This client connects to Beep.AI.Server canonical APIs and Beep-specific extension APIs.
+Canonical URL pattern: {beep_ai_server_url}/v1/...
+Extension URL pattern: {beep_ai_server_url}/ai-middleware/api/...
 Examples:
-  - Middleware: http://localhost:5000/ai-middleware/api/health
+  - Health: http://localhost:5000/v1/health
   - Chat (canonical): http://localhost:5000/v1/chat/completions
+  - Token check: http://localhost:5000/ai-middleware/api/tokens/check
 
 Configuration:
     beep_ai_server_url: The main server URL (e.g., http://localhost:5000)
@@ -14,6 +16,7 @@ RAG scoping:
     Canonical RAG operations are scoped by the application token. Project,
     tenant, and user identifiers are sent as metadata labels or filters only.
 """
+import base64
 import json
 
 try:
@@ -123,7 +126,7 @@ def _api_token():
 
 def is_configured():
     """True if Beep.AI.Server URL and token are set."""
-    return bool(_base_url() and _api_token() and HAS_REQUESTS)
+    return bool(_server_root() and _api_token() and HAS_REQUESTS)
 
 
 def _headers(user_id: Optional[str] = None, correlation_id: Optional[str] = None):
@@ -243,6 +246,56 @@ def _post_v1(endpoint, json_data=None, timeout=30, user_id: Optional[str] = None
         return False, str(e)
 
 
+def _post_v1_files(endpoint, files=None, data=None, timeout=120, user_id: Optional[str] = None):
+    """POST multipart data to Beep.AI.Server root endpoints."""
+    if not HAS_REQUESTS:
+        return False, "requests library not installed"
+    server_root = _server_root()
+    if not server_root:
+        return False, "Server URL not configured"
+    url = f"{server_root}{endpoint}"
+    headers = _headers(user_id)
+    try:
+        r = requests.post(url, files=files or {}, data=data or {}, headers=headers, timeout=timeout)
+        out = r.json() if r.headers.get('content-type', '').startswith('application/json') else {}
+        if r.status_code >= 400:
+            return False, _extract_error_message(out, r.status_code)
+        return True, out
+    except requests.exceptions.ConnectionError:
+        return False, "Cannot connect to Beep.AI.Server"
+    except requests.exceptions.Timeout:
+        return False, "Connection timeout"
+    except Exception as e:
+        return False, str(e)
+
+
+def _post_v1_binary(endpoint, json_data=None, timeout=120, user_id: Optional[str] = None):
+    """POST to Beep.AI.Server root endpoints that return binary content."""
+    if not HAS_REQUESTS:
+        return False, "requests library not installed"
+    server_root = _server_root()
+    if not server_root:
+        return False, "Server URL not configured"
+    url = f"{server_root}{endpoint}"
+    headers = _headers(user_id)
+    try:
+        r = requests.post(url, json=json_data or {}, headers=headers, timeout=timeout)
+        content_type = r.headers.get('content-type', '')
+        if r.status_code >= 400:
+            out = r.json() if content_type.startswith('application/json') else {}
+            return False, _extract_error_message(out, r.status_code)
+        return True, {
+            "content": getattr(r, "content", b""),
+            "content_type": content_type,
+        }
+    except requests.exceptions.ConnectionError:
+        return False, "Cannot connect to Beep.AI.Server"
+    except requests.exceptions.Timeout:
+        return False, "Connection timeout"
+    except Exception as e:
+        return False, str(e)
+
+
 def _put_v1(endpoint, json_data=None, timeout=30, user_id: Optional[str] = None):
     """PUT to Beep.AI.Server root endpoints."""
     if not HAS_REQUESTS:
@@ -341,7 +394,7 @@ def _put(endpoint, json_data=None, timeout=30):
 
 def check_health():
     """
-    Check if AI Middleware is reachable and healthy.
+    Check if Beep.AI.Server is reachable and healthy.
     Returns (ok, status_dict_or_error).
     No token required.
     """
@@ -350,10 +403,12 @@ def check_health():
 
     last_error = "Health check failed"
     for getter, endpoint in (
-        (_get, "/api/health"),
-        (_get, "/api/operational-status"),
         (_get_server, "/v1/health"),
         (_get_server, "/health"),
+        # Compatibility only: older servers exposed connectivity health under
+        # the Beep-specific extension surface.
+        (_get, "/api/health"),
+        (_get, "/api/operational-status"),
     ):
         ok, result = getter(endpoint)
         if ok:
@@ -364,7 +419,7 @@ def check_health():
 
 def check_token():
     """
-    Check if the configured API token is valid.
+    Check if the configured Beep.AI.Server application token is valid.
     Returns (ok, result_dict_or_error).
     
     Result dict contains:
@@ -373,10 +428,12 @@ def check_token():
         - user: dict (if valid) with user_id, username, scopes
         - error: str (if invalid)
     """
-    if not _base_url():
-        return False, "AI Middleware URL not configured"
+    if not _server_root():
+        return False, "Beep.AI.Server URL not configured"
     if not _api_token():
         return False, "API token not configured"
+    # Application-token validation is a Beep-specific extension API. OpenAI-
+    # compatible /v1 endpoints remain canonical for model/RAG operations.
     return _get("/api/tokens/check")
 
 
@@ -395,11 +452,15 @@ def get_connection_status():
         'server_reachable': False,
         'token_valid': False,
         'user': None,
-        'error': None
+        'error': None,
+        'server_url': _server_root(),
+        'canonical_api_health_endpoint': f"{_server_root()}/v1/health" if _server_root() else None,
+        'extension_api_url': _base_url() or None,
+        'token_validation_endpoint': f"{_base_url()}/api/tokens/check" if _base_url() else None,
     }
     
-    if not _base_url():
-        result['error'] = "Middleware URL not configured"
+    if not _server_root():
+        result['error'] = "Beep.AI.Server URL not configured"
         return result
     
     # Check health (server reachable)
@@ -615,7 +676,7 @@ def get_collection_organization_profile(
     endpoint = f"/v1/rag/collections/{collection_id}/organization-profile"
     if quality_mode:
         endpoint += f"?quality_mode={quality_mode}"
-    ok, out = _get_server(endpoint)
+    ok, out = _get_server(endpoint, user_id=user_id)
     if not ok:
         return False, out
     return True, out.get('organization_profile') if out.get('success') else out
@@ -649,7 +710,16 @@ def update_collection_organization_profile(
     if chunk_template_id is not None:
         payload["chunk_template_id"] = chunk_template_id
 
-    return _put_v1(f"/v1/rag/collections/{collection_id}/organization-profile", json_data=payload)
+    if user_id is not None:
+        payload["user_id"] = str(user_id)
+    if user_role is not None:
+        payload["user_role"] = user_role
+
+    return _put_v1(
+        f"/v1/rag/collections/{collection_id}/organization-profile",
+        json_data=payload,
+        user_id=user_id,
+    )
 
 
 def get_collection_document_chunks(
@@ -674,7 +744,7 @@ def get_collection_document_chunks(
         endpoint = f"{endpoint}?{'&'.join(query_parts)}"
     query_parts.append(f"collection_id={collection_id}")
     endpoint = f"/v1/rag/documents/{document_id}/chunks?{'&'.join(query_parts)}"
-    return _get_server(endpoint)
+    return _get_server(endpoint, user_id=user_id)
 
 
 def get_collection_document_lineage(
@@ -688,7 +758,7 @@ def get_collection_document_lineage(
         return False, "Beep.AI.Server not configured"
 
     endpoint = f"/v1/rag/documents/{document_id}/lineage?collection_id={collection_id}"
-    return _get_server(endpoint)
+    return _get_server(endpoint, user_id=user_id)
 
 
 def rag_query(query: str, collection_id: str, max_results: int = 5, 
@@ -737,6 +807,10 @@ def rag_query(query: str, collection_id: str, max_results: int = 5,
         filters["project_id"] = str(project_id)
     if tenant_id:
         payload["tenant_id"] = str(tenant_id)
+    if user_id:
+        payload["user_id"] = str(user_id)
+    if user_role:
+        payload["user_role"] = user_role
     if filters:
         payload["filters"] = filters
     if quality_mode:
@@ -750,7 +824,7 @@ def rag_query(query: str, collection_id: str, max_results: int = 5,
     payload["return_citations"] = return_citations
     payload["grounded_only"] = grounded_only
     
-    return _post_v1("/v1/rag/query", json_data=payload)
+    return _post_v1("/v1/rag/query", json_data=payload, user_id=user_id)
 
 
 def rag_add_documents(documents: List[Dict], collection_id: str, 
@@ -796,7 +870,11 @@ def rag_add_documents(documents: List[Dict], collection_id: str,
             metadata['tenant_id'] = str(tenant_id)
         if user_id:
             metadata['owner_id'] = str(user_id)
+            metadata['owner_user_id'] = str(user_id)
             metadata['app_user_id'] = str(user_id)
+            metadata['user_id'] = str(user_id)
+        if user_role:
+            metadata['user_role'] = user_role
         if user_email:
             metadata['app_user_email'] = user_email
         if quality_mode:
@@ -812,6 +890,7 @@ def rag_add_documents(documents: List[Dict], collection_id: str,
             "/v1/rag/documents",
             json_data=_rag_document_create_payload(document, collection_id),
             timeout=60,
+            user_id=user_id,
         )
         if not ok:
             return False, out
@@ -849,7 +928,7 @@ def rag_remove_documents(document_ids: List[str], collection_id: str,
     
     deleted = []
     for document_id in document_ids:
-        ok, out = _delete_v1(f"/v1/rag/documents/{document_id}")
+        ok, out = _delete_v1(f"/v1/rag/documents/{document_id}", user_id=user_id)
         if not ok:
             return False, out
         deleted.append(document_id)
@@ -911,10 +990,10 @@ def list_graph_extraction_profile_options(database_profile_id: Optional[str] = N
     if not is_configured():
         return False, "Beep.AI.Server not configured"
 
-    endpoint = "/api/rag/runtime/graph-extraction-profiles/options"
+    endpoint = "/v1/rag/runtime/graph-extraction-profiles/options"
     if database_profile_id:
         endpoint += f"?database_profile_id={database_profile_id}"
-    ok, out = _get(endpoint)
+    ok, out = _get_server(endpoint)
     if not ok:
         return False, out
     profiles = out.get("profiles") if isinstance(out, dict) else []
@@ -1213,7 +1292,7 @@ def chat_reply(messages, model=None, user_id=None, user_role=None, temperature=N
 
 def call_service(service_type, method, **kwargs):
     """
-    Call any AI service through middleware.
+    Call a Beep-specific AI service extension through ai_middleware.
     
     Args:
         service_type: llm, text_to_image, text_to_speech, speech_to_text, etc.
@@ -1240,9 +1319,23 @@ def list_services():
 # =====================
 
 def generate_image(prompt, width=512, height=512, **kwargs):
-    """Generate image from text prompt."""
-    return call_service('text_to_image', 'generate_image', 
-                       prompt=prompt, width=width, height=height, **kwargs)
+    """Generate an image through the OpenAI-compatible AI.Server image API."""
+    if not is_configured():
+        return False, "Beep.AI.Server not configured"
+
+    height = int(kwargs.pop("height", height))
+    width = int(kwargs.pop("width", width))
+    payload = {
+        "prompt": prompt,
+        "size": kwargs.pop("size", f"{width}x{height}"),
+        "n": kwargs.pop("n", 1),
+        "response_format": kwargs.pop("response_format", "b64_json"),
+    }
+    model = kwargs.pop("model", None) or kwargs.pop("model_id", None)
+    if model:
+        payload["model"] = model
+    payload.update(kwargs)
+    return _post_v1("/v1/images/generations", json_data=payload, timeout=120)
 
 
 # =====================
@@ -1250,12 +1343,32 @@ def generate_image(prompt, width=512, height=512, **kwargs):
 # =====================
 
 def synthesize_speech(text, voice=None, **kwargs):
-    """Convert text to speech."""
-    params = {'text': text}
+    """Convert text to speech through the OpenAI-compatible AI.Server audio API."""
+    if not is_configured():
+        return False, "Beep.AI.Server not configured"
+
+    params = {
+        'input': text,
+        'model': kwargs.pop('model', 'tts-1'),
+        'response_format': kwargs.pop('response_format', 'mp3'),
+    }
     if voice:
         params['voice'] = voice
+    if 'engine' in kwargs:
+        params['engine'] = kwargs.pop('engine')
+    if 'speed' in kwargs:
+        params['speed'] = kwargs.pop('speed')
     params.update(kwargs)
-    return call_service('text_to_speech', 'synthesize', **params)
+    ok, payload = _post_v1_binary("/v1/audio/speech", json_data=params, timeout=120)
+    if not ok:
+        return ok, payload
+    audio_bytes = payload.get("content", b"") if isinstance(payload, dict) else b""
+    return True, {
+        "audio": base64.b64encode(audio_bytes).decode("ascii"),
+        "audio_content": audio_bytes,
+        "content_type": payload.get("content_type", "audio/mpeg") if isinstance(payload, dict) else "audio/mpeg",
+        "response_format": params.get("response_format", "mp3"),
+    }
 
 
 # =====================
@@ -1263,10 +1376,36 @@ def synthesize_speech(text, voice=None, **kwargs):
 # =====================
 
 def transcribe_audio(audio_data, format='wav', **kwargs):
-    """Transcribe audio to text."""
-    params = {'audio_data': audio_data, 'format': format}
-    params.update(kwargs)
-    return call_service('speech_to_text', 'transcribe', **params)
+    """Transcribe audio through the OpenAI-compatible AI.Server audio API."""
+    if not is_configured():
+        return False, "Beep.AI.Server not configured"
+
+    audio_bytes = audio_data
+    if isinstance(audio_data, str):
+        try:
+            audio_bytes = base64.b64decode(audio_data, validate=True)
+        except Exception:
+            audio_bytes = audio_data.encode("utf-8")
+    if isinstance(audio_bytes, bytearray):
+        audio_bytes = bytes(audio_bytes)
+    if not isinstance(audio_bytes, bytes):
+        return False, "audio_data must be bytes, bytearray, or a base64 string"
+
+    filename = kwargs.pop("filename", f"audio.{format}")
+    content_type = kwargs.pop("content_type", f"audio/{format}")
+    explicit_model_size = kwargs.pop("model_size", None)
+    data = {
+        "model": kwargs.pop("model", "whisper-1"),
+        "response_format": kwargs.pop("response_format", "json"),
+    }
+    language = kwargs.pop("language", None)
+    if language:
+        data["language"] = language
+    if explicit_model_size:
+        data["model_size"] = explicit_model_size
+    data.update(kwargs)
+    files = {"file": (filename, audio_bytes, content_type)}
+    return _post_v1_files("/v1/audio/transcriptions", files=files, data=data, timeout=180)
 
 
 # =====================
@@ -1431,16 +1570,18 @@ def sync_document_to_rag(project, researcher_doc, user_id: Optional[int] = None)
     
     metadata = {
         'researcher_doc_id': str(researcher_doc.id),
+        'rag_document_id': getattr(researcher_doc, 'rag_document_id', None),
         'filename': researcher_doc.filename,
         'mime_type': researcher_doc.mime_type,
         'file_size': researcher_doc.file_size,
+        'content_hash': getattr(researcher_doc, 'rag_content_hash', None),
     }
     
     return add_document_to_project_rag(
         project=project,
         document_content=researcher_doc.text_content,
         source=researcher_doc.filename,
-        document_id=f"researcher_doc_{researcher_doc.id}",
+        document_id=getattr(researcher_doc, 'rag_document_id', None) or f"researcher_doc_{researcher_doc.id}",
         user_id=user_id,
         metadata=metadata,
     )

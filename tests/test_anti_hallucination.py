@@ -188,9 +188,11 @@ class TestGroundingClient:
             'sources': []
         }
         with patch('app.services.grounding_client.is_configured', return_value=True), \
-             patch('app.services.grounding_client._post', return_value=(True, mock_response)):
+             patch('app.services.grounding_client._post_v1', return_value=(True, mock_response)) as post_v1:
             result = evaluate_grounding('test answer', [{'content': 'source'}])
         assert result['grounding_score'] == 0.88
+        post_v1.assert_called_once()
+        assert post_v1.call_args.args[0] == '/v1/rag/evaluate-grounding'
 
     def test_detect_contradictions_not_configured(self):
         from app.services.grounding_client import detect_contradictions
@@ -202,9 +204,11 @@ class TestGroundingClient:
         from app.services.grounding_client import detect_contradictions
         mock_response = {'severity': 'high', 'detail': 'Contradicts Doc #1'}
         with patch('app.services.grounding_client.is_configured', return_value=True), \
-             patch('app.services.grounding_client._post', return_value=(True, mock_response)):
+             patch('app.services.grounding_client._post_v1', return_value=(True, mock_response)) as post_v1:
             result = detect_contradictions('claim', [{'content': 'source'}])
         assert result['severity'] == 'high'
+        post_v1.assert_called_once()
+        assert post_v1.call_args.args[0] == '/v1/rag/contradiction'
 
     def test_run_post_generation_checks_persists_audit(self, app_context, test_project):
         """run_post_generation_checks should persist a HallucinationAuditLog row."""

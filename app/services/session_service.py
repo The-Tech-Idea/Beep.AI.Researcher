@@ -12,6 +12,7 @@ Config keys consumed:
   session_idle_timeout_minutes int  default 60   (inactivity timeout; 0 = disabled)
   session_max_concurrent       int  default 5    (0 = unlimited)
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -23,21 +24,13 @@ from flask import session, request
 from flask_login import logout_user
 
 from app.config_manager import config_manager
-from app.core.time_utils import utcnow_naive
+from app.core.time_utils import utcnow_naive, _gi
 from app.database import db
 
 if TYPE_CHECKING:
     from app.models.core import User
 
-_SESSION_TOKEN_KEY = 'session_cookie_id'
-
-
-def _gi(key: str, default: int) -> int:
-    v = config_manager.get(key)
-    try:
-        return int(v) if v is not None else default
-    except (TypeError, ValueError):
-        return default
+_SESSION_TOKEN_KEY = "session_cookie_id"
 
 
 def _hash_token(token: str) -> str:
@@ -45,16 +38,17 @@ def _hash_token(token: str) -> str:
 
 
 def _ua_label() -> str:
-    ua = (request.user_agent.string or '') if request else ''
+    ua = (request.user_agent.string or "") if request else ""
     if len(ua) > 100:
-        browser = getattr(request.user_agent, 'browser', '') or ''
-        version = getattr(request.user_agent, 'version', '') or ''
-        platform = getattr(request.user_agent, 'platform', '') or ''
+        browser = getattr(request.user_agent, "browser", "") or ""
+        version = getattr(request.user_agent, "version", "") or ""
+        platform = getattr(request.user_agent, "platform", "") or ""
         ua = f"{browser} {version} on {platform}".strip()
     return ua[:100]
 
 
 # ── Session creation ───────────────────────────────────────────────────────────
+
 
 def create_session(user: "User") -> str:
     """Create a ``UserSession`` record and write the token to the Flask session.
@@ -68,17 +62,17 @@ def create_session(user: "User") -> str:
     token_hash = _hash_token(token)
     session[_SESSION_TOKEN_KEY] = token
 
-    max_concurrent = _gi('session_max_concurrent', 5)
+    max_concurrent = _gi("session_max_concurrent", 5)
     if max_concurrent > 0:
         _evict_oldest(user.id, keep=max_concurrent - 1)
 
-    lifetime_hours = _gi('session_lifetime_hours', 24)
+    lifetime_hours = _gi("session_lifetime_hours", 24)
     expires_at = None
     if lifetime_hours > 0:
         expires_at = utcnow_naive() + timedelta(hours=lifetime_hours)
 
-    ip = (request.remote_addr or '') if request else ''
-    ua = _ua_label() if request else ''
+    ip = (request.remote_addr or "") if request else ""
+    ua = _ua_label() if request else ""
 
     sess = UserSession(
         user_id=user.id,
@@ -101,8 +95,7 @@ def _evict_oldest(user_id: int, keep: int) -> None:
     from app.models.user_management import UserSession
 
     active = (
-        UserSession.query
-        .filter_by(user_id=user_id, is_active=True)
+        UserSession.query.filter_by(user_id=user_id, is_active=True)
         .order_by(UserSession.created_at.desc())
         .all()
     )
@@ -112,6 +105,7 @@ def _evict_oldest(user_id: int, keep: int) -> None:
 
 
 # ── Heartbeat / enforcement ────────────────────────────────────────────────────
+
 
 def heartbeat() -> bool:
     """Update ``last_seen_at`` and enforce timeouts for the current request.
@@ -140,37 +134,41 @@ def heartbeat() -> bool:
 
     # Absolute lifetime check
     if user_session.expires_at and now > user_session.expires_at:
-        _revoke(user_session, reason='expired')
+        _revoke(user_session, reason="expired")
         db.session.commit()
         logout_user()
         session.clear()
         return False
 
     # Idle timeout check
-    idle_minutes = _gi('session_idle_timeout_minutes', 60)
+    idle_minutes = _gi("session_idle_timeout_minutes", 60)
     if idle_minutes > 0 and user_session.last_seen_at:
         idle_deadline = user_session.last_seen_at + timedelta(minutes=idle_minutes)
         if now > idle_deadline:
-            _revoke(user_session, reason='idle')
+            _revoke(user_session, reason="idle")
             db.session.commit()
             logout_user()
             session.clear()
             return False
 
     # Update last_seen_at (throttled to once per minute to reduce writes)
-    if not user_session.last_seen_at or (now - user_session.last_seen_at).total_seconds() > 60:
+    if (
+        not user_session.last_seen_at
+        or (now - user_session.last_seen_at).total_seconds() > 60
+    ):
         user_session.last_seen_at = now
         db.session.commit()
 
     return True
 
 
-def _revoke(user_session, reason: str = '') -> None:
+def _revoke(user_session, reason: str = "") -> None:
     user_session.is_active = False
     user_session.revoked_at = utcnow_naive()
 
 
 # ── Admin / user revocation ────────────────────────────────────────────────────
+
 
 def revoke_session(session_id: int, revoked_by_id: int | None = None) -> bool:
     """Revoke a specific ``UserSession`` by DB id. Returns False if not found."""
@@ -187,8 +185,9 @@ def revoke_session(session_id: int, revoked_by_id: int | None = None) -> bool:
     return True
 
 
-def revoke_all_sessions(user_id: int, except_current: bool = False,
-                        revoked_by_id: int | None = None) -> int:
+def revoke_all_sessions(
+    user_id: int, except_current: bool = False, revoked_by_id: int | None = None
+) -> int:
     """Revoke all active sessions for *user_id*.
 
     If *except_current* is True, the session matching the current request token
@@ -196,7 +195,7 @@ def revoke_all_sessions(user_id: int, except_current: bool = False,
     """
     from app.models.user_management import UserSession
 
-    current_hash = _hash_token(session.get(_SESSION_TOKEN_KEY, ''))
+    current_hash = _hash_token(session.get(_SESSION_TOKEN_KEY, ""))
 
     active = UserSession.query.filter_by(user_id=user_id, is_active=True).all()
     count = 0

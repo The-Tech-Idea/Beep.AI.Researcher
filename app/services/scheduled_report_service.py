@@ -4,7 +4,7 @@ import json
 import logging
 import re
 import threading
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import Any
 
 from app.core.event_bus import EventType, get_event_bus
@@ -180,11 +180,17 @@ def create_scheduled_report(project, data: dict[str, Any]):
 
 
 def list_scheduled_reports(project):
-    reports = ScheduledReport.query.filter_by(project_id=project.id).order_by(ScheduledReport.created_at.desc()).all()
+    reports = (
+        ScheduledReport.query.filter_by(project_id=project.id)
+        .order_by(ScheduledReport.created_at.desc())
+        .all()
+    )
     return {"reports": [serialize_scheduled_report(report) for report in reports]}, 200
 
 
-def queue_scheduled_report(report: ScheduledReport, *, trigger_source: str) -> str | None:
+def queue_scheduled_report(
+    report: ScheduledReport, *, trigger_source: str
+) -> str | None:
     queue = get_job_queue()
     job = queue.create_job(
         JobType.GENERATE_REPORT.value,
@@ -194,7 +200,11 @@ def queue_scheduled_report(report: ScheduledReport, *, trigger_source: str) -> s
             "trigger_source": trigger_source,
         },
         priority=JobPriority.HIGH,
-        metadata={"project_id": report.project_id, "scheduled_report_id": report.id, "trigger_source": trigger_source},
+        metadata={
+            "project_id": report.project_id,
+            "scheduled_report_id": report.id,
+            "trigger_source": trigger_source,
+        },
     )
     return job.job_id
 
@@ -219,7 +229,9 @@ def dispatch_due_reports(now: datetime | None = None) -> list[str]:
 def dispatch_event_driven_reports(project_id: int, *, trigger_source: str) -> list[str]:
     queued_job_ids = []
     current_time = utcnow_naive()
-    reports = ScheduledReport.query.filter_by(project_id=project_id, is_active=True, schedule_cron="on_upload").all()
+    reports = ScheduledReport.query.filter_by(
+        project_id=project_id, is_active=True, schedule_cron="on_upload"
+    ).all()
     for report in reports:
         job_id = queue_scheduled_report(report, trigger_source=trigger_source)
         if job_id:
@@ -236,9 +248,14 @@ def _project_content_event_handler(event) -> None:
     if not project_id:
         return
     try:
-        dispatch_event_driven_reports(int(project_id), trigger_source=getattr(event, "event_type", "event"))
+        dispatch_event_driven_reports(
+            int(project_id), trigger_source=getattr(event, "event_type", "event")
+        )
     except Exception:
-        logger.exception("Failed to dispatch event-driven scheduled reports for project %s", project_id)
+        logger.exception(
+            "Failed to dispatch event-driven scheduled reports for project %s",
+            project_id,
+        )
 
 
 def _html_to_text(html: str) -> str:
@@ -285,7 +302,7 @@ def handle_generate_report_job(input_data: dict[str, Any]):
                 return {"delivered": False, "reason": "scheduled_report_missing"}
             project_id = scheduled_report.project_id
             report_name = scheduled_report.name
-            recipients = _normalize_recipients(scheduled_report.recipients_json and json.loads(scheduled_report.recipients_json))
+            recipients = _normalize_recipients(scheduled_report.recipients_json)
 
         if not project_id:
             raise ValueError("project_id is required for generate_report jobs")
@@ -295,15 +312,25 @@ def handle_generate_report_job(input_data: dict[str, Any]):
             return {"delivered": False, "reason": "project_missing"}
 
         if not recipients:
-            return {"delivered": False, "reason": "no_recipients", "project_id": project.id}
+            return {
+                "delivered": False,
+                "reason": "no_recipients",
+                "project_id": project.id,
+            }
 
         subject = f"{project.name}: {report_name}"
         plain_body, html_body = _render_report_body(project, report_name)
 
         if not email_is_configured():
-            return {"delivered": False, "reason": "email_unconfigured", "project_id": project.id}
+            return {
+                "delivered": False,
+                "reason": "email_unconfigured",
+                "project_id": project.id,
+            }
 
-        success, error = send_email(subject, plain_body, recipients, html_body=html_body)
+        success, error = send_email(
+            subject, plain_body, recipients, html_body=html_body
+        )
         if success and scheduled_report is not None:
             scheduled_report.last_run_at = utcnow_naive()
             db.session.commit()
@@ -318,12 +345,31 @@ def handle_generate_report_job(input_data: dict[str, Any]):
 
 
 def _dispatcher_loop(app) -> None:
+    consecutive_errors = 0
+    max_backoff = 300  # 5 minutes
     while not _STOP_EVENT.wait(_DISPATCH_INTERVAL_SECONDS):
         try:
             with app.app_context():
                 dispatch_due_reports()
+                consecutive_errors = 0
         except Exception:
-            logger.exception("Scheduled report dispatcher loop failed")
+            consecutive_errors += 1
+            if consecutive_errors <= 3:
+                logger.warning(
+                    "Scheduled report dispatcher failed (attempt %d)",
+                    consecutive_errors,
+                )
+            elif consecutive_errors % 10 == 1:
+                logger.error(
+                    "Scheduled report dispatcher still failing after %d attempts",
+                    consecutive_errors,
+                )
+            # Exponential backoff: 1m, 2m, 4m, ... up to max_backoff
+            backoff = min(
+                _DISPATCH_INTERVAL_SECONDS * (2 ** (consecutive_errors - 1)),
+                max_backoff,
+            )
+            _STOP_EVENT.wait(backoff)
 
 
 def initialize_scheduled_report_runtime(app, *, start_dispatcher: bool = True) -> None:
@@ -340,13 +386,19 @@ def initialize_scheduled_report_runtime(app, *, start_dispatcher: bool = True) -
         if not _EVENT_HANDLERS_REGISTERED:
             try:
                 event_bus = get_event_bus()
-                event_bus.subscribe(EventType.DOCUMENT_UPLOADED.value, _project_content_event_handler)
+                event_bus.subscribe(
+                    EventType.DOCUMENT_UPLOADED.value, _project_content_event_handler
+                )
                 event_bus.subscribe("import.completed", _project_content_event_handler)
                 _EVENT_HANDLERS_REGISTERED = True
             except Exception:
                 logger.exception("Failed to register scheduled report event handlers")
 
-        should_start = start_dispatcher and _DISPATCHER_THREAD is None and not app.config.get("TESTING", False)
+        should_start = (
+            start_dispatcher
+            and _DISPATCHER_THREAD is None
+            and not app.config.get("TESTING", False)
+        )
         if should_start:
             _STOP_EVENT.clear()
             _DISPATCHER_THREAD = threading.Thread(

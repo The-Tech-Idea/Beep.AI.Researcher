@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Document Manager Jobs - Admin - Beep.AI.Researcher{% endblock %}
+
+{% block content %}
+<div class="page-header mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div>
+        <h1><i class="bi bi-list-task me-2"></i>Document Manager Jobs</h1>
+        <p class="mb-0">Review repair, recalculation, and bulk document operations.</p>
+    </div>
+    <a href="{{ url_for('admin.document_management') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i>Back to Documents
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        {% if jobs %}
+        <div class="table-responsive">
+            <table class="table table-hover table-sm mb-0 align-middle">
+                <thead>
+                    <tr>
+                        <th>Job</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                        <th class="text-end">Records</th>
+                        <th class="text-end">Succeeded</th>
+                        <th class="text-end">Failed</th>
+                        <th>Started</th>
+                        <th>Completed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for job in jobs %}
+                    {% set filters = job.data_filters or {} %}
+                    {% set status = job.status.value if job.status.value is defined else job.status %}
+                    <tr>
+                        <td>
+                            <div class="fw-semibold">{{ job.name }}</div>
+                            <div class="small text-muted">#{{ job.id }}</div>
+                        </td>
+                        <td>
+                            {% if status == 'completed' %}
+                                <span class="badge bg-success">Completed</span>
+                            {% elif status == 'failed' %}
+                                <span class="badge bg-danger" title="{{ job.error_message or '' }}">Failed</span>
+                            {% elif status == 'running' %}
+                                <span class="badge bg-primary">Running</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ status or 'pending' }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ filters.get('action', '-') }}</td>
+                        <td class="text-end">{{ job.total_records or 0 }}</td>
+                        <td class="text-end">{{ job.successful_records or 0 }}</td>
+                        <td class="text-end">{{ job.failed_records or 0 }}</td>
+                        <td class="text-muted">{{ job.started_at.strftime('%Y-%m-%d %H:%M') if job.started_at else '-' }}</td>
+                        <td class="text-muted">{{ job.completed_at.strftime('%Y-%m-%d %H:%M') if job.completed_at else '-' }}</td>
+                    </tr>
+                    {% if filters.get('errors') %}
+                    <tr>
+                        <td colspan="8">
+                            <details>
+                                <summary class="small text-muted">Errors</summary>
+                                <pre class="small bg-light border rounded p-2 mt-2 mb-0">{{ filters.get('errors') | tojson(indent=2) }}</pre>
+                            </details>
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if pagination.pages > 1 %}
+        <div class="d-flex justify-content-between align-items-center px-3 py-2 border-top">
+            <small class="text-muted">Showing page {{ pagination.page }} of {{ pagination.pages }}</small>
+            <nav>
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                        <a class="page-link" href="{{ url_for('admin.admin_document_manager_jobs', page=pagination.prev_num) }}">Prev</a>
+                    </li>
+                    <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                        <a class="page-link" href="{{ url_for('admin.admin_document_manager_jobs', page=pagination.next_num) }}">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="text-center p-5">
+            <i class="bi bi-list-task fs-1 d-block mb-2 text-muted"></i>
+            <h5>No document manager jobs yet</h5>
+            <p class="text-muted mb-0">Bulk and repair actions will appear here.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

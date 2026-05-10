@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import io
+import hashlib
 import logging
 import mimetypes
 import uuid
@@ -13,6 +14,7 @@ from app.database import db
 from app.models.integrations_registry import SERVICE_TYPE_ZOTERO
 from app.models.researcher import Reference, ResearchProject, ResearcherDocument
 from app.services.beep_ai_client import is_configured, sync_document_to_rag
+from app.services.document_manager_service import DocumentManagerService
 from app.services.quota_service import quota_service
 from app.services.reference_external_attachment_service import (
     get_project_reference_external_attachments,
@@ -79,11 +81,21 @@ def import_project_reference_attachment(
         raise ValueError("The selected attachment did not return any file content.")
 
     file_size = len(raw_bytes)
-    quota_service.check_quota(user_id=user_id, upload_size_bytes=file_size)
+    quota_service.check_quota(
+        user_id=user_id,
+        upload_size_bytes=file_size,
+        tenant_id=getattr(project, "tenant_id", None),
+    )
 
     filename = _choose_filename(attachment, download)
     storage_key = _save_attachment_bytes(project.id, filename, raw_bytes)
-    text_content = _extract_text_content(filename, download.get("content_type"), raw_bytes)
+    extraction = DocumentManagerService().extract_document(
+        filename=filename,
+        raw_bytes=raw_bytes,
+        content_type=download.get("content_type"),
+    )
+    text_content = extraction.text
+    rag_document_id = _build_attachment_rag_document_id(project.id, attachment_item_key, filename)
 
     document = ResearcherDocument(
         project_id=project.id,
@@ -96,14 +108,30 @@ def import_project_reference_attachment(
         source_id=attachment_item_key,
         source_url=attachment.get("open_url") or download.get("download_url"),
         imported_at=utcnow_naive(),
+        rag_document_id=rag_document_id,
+        rag_collection_id=project.collection_id,
+        rag_content_hash=_content_hash(text_content),
+        rag_sync_status="not_indexed" if text_content else "unavailable",
+        rag_sync_message=None if text_content else "No text could be extracted for AI search.",
+        document_hash=DocumentManagerService.bytes_hash(raw_bytes),
     )
+    DocumentManagerService.apply_extraction_result(document, extraction)
     db.session.add(document)
     db.session.flush()
+    duplicate = DocumentManagerService.find_duplicate_document(
+        project_id=project.id,
+        document_hash=document.document_hash,
+        exclude_document_id=document.id,
+    )
 
     _promote_primary_document_if_missing(reference, document.id)
     _ensure_reference_document_link(reference, document.id, attachment)
     try:
-        quota_service.record_upload(user_id=user_id, file_size_bytes=file_size)
+        quota_service.record_upload(
+            user_id=user_id,
+            file_size_bytes=file_size,
+            tenant_id=getattr(project, "tenant_id", None),
+        )
     except Exception as exc:
         logger.warning("quota record_upload failed for imported attachment: %s", exc)
 
@@ -112,13 +140,45 @@ def import_project_reference_attachment(
         "synced": False,
         "message": "This file was added to the project. Open it to review or extract text before indexing.",
     }
-    if text_content and project.collection_id and is_configured():
+    db.session.commit()
+    DocumentManagerService.record_ingestion_state(document, duplicate_of=duplicate)
+
+    if duplicate and duplicate.rag_sync_status == "indexed":
+        document.rag_sync_status = "skipped_duplicate"
+        document.rag_sync_message = f"Same content already indexed as document {duplicate.id}."
+        db.session.commit()
+        DocumentManagerService.record_ingestion_state(document, duplicate_of=duplicate)
+        rag_sync = {
+            "attempted": False,
+            "synced": True,
+            "message": document.rag_sync_message,
+            "duplicate_of_document_id": duplicate.id,
+        }
+    elif text_content and project.collection_id and is_configured():
         synced, rag_result = sync_document_to_rag(project, document, user_id=user_id)
+        document.rag_sync_status = "indexed" if synced else "failed"
+        document.rag_sync_message = "File indexed for library search." if synced else str(rag_result)
+        document.rag_collection_id = project.collection_id
+        document.rag_content_hash = _content_hash(text_content)
+        if synced:
+            document.rag_synced_at = utcnow_naive()
+        db.session.commit()
+        DocumentManagerService.record_ingestion_state(document, last_error=None if synced else str(rag_result))
         rag_sync = {
             "attempted": True,
             "synced": synced,
             "message": "File indexed for library search." if synced else str(rag_result),
         }
+    elif text_content and not project.collection_id:
+        document.rag_sync_status = "unavailable"
+        document.rag_sync_message = "Project is not linked to an AI document library."
+        db.session.commit()
+        DocumentManagerService.record_ingestion_state(document)
+    elif text_content and not is_configured():
+        document.rag_sync_status = "failed"
+        document.rag_sync_message = "Beep.AI.Server is not configured."
+        db.session.commit()
+        DocumentManagerService.record_ingestion_state(document, last_error=document.rag_sync_message)
 
     return {
         "created": True,
@@ -211,6 +271,17 @@ def _save_attachment_bytes(project_id: int, filename: str, raw_bytes: bytes) -> 
     safe_key = f"{project_id}_{uuid.uuid4().hex[:8]}_{Path(filename).name}"
     backend = get_storage_backend()
     return backend.save(io.BytesIO(raw_bytes), safe_key)
+
+
+def _build_attachment_rag_document_id(project_id: int, attachment_item_key: str, filename: str) -> str:
+    seed = f"{project_id}:zotero:{attachment_item_key}:{filename}:{uuid.uuid4().hex}"
+    return f"researcher_doc_{hashlib.sha256(seed.encode('utf-8')).hexdigest()[:24]}"
+
+
+def _content_hash(text_content: str | None) -> str | None:
+    if not text_content:
+        return None
+    return hashlib.sha256(text_content.encode("utf-8")).hexdigest()
 
 
 def _extract_text_content(filename: str, content_type: str | None, raw_bytes: bytes) -> str | None:

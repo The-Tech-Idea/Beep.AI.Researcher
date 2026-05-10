@@ -70,7 +70,7 @@
 
 .matrix-header-cell {
     min-width: 80px;
-    color: #fff;
+    color: var(--text-inverse);
     text-align: center;
 }
 

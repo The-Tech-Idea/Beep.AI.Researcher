@@ -3,10 +3,12 @@
 Generates study materials from research documents using Beep.AI.Server LLM.
 Falls back to simple heuristic extraction when the server is not configured.
 """
+
 import json
 import logging
 from flask import Blueprint, request, jsonify
 from flask import session as flask_session
+from flask_login import login_required
 
 from app.models.researcher import ResearchProject
 from app.services import beep_ai_client
@@ -16,26 +18,29 @@ from app.services.project_grounded_prompt_service import (
     build_grounded_user_prompt,
     merge_supporting_sources,
 )
-from app.services.project_rag_preferences_service import resolve_project_generation_temperature
-from app.routes.project_api_guard import guard_project_blueprint, get_guarded_project_or_404
+from app.services.project_rag_preferences_service import (
+    resolve_project_generation_temperature,
+)
+from app.routes.project_api_guard import (
+    guard_project_blueprint,
+    get_guarded_project_or_404 as get_project_or_404,
+)
 
 logger = logging.getLogger(__name__)
 
-training_bp = Blueprint('training', __name__)
+training_bp = Blueprint("training", __name__)
 
 _chunk_text = training_service.chunk_text
 _extract_json_list = training_service.extract_json_list
-
-
-def _get_project_or_404(project_id):
-    return get_guarded_project_or_404(project_id)
 
 
 # ---------------------------------------------------------------------------
 # Flashcard generation
 # ---------------------------------------------------------------------------
 
-@training_bp.route('/<int:project_id>/flashcards', methods=['POST'])
+
+@training_bp.route("/<int:project_id>/flashcards", methods=["POST"])
+@login_required
 def generate_flashcards(project_id):
     """Generate study flashcards from project documents via LLM.
 
@@ -47,13 +52,13 @@ def generate_flashcards(project_id):
     Returns:
         {"flashcards": [{"id": int, "front": str, "back": str, "document_id": int}]}
     """
-    project = _get_project_or_404(project_id)
+    project = get_project_or_404(project_id)
     data = request.get_json() or {}
     # build_project_grounded_context(...) remains the grounded entry point; the service receives it via injection.
     payload, status_code = training_service.generate_flashcards(
         project,
         data,
-        user_id=flask_session.get('user_id'),
+        user_id=flask_session.get("user_id"),
         beep_ai_client_module=beep_ai_client,
         build_project_grounded_context_fn=build_project_grounded_context,
         build_grounded_user_prompt_fn=build_grounded_user_prompt,
@@ -63,9 +68,10 @@ def generate_flashcards(project_id):
     return jsonify(payload), status_code
 
 
-@training_bp.route('/<int:project_id>/flashcards', methods=['GET'])
+@training_bp.route("/<int:project_id>/flashcards", methods=["GET"])
+@login_required
 def list_flashcards(project_id):
-    project = _get_project_or_404(project_id)
+    project = get_project_or_404(project_id)
     payload, status_code = training_service.list_flashcards(project)
     return jsonify(payload), status_code
 
@@ -74,7 +80,9 @@ def list_flashcards(project_id):
 # Quiz generation
 # ---------------------------------------------------------------------------
 
-@training_bp.route('/<int:project_id>/quiz', methods=['POST'])
+
+@training_bp.route("/<int:project_id>/quiz", methods=["POST"])
+@login_required
 def generate_quiz(project_id):
     """Generate an MCQ quiz from project documents via LLM.
 
@@ -87,13 +95,13 @@ def generate_quiz(project_id):
     Returns:
         {"quiz_id": int, "name": str, "question_count": int}
     """
-    project = _get_project_or_404(project_id)
+    project = get_project_or_404(project_id)
     data = request.get_json() or {}
     # build_project_grounded_context(...) remains the grounded entry point; the service receives it via injection.
     payload, status_code = training_service.generate_quiz(
         project,
         data,
-        user_id=flask_session.get('user_id'),
+        user_id=flask_session.get("user_id"),
         beep_ai_client_module=beep_ai_client,
         build_project_grounded_context_fn=build_project_grounded_context,
         build_grounded_user_prompt_fn=build_grounded_user_prompt,
@@ -103,16 +111,18 @@ def generate_quiz(project_id):
     return jsonify(payload), status_code
 
 
-@training_bp.route('/<int:project_id>/quizzes', methods=['GET'])
+@training_bp.route("/<int:project_id>/quizzes", methods=["GET"])
+@login_required
 def list_quizzes(project_id):
-    project = _get_project_or_404(project_id)
+    project = get_project_or_404(project_id)
     payload, status_code = training_service.list_quizzes(project)
     return jsonify(payload), status_code
 
 
-@training_bp.route('/<int:project_id>/quizzes/<int:quiz_id>', methods=['GET'])
+@training_bp.route("/<int:project_id>/quizzes/<int:quiz_id>", methods=["GET"])
+@login_required
 def get_quiz(project_id, quiz_id):
-    project = _get_project_or_404(project_id)
+    project = get_project_or_404(project_id)
     payload, status_code = training_service.get_quiz(project, quiz_id)
     return jsonify(payload), status_code
 
@@ -121,16 +131,19 @@ def get_quiz(project_id, quiz_id):
 # Delete endpoints
 # ---------------------------------------------------------------------------
 
-@training_bp.route('/<int:project_id>/flashcards/<int:card_id>', methods=['DELETE'])
+
+@training_bp.route("/<int:project_id>/flashcards/<int:card_id>", methods=["DELETE"])
+@login_required
 def delete_flashcard(project_id, card_id):
-    project = _get_project_or_404(project_id)
+    project = get_project_or_404(project_id)
     payload, status_code = training_service.delete_flashcard(project, card_id)
     return jsonify(payload), status_code
 
 
-@training_bp.route('/<int:project_id>/quizzes/<int:quiz_id>', methods=['DELETE'])
+@training_bp.route("/<int:project_id>/quizzes/<int:quiz_id>", methods=["DELETE"])
+@login_required
 def delete_quiz(project_id, quiz_id):
-    project = _get_project_or_404(project_id)
+    project = get_project_or_404(project_id)
     payload, status_code = training_service.delete_quiz(project, quiz_id)
     return jsonify(payload), status_code
 
@@ -139,7 +152,9 @@ def delete_quiz(project_id, quiz_id):
 # Quiz submission / scoring
 # ---------------------------------------------------------------------------
 
-@training_bp.route('/<int:project_id>/quizzes/<int:quiz_id>/submit', methods=['POST'])
+
+@training_bp.route("/<int:project_id>/quizzes/<int:quiz_id>/submit", methods=["POST"])
+@login_required
 def submit_quiz(project_id, quiz_id):
     """Score a quiz attempt.
 
@@ -148,12 +163,12 @@ def submit_quiz(project_id, quiz_id):
     Returns:
         {"score": int, "total": int, "percentage": float, "results": [...]}
     """
-    project = _get_project_or_404(project_id)
+    project = get_project_or_404(project_id)
     payload, status_code = training_service.submit_quiz(
         project,
         quiz_id,
         request.get_json() or {},
-        user_id=flask_session.get('user_id'),
+        user_id=flask_session.get("user_id"),
     )
     return jsonify(payload), status_code
 

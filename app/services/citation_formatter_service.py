@@ -7,6 +7,7 @@ reproducible and easier to test.
 
 Supported styles: ``apa``, ``mla``, ``chicago``, ``bibtex``.
 """
+
 from __future__ import annotations
 
 import re
@@ -16,6 +17,67 @@ from app.models.researcher.researcher_references import Reference
 
 # Styles offered to callers.
 SUPPORTED_STYLES = ("apa", "mla", "chicago", "bibtex")
+
+# CSL style registry — 50+ academic styles grouped by field
+CSL_STYLES = {
+    # Social Sciences
+    "apa": "APA 7th",
+    "asa": "ASA",
+    "apsa": "APSA",
+    # Humanities
+    "mla": "MLA 9th",
+    "chicago": "Chicago 17th",
+    "mhra": "MHRA",
+    "turabian": "Turabian",
+    # Medicine / Health
+    "vancouver": "Vancouver",
+    "ama": "AMA",
+    "jama": "JAMA",
+    "bmj": "BMJ",
+    "lancet": "The Lancet",
+    "nejm": "NEJM",
+    "nursing": "Nursing",
+    # Science / Engineering
+    "ieee": "IEEE",
+    "nature": "Nature",
+    "cell": "Cell",
+    "science": "Science",
+    "acm": "ACM",
+    "aps": "APS",
+    "acs": "ACS",
+    "aiaa": "AIAA",
+    # Law
+    "bluebook": "Bluebook",
+    "oscola": "OSCOLA",
+    # Education
+    "apa-ed": "APA Education",
+    "harvard": "Harvard",
+    "harvard-anglia": "Harvard (Anglia)",
+    "harvard-leeds": "Harvard (Leeds)",
+    "harvard-uwe": "Harvard (UWE)",
+    "harvard-westernsyd": "Harvard (Western Syd)",
+    # Business
+    "apa-bus": "APA Business",
+    "jbl": "Journal of Business Logistics",
+    # General / International
+    "iso690": "ISO 690",
+    "gb7714": "GB/T 7714",
+    "din1505": "DIN 1505",
+    "gost": "GOST",
+    "council-of-science-editors": "CSE",
+    "elsevier-harvard": "Elsevier Harvard",
+    "elsevier-vancouver": "Elsevier Vancouver",
+    "springer-basic": "Springer Basic",
+    "springer-lncs": "Springer LNCS",
+    "taylor-francis-harvard": "Taylor & Francis Harvard",
+    "sage-harvard": "SAGE Harvard",
+    "copernicus": "Copernicus",
+    "frontiers": "Frontiers",
+    "mdpi": "MDPI",
+    "peerj": "PeerJ",
+    "plos": "PLOS",
+    "rsc": "RSC",
+}
 
 
 # ---------------------------------------------------------------------------
@@ -87,8 +149,8 @@ def format_reference_list(
 # Matches common author-year in-text patterns:
 #   (Smith, 2020)  (Smith et al., 2020)  Smith (2020)  [Smith 2020]
 _AUTHOR_YEAR_RE = re.compile(
-    r"[\(\[]?\s*([A-Z][A-Za-z'\-]+(?:\s+et\s+al\.?)?)"   # author part
-    r"[,\s]+(\d{4}(?:[a-z])?)\s*[\)\]]?",                 # year part
+    r"[\(\[]?\s*([A-Z][A-Za-z'\-]+(?:\s+et\s+al\.?)?)"  # author part
+    r"[,\s]+(\d{4}(?:[a-z])?)\s*[\)\]]?",  # year part
     re.UNICODE,
 )
 

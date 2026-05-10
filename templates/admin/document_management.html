@@ -12,9 +12,14 @@
         <h1><i class="bi bi-file-earmark-text me-2"></i>Document Management</h1>
         <p class="mb-0">Browse and manage uploaded documents across all users and projects.</p>
     </div>
-    <a href="{{ url_for('admin.index') }}" class="btn btn-outline-secondary">
-        <i class="bi bi-arrow-left me-1"></i>Back to Admin
-    </a>
+    <div class="d-flex gap-2">
+        <a href="{{ url_for('admin.admin_document_manager_jobs') }}" class="btn btn-outline-primary">
+            <i class="bi bi-list-task me-1"></i>Jobs
+        </a>
+        <a href="{{ url_for('admin.index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Back to Admin
+        </a>
+    </div>
 </div>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
@@ -80,9 +85,9 @@
             <div class="col-md-3">
                 <label class="form-label small mb-1">Search filename</label>
                 <input type="text" name="q" class="form-control form-control-sm"
-                       value="{{ search }}" placeholder="filename…">
+                       value="{{ search }}" placeholder="filename">
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <label class="form-label small mb-1" for="filter_user_id">User</label>
                 <select name="user_id" id="filter_user_id" class="form-select form-select-sm">
                     <option value="">All users</option>
@@ -93,7 +98,18 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
+                <label class="form-label small mb-1" for="filter_tenant_id">Tenant</label>
+                <select name="tenant_id" id="filter_tenant_id" class="form-select form-select-sm">
+                    <option value="">All tenants</option>
+                    {% for tenant in all_tenants %}
+                    <option value="{{ tenant.id }}" {% if tenant_filter == tenant.id %}selected{% endif %}>
+                        {{ tenant.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
                 <label class="form-label small mb-1" for="filter_project_id">Project</label>
                 <select name="project_id" id="filter_project_id" class="form-select form-select-sm">
                     <option value="">All projects</option>
@@ -102,6 +118,42 @@
                         {{ p.name }}
                     </option>
                     {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small mb-1" for="filter_status">Status</label>
+                <select name="status" id="filter_status" class="form-select form-select-sm">
+                    <option value="">All statuses</option>
+                    {% for status in ['pending', 'processing', 'ready', 'error', 'archived'] %}
+                    <option value="{{ status }}" {% if status_filter == status %}selected{% endif %}>{{ status }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-1">
+                <label class="form-label small mb-1" for="filter_file_type">Type</label>
+                <input type="text" name="file_type" id="filter_file_type" class="form-control form-control-sm"
+                       value="{{ file_type }}" placeholder="pdf">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small mb-1" for="filter_date_from">From</label>
+                <input type="date" name="date_from" id="filter_date_from" class="form-control form-control-sm"
+                       value="{{ date_from }}">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small mb-1" for="filter_date_to">To</label>
+                <input type="date" name="date_to" id="filter_date_to" class="form-control form-control-sm"
+                       value="{{ date_to }}">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small mb-1" for="filter_sort">Sort</label>
+                <select name="sort" id="filter_sort" class="form-select form-select-sm">
+                    <option value="created_desc" {% if sort == 'created_desc' %}selected{% endif %}>Newest first</option>
+                    <option value="created_asc" {% if sort == 'created_asc' %}selected{% endif %}>Oldest first</option>
+                    <option value="size_desc" {% if sort == 'size_desc' %}selected{% endif %}>Largest first</option>
+                    <option value="size_asc" {% if sort == 'size_asc' %}selected{% endif %}>Smallest first</option>
+                    <option value="owner" {% if sort == 'owner' %}selected{% endif %}>Uploader</option>
+                    <option value="project" {% if sort == 'project' %}selected{% endif %}>Project</option>
+                    <option value="status" {% if sort == 'status' %}selected{% endif %}>Status</option>
                 </select>
             </div>
             <div class="col-md-3 d-flex gap-2">
@@ -114,17 +166,40 @@
 
 <!-- ── Documents table ───────────────────────────────────────────────────── -->
 <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div class="small admin-document-management-muted">
+            <span id="adminSelectedDocumentsCount">0</span> selected
+        </div>
+        <form method="post"
+              action="{{ url_for('admin.admin_document_bulk_action') }}"
+              id="adminDocumentBulkForm"
+              class="d-flex gap-2"
+              data-admin-confirm="Run this bulk action on the selected documents?">
+            <input type="hidden" name="document_ids" id="adminBulkDocumentIds">
+            <select name="action" class="form-select form-select-sm" aria-label="Bulk action">
+                <option value="repair">Repair extraction and AI index</option>
+                <option value="archive">Archive documents</option>
+                <option value="restore">Restore documents</option>
+                <option value="delete">Delete documents</option>
+            </select>
+            <button type="submit" class="btn btn-sm btn-outline-primary">Apply</button>
+        </form>
+    </div>
     <div class="card-body p-0">
         {% if docs %}
         <div class="table-responsive">
             <table class="table table-hover table-sm mb-0">
                 <thead class="admin-document-management-table-head">
                     <tr>
+                        <th class="text-center"><input type="checkbox" class="form-check-input" id="adminSelectAllDocuments" aria-label="Select all documents"></th>
                         <th>Filename</th>
                         <th>Uploader</th>
                         <th>Project</th>
                         <th class="text-end">Size</th>
                         <th>Type</th>
+                        <th>Status</th>
+                        <th>Extraction</th>
+                        <th>AI Search</th>
                         <th>Uploaded</th>
                         <th class="text-center">Actions</th>
                     </tr>
@@ -132,12 +207,15 @@
                 <tbody>
                     {% for doc in docs %}
                     <tr>
+                        <td class="text-center">
+                            <input type="checkbox" class="form-check-input admin-doc-checkbox" value="{{ doc.id }}" aria-label="Select {{ doc.filename }}">
+                        </td>
                         <td>
                             <i class="bi bi-file-earmark me-1 admin-document-management-file-icon"></i>
                             {{ doc.filename }}
                         </td>
                         <td>
-                            {% set owner = doc.project.user if doc.project and doc.project.user else None %}
+                            {% set owner = doc.project.owner if doc.project and doc.project.owner else None %}
                             {% if owner %}
                                 <span class="admin-document-management-muted">{{ owner.username }}</span>
                             {% else %}
@@ -167,18 +245,88 @@
                                 {{ doc.file_type or doc.filename.rsplit('.', 1)[-1] | upper if '.' in (doc.filename or '') else '?' }}
                             </span>
                         </td>
+                        <td>
+                            <span class="admin-document-management-badge">{{ doc.status or 'pending' }}</span>
+                        </td>
+                        <td>
+                            {% set extraction_status = doc.extraction_status or ('ready' if doc.text_content else 'pending') %}
+                            {% if extraction_status == 'ready' %}
+                                <span class="admin-document-management-badge admin-document-management-badge--project">Ready</span>
+                            {% elif extraction_status == 'failed' %}
+                                <span class="admin-document-management-badge" title="{{ doc.extraction_warnings or '' }}">Failed</span>
+                            {% elif extraction_status == 'unavailable' %}
+                                <span class="admin-document-management-badge" title="{{ doc.extraction_warnings or '' }}">Unavailable</span>
+                            {% else %}
+                                <span class="admin-document-management-badge">{{ extraction_status }}</span>
+                            {% endif %}
+                            <div class="admin-document-management-muted small">
+                                {{ doc.parser_name or 'parser pending' }}
+                                {% if doc.page_count %} · {{ doc.page_count }} pages{% endif %}
+                                {% if doc.table_count %} · {{ doc.table_count }} tables{% endif %}
+                                {% if doc.ingestion_state and doc.ingestion_state.ingestion_status == 'duplicate' %}
+                                    · duplicate of #{{ doc.ingestion_state.duplicate_of_document_id }}
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>
+                            {% set rag_status = doc.rag_sync_status or 'not_indexed' %}
+                            <span class="admin-document-management-badge">{{ rag_status }}</span>
+                            <div class="admin-document-management-muted small">
+                                {{ doc.rag_collection_id or 'no collection' }}
+                            </div>
+                        </td>
                         <td class="admin-document-management-muted">
                             {{ doc.created_at.strftime('%Y-%m-%d %H:%M') if doc.created_at else '—' }}
                         </td>
                         <td class="text-center">
-                            <form method="post"
-                                  action="{{ url_for('admin.admin_document_delete', doc_id=doc.id) }}"
-                                  data-admin-confirm="Delete this document? This cannot be undone.">
-                                <button type="submit" class="btn btn-sm admin-document-management-delete-button"
-                                        aria-label="Delete document {{ doc.filename }}">
-                                    <i class="bi bi-trash" aria-hidden="true"></i>
+                            <div class="d-inline-flex gap-1">
+                                <button class="btn btn-sm btn-outline-secondary"
+                                   type="button"
+                                   data-document-details-url="{{ url_for('admin.admin_document_details', doc_id=doc.id) }}"
+                                   aria-label="View document details {{ doc.filename }}">
+                                    <i class="bi bi-info-circle" aria-hidden="true"></i>
                                 </button>
-                            </form>
+                                <a class="btn btn-sm btn-outline-secondary"
+                                   href="{{ url_for('admin.admin_document_download', doc_id=doc.id) }}"
+                                   aria-label="Download document {{ doc.filename }}">
+                                    <i class="bi bi-download" aria-hidden="true"></i>
+                                </a>
+                                <form method="post"
+                                      action="{{ url_for('admin.admin_document_recalculate', doc_id=doc.id) }}"
+                                      data-admin-confirm="Reload this document from storage, rerun extraction, and retry AI indexing?">
+                                    <button type="submit" class="btn btn-sm btn-outline-primary"
+                                            aria-label="Repair document {{ doc.filename }}">
+                                        <i class="bi bi-tools" aria-hidden="true"></i>
+                                    </button>
+                                </form>
+                                {% if doc.status == 'archived' %}
+                                <form method="post"
+                                      action="{{ url_for('admin.admin_document_restore', doc_id=doc.id) }}"
+                                      data-admin-confirm="Restore this archived document?">
+                                    <button type="submit" class="btn btn-sm btn-outline-success"
+                                            aria-label="Restore document {{ doc.filename }}">
+                                        <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+                                    </button>
+                                </form>
+                                {% else %}
+                                <form method="post"
+                                      action="{{ url_for('admin.admin_document_archive', doc_id=doc.id) }}"
+                                      data-admin-confirm="Archive this document? It will be removed from AI search until restored.">
+                                    <button type="submit" class="btn btn-sm btn-outline-warning"
+                                            aria-label="Archive document {{ doc.filename }}">
+                                        <i class="bi bi-archive" aria-hidden="true"></i>
+                                    </button>
+                                </form>
+                                {% endif %}
+                                <form method="post"
+                                      action="{{ url_for('admin.admin_document_delete', doc_id=doc.id) }}"
+                                      data-admin-confirm="Delete this document? This cannot be undone.">
+                                    <button type="submit" class="btn btn-sm admin-document-management-delete-button"
+                                            aria-label="Delete document {{ doc.filename }}">
+                                        <i class="bi bi-trash" aria-hidden="true"></i>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
@@ -196,19 +344,19 @@
             <nav>
                 <ul class="pagination pagination-sm mb-0">
                     <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
-                        <a class="page-link" href="{{ url_for('admin.document_management', page=pagination.prev_num, q=search, user_id=user_filter or '', project_id=project_filter or '') }}">‹</a>
+                        <a class="page-link" href="{{ url_for('admin.document_management', page=pagination.prev_num, q=search, user_id=user_filter or '', tenant_id=tenant_filter or '', project_id=project_filter or '', status=status_filter, file_type=file_type, date_from=date_from, date_to=date_to, sort=sort) }}">‹</a>
                     </li>
                     {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
                         {% if p %}
                         <li class="page-item {% if p == pagination.page %}active{% endif %}">
-                            <a class="page-link" href="{{ url_for('admin.document_management', page=p, q=search, user_id=user_filter or '', project_id=project_filter or '') }}">{{ p }}</a>
+                            <a class="page-link" href="{{ url_for('admin.document_management', page=p, q=search, user_id=user_filter or '', tenant_id=tenant_filter or '', project_id=project_filter or '', status=status_filter, file_type=file_type, date_from=date_from, date_to=date_to, sort=sort) }}">{{ p }}</a>
                         </li>
                         {% else %}
                         <li class="page-item disabled"><span class="page-link">…</span></li>
                         {% endif %}
                     {% endfor %}
                     <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
-                        <a class="page-link" href="{{ url_for('admin.document_management', page=pagination.next_num, q=search, user_id=user_filter or '', project_id=project_filter or '') }}">›</a>
+                        <a class="page-link" href="{{ url_for('admin.document_management', page=pagination.next_num, q=search, user_id=user_filter or '', tenant_id=tenant_filter or '', project_id=project_filter or '', status=status_filter, file_type=file_type, date_from=date_from, date_to=date_to, sort=sort) }}">›</a>
                     </li>
                 </ul>
             </nav>
@@ -221,6 +369,20 @@
             No documents found.
         </div>
         {% endif %}
+    </div>
+</div>
+
+<div class="modal fade" id="adminDocumentDetailsModal" tabindex="-1" aria-labelledby="adminDocumentDetailsTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="adminDocumentDetailsTitle">Document Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="adminDocumentDetailsBody">
+                <div class="admin-document-management-muted">Loading…</div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

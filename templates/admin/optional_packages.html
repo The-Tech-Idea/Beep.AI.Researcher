@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('admin.optional_packages', 'Optional Packages') }} — {{ t('app.name', 'Beep.AI Researcher') }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex align-items-center mb-4">
+        <i class="bi bi-box-seam fs-3 me-2 text-info"></i>
+        <div>
+            <h4 class="mb-0">{{ t('admin.optional_packages', 'Optional Packages') }}</h4>
+            <p class="text-muted mb-0">{{ t('admin.optional_packages_desc', 'Install heavy features on demand. Only install what you need.') }}</p>
+        </div>
+    </div>
+
+    {% for feature in features %}
+    <div class="card mb-3 admin-optional-package-card" id="pkg-{{ feature.key }}">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start">
+                <div class="flex-grow-1">
+                    <h5 class="card-title mb-1">
+                        {{ feature.label }}
+                        {% if feature.installed %}
+                        <span class="badge bg-success ms-2">{{ t('admin.installed', 'Installed') }}</span>
+                        {% else %}
+                        <span class="badge bg-secondary ms-2">{{ t('admin.not_installed', 'Not Installed') }}</span>
+                        {% endif %}
+                    </h5>
+                    <p class="card-text text-muted mb-2">{{ feature.description }}</p>
+                    <div class="d-flex gap-3 small text-muted">
+                        <span><i class="bi bi-hdd-stack me-1"></i>{{ feature.size_hint }}</span>
+                        <span><i class="bi bi-box me-1"></i>{{ feature.packages | length }} package{{ 's' if feature.packages | length > 1 else '' }}</span>
+                        {% if feature.depends_on %}
+                        <span><i class="bi bi-link-45deg me-1"></i>Requires: {{ feature.depends_on | join(', ') }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="d-flex gap-2 ms-3">
+                    {% if feature.installed %}
+                    <button class="btn btn-sm btn-outline-danger pkg-uninstall-btn"
+                            data-key="{{ feature.key }}"
+                            data-label="{{ feature.label }}">
+                        <i class="bi bi-trash me-1"></i>{{ t('admin.uninstall', 'Uninstall') }}
+                    </button>
+                    {% else %}
+                    <button class="btn btn-sm btn-outline-primary pkg-install-btn"
+                            data-key="{{ feature.key }}"
+                            data-label="{{ feature.label }}">
+                        <i class="bi bi-download me-1"></i>{{ t('admin.install', 'Install') }}
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="pkg-status mt-2" id="pkg-status-{{ feature.key }}" hidden>
+                <div class="alert alert-info py-2 mb-0 small" role="alert">
+                    <span class="spinner-border spinner-border-sm me-1"></span>
+                    <span class="pkg-status-text">Processing…</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <div class="text-muted small mt-4">
+        <p><i class="bi bi-info-circle me-1"></i>{{ t('admin.optional_packages_note', 'Installing packages may take several minutes. The application does not need to restart after installation. Some features may require additional configuration after install.') }}</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function() {
+    'use strict';
+
+    var i18n = {
+        confirm_install: {{ t('admin.packages.confirm_install') | tojson }},
+        installing: {{ t('admin.packages.installing') | tojson }},
+        installed_success: {{ t('admin.packages.installed_success') | tojson }},
+        install_failed: {{ t('admin.packages.install_failed') | tojson }},
+        confirm_uninstall: {{ t('admin.packages.confirm_uninstall') | tojson }},
+        uninstalling: {{ t('admin.packages.uninstalling') | tojson }},
+        uninstalled_success: {{ t('admin.packages.uninstalled_success') | tojson }},
+        uninstall_failed: {{ t('admin.packages.uninstall_failed') | tojson }},
+        error: {{ t('admin.packages.error') | tojson }},
+    };
+
+    function fmt(str, params) {
+        return str.replace(/\{(\w+)\}/g, function(m, k) { return params[k] || m; });
+    }
+
+    document.querySelectorAll('.pkg-install-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var key = btn.dataset.key;
+            var label = btn.dataset.label;
+            if (!confirm(fmt(i18n.confirm_install, {label: label}))) return;
+
+            var statusEl = document.getElementById('pkg-status-' + key);
+            var statusText = statusEl.querySelector('.pkg-status-text');
+            statusEl.hidden = false;
+            btn.disabled = true;
+            statusText.textContent = fmt(i18n.installing, {label: label});
+
+            fetch('/admin/packages/' + key + '/install', { method: 'POST' })
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    btn.disabled = false;
+                    if (data.ok) {
+                        statusText.textContent = data.message || i18n.installed_success;
+                        statusEl.querySelector('.alert').className = 'alert alert-success py-2 mb-0 small';
+                        setTimeout(function() { location.reload(); }, 2000);
+                    } else {
+                        statusText.textContent = data.error || data.message || i18n.install_failed;
+                        statusEl.querySelector('.alert').className = 'alert alert-danger py-2 mb-0 small';
+                    }
+                })
+                .catch(function(e) {
+                    btn.disabled = false;
+                    statusText.textContent = fmt(i18n.error, {message: e.message});
+                    statusEl.querySelector('.alert').className = 'alert alert-danger py-2 mb-0 small';
+                });
+        });
+    });
+
+    document.querySelectorAll('.pkg-uninstall-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var key = btn.dataset.key;
+            var label = btn.dataset.label;
+            if (!confirm(fmt(i18n.confirm_uninstall, {label: label}))) return;
+
+            var statusEl = document.getElementById('pkg-status-' + key);
+            var statusText = statusEl.querySelector('.pkg-status-text');
+            statusEl.hidden = false;
+            btn.disabled = true;
+            statusText.textContent = fmt(i18n.uninstalling, {label: label});
+
+            fetch('/admin/packages/' + key + '/uninstall', { method: 'POST' })
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    btn.disabled = false;
+                    if (data.ok) {
+                        statusText.textContent = data.message || i18n.uninstalled_success;
+                        statusEl.querySelector('.alert').className = 'alert alert-success py-2 mb-0 small';
+                        setTimeout(function() { location.reload(); }, 2000);
+                    } else {
+                        statusText.textContent = data.error || data.message || i18n.uninstall_failed;
+                        statusEl.querySelector('.alert').className = 'alert alert-danger py-2 mb-0 small';
+                    }
+                })
+                .catch(function(e) {
+                    btn.disabled = false;
+                    statusText.textContent = fmt(i18n.error, {message: e.message});
+                    statusEl.querySelector('.alert').className = 'alert alert-danger py-2 mb-0 small';
+                });
+        });
+    });
+})();
+</script>
+{% endblock %}

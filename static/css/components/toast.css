@@ -1,0 +1,39 @@
+/**
+ * ToastNotification component CSS — uses design system tokens.
+ */
+.toast-container {
+  z-index: var(--z-notification);
+}
+
+.toast-container .toast {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: var(--backdrop-blur);
+  color: var(--text-primary);
+}
+
+.toast-container .toast .toast-body {
+  font-size: var(--text-sm);
+}
+
+.toast-container .toast.bg-success {
+  background: var(--color-success) !important;
+  color: var(--text-inverse) !important;
+}
+
+.toast-container .toast.bg-danger {
+  background: var(--color-error) !important;
+  color: var(--text-inverse) !important;
+}
+
+.toast-container .toast.bg-warning {
+  background: var(--color-warning) !important;
+  color: var(--text-primary) !important;
+}
+
+.toast-container .toast.bg-info {
+  background: var(--color-info) !important;
+  color: var(--text-inverse) !important;
+}

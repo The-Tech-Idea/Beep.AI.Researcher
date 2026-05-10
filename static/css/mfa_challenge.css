@@ -3,6 +3,6 @@
 }
 
 .mfa-challenge-header-icon {
-    color: var(--color-accent-strong);
+    color: var(--color-primary);
     font-size: 1.25rem;
 }

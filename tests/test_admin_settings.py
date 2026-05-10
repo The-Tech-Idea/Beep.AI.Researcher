@@ -66,6 +66,34 @@ def test_admin_settings_page_loads(admin_client):
     assert b"btn btn-outline-primary" not in response.data
 
 
+def test_admin_connection_health_returns_object_payload(admin_client, monkeypatch):
+    monkeypatch.setattr(
+        "app.services.beep_ai_client.check_health",
+        lambda: (True, {"status": "healthy"}),
+    )
+
+    response = admin_client.get("/admin/api/connection/health")
+
+    assert response.status_code == 200
+    payload = response.get_json()
+    assert payload["success"] is True
+    assert payload["status"] == "healthy"
+
+
+def test_admin_connection_token_returns_object_payload(admin_client, monkeypatch):
+    monkeypatch.setattr(
+        "app.services.beep_ai_client.check_token",
+        lambda: (False, "Invalid or expired application token"),
+    )
+
+    response = admin_client.get("/admin/api/connection/check-token")
+
+    assert response.status_code == 200
+    payload = response.get_json()
+    assert payload["success"] is False
+    assert payload["error"] == "Invalid or expired application token"
+
+
 def test_admin_index_uses_plain_language_service_badge(admin_client):
     response = admin_client.get("/admin/")
 

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('references.citation_context') }} - {{ ref.title }}{% endblock %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/references/references.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/components/stance_badge.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex align-items-center mb-4">
+        <i class="bi bi-link-45deg fs-3 me-2" style="color: var(--color-info)"></i>
+        <div>
+            <h4 class="mb-0">{{ t('references.citation_context') }}</h4>
+            <p class="text-muted mb-0">{{ ref.title }}</p>
+        </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="references-toolbar mb-4">
+            <span class="text-muted">{{ t('references.doi') }}:</span>
+        <code>{{ ref.doi }}</code>
+        <div class="ms-auto">
+            <button class="btn btn-sm btn-outline-info" type="button" id="btnRefreshContext">
+                <i class="bi bi-arrow-clockwise me-1"></i>{{ t('references.citation_context.refresh') }}
+            </button>
+        </div>
+    </div>
+
+    <!-- Summary Stats -->
+    <div class="row g-3 mb-4" id="contextStats">
+        <div class="col-md-4">
+            <div class="analytics-card text-center">
+                <div class="analytics-card__value" style="color: var(--color-success)" id="supportingCount">0</div>
+                <div class="analytics-card__label">{{ t('synthesis.confidence.supporting') }}</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="analytics-card text-center">
+                <div class="analytics-card__value" style="color: var(--color-error)" id="contradictingCount">0</div>
+                <div class="analytics-card__label">{{ t('synthesis.confidence.contradicting') }}</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="analytics-card text-center">
+                <div class="analytics-card__value" style="color: var(--text-muted)" id="mentioningCount">0</div>
+                <div class="analytics-card__label">{{ t('synthesis.confidence.mixed') }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contexts List -->
+    <div class="references-list" id="contextsList">
+        <div class="text-center py-5 text-muted">
+            <div class="spinner-border" role="status" style="color: var(--color-info)"></div>
+            <p class="mt-2">{{ t('common.loading') if t('common.loading') != 'common.loading' else 'Loading…' }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script>
+window.BEEP_I18N = {
+    'references.citation_context.refreshing': {{ t('references.citation_context.refreshing') | tojson }},
+    'references.citation_context.refresh': {{ t('references.citation_context.refresh') | tojson }},
+    'references.citation_context.error.refresh_failed': {{ t('references.citation_context.error.refresh_failed') | tojson }},
+    'references.citation_context.empty_state': {{ t('references.citation_context.empty_state') | tojson }},
+    'references.citation_context.error.load_failed': {{ t('references.citation_context.error.load_failed') | tojson }}
+};
+</script>
+<script src="{{ url_for('static', filename='js/components/stance_badge.js') }}"></script>
+<script src="{{ url_for('static', filename='js/references/citation_context.js') }}?v={{ config.APP_VERSION or '1.0' }}"></script>
+{% endblock %}

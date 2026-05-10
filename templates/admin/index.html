@@ -35,19 +35,19 @@
     <div class="col-6 col-md-3">
         <a href="{{ url_for('admin.document_management') }}" class="card text-decoration-none h-100 admin-dashboard-card">
             <div class="card-body">
-                <h5 class="card-title"><i class="bi bi-file-earmark-text me-2"></i>Documents</h5>
-                <p class="card-text mb-1 small admin-dashboard-card-copy">Browse &amp; manage all uploaded files</p>
-                <span class="admin-dashboard-badge admin-dashboard-badge--info">{{ doc_count }} files</span>
+                <h5 class="card-title"><i class="bi bi-file-earmark-text me-2"></i>{{ t('admin.cards.documents.title') }}</h5>
+                <p class="card-text mb-1 small admin-dashboard-card-copy">{{ t('admin.cards.documents.body') }}</p>
+                <span class="admin-dashboard-badge admin-dashboard-badge--info">{{ doc_count }} {{ t('admin.cards.documents.files_label') }}</span>
             </div>
         </a>
     </div>
     <div class="col-6 col-md-3">
         <a href="{{ url_for('admin.quota_management') }}" class="card text-decoration-none h-100 admin-dashboard-card">
             <div class="card-body">
-                <h5 class="card-title"><i class="bi bi-pie-chart me-2"></i>Quota</h5>
-                <p class="card-text mb-1 small admin-dashboard-card-copy">Plan tiers, per-user &amp; tenant limits</p>
+                <h5 class="card-title"><i class="bi bi-pie-chart me-2"></i>{{ t('admin.cards.quota.title') }}</h5>
+                <p class="card-text mb-1 small admin-dashboard-card-copy">{{ t('admin.cards.quota.body') }}</p>
                 <span class="admin-dashboard-badge {% if quota_enforcement %}admin-dashboard-badge--success{% else %}admin-dashboard-badge--warning{% endif %}">
-                    {% if quota_enforcement %}Enforced{% else %}Track-only{% endif %}
+                    {% if quota_enforcement %}{{ t('admin.quota.enforced', 'Enforced') }}{% else %}{{ t('admin.quota.track_only', 'Track-only') }}{% endif %}
                 </span>
             </div>
         </a>
@@ -67,6 +67,24 @@
                 <h5 class="card-title"><i class="bi bi-graph-up me-2"></i>{{ t('admin.cards.governance.title') }}</h5>
                 <p class="card-text mb-1 small admin-dashboard-card-copy">{{ t('admin.cards.governance.body') }}</p>
                 <span class="admin-dashboard-badge admin-dashboard-badge--surface">{{ t('admin.cards.governance.badge') }}</span>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a href="{{ url_for('admin.feature_flags') }}" class="card text-decoration-none h-100 admin-dashboard-card admin-dashboard-card--features">
+            <div class="card-body">
+                <h5 class="card-title admin-dashboard-card-title admin-dashboard-card-title--features"><i class="bi bi-toggles me-2"></i>{{ t('admin.cards.feature_flags.title') }}</h5>
+                <p class="card-text mb-1 small admin-dashboard-card-copy">{{ t('admin.cards.feature_flags.body') }}</p>
+                <span class="admin-dashboard-badge admin-dashboard-badge--features">{{ enabled_feature_count }} / {{ total_feature_count }} {{ t('admin.cards.feature_flags.badge') }}</span>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a href="{{ url_for('admin_packages.list_optional_packages') }}" class="card text-decoration-none h-100 admin-dashboard-card admin-dashboard-card--packages">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-box me-2"></i>{{ t('admin.cards.optional_packages.title', 'Optional Packages') }}</h5>
+                <p class="card-text mb-1 small admin-dashboard-card-copy">{{ t('admin.cards.optional_packages.body', 'Install heavy features on demand') }}</p>
+                <span class="admin-dashboard-badge admin-dashboard-badge--neutral">{{ t('admin.installed', 'Installed') }}</span>
             </div>
         </a>
     </div>
@@ -172,9 +190,9 @@
 {% if recent_audit %}
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i>Recent Activity</h5>
+        <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i>{{ t('admin.activity.recent') }}</h5>
         <a href="{{ url_for('admin.governance') }}" class="btn btn-sm btn-outline-secondary">
-            View all →
+            {{ t('admin.activity.view_all') }}
         </a>
     </div>
     <div class="card-body p-0">
@@ -214,6 +232,8 @@
         <a href="{{ url_for('admin.quota_management') }}" class="btn admin-dashboard-quick-link admin-dashboard-quick-link--warning"><i class="bi bi-pie-chart me-1"></i>Quota</a>
         <a href="{{ url_for('admin.localization') }}" class="btn admin-dashboard-quick-link admin-dashboard-quick-link--success"><i class="bi bi-translate me-1"></i>{{ t('admin.quick_links.localization') }}</a>
         <a href="{{ url_for('admin.governance') }}" class="btn admin-dashboard-quick-link admin-dashboard-quick-link--neutral"><i class="bi bi-graph-up me-1"></i>{{ t('admin.quick_links.governance') }}</a>
+        <a href="{{ url_for('admin.feature_flags') }}" class="btn admin-dashboard-quick-link admin-dashboard-quick-link--features"><i class="bi bi-toggles me-1"></i>{{ t('admin.quick_links.feature_flags') }}</a>
+        <a href="{{ url_for('admin_packages.list_optional_packages') }}" class="btn admin-dashboard-quick-link admin-dashboard-quick-link--info"><i class="bi bi-box me-1"></i>{{ t('admin.quick_links.optional_packages', 'Optional Packages') }}</a>
         <a href="{{ url_for('researcher.index') }}" class="btn admin-dashboard-quick-link admin-dashboard-quick-link--neutral"><i class="bi bi-arrow-left me-1"></i>{{ t('admin.quick_links.back') }}</a>
     </div>
 </div>

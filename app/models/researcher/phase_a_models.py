@@ -7,24 +7,30 @@ Provides:
 - ClaimEvidence       — many-to-many join: claims ↔ evidence_items
 - ReviewStep          — PRISMA audit log entries
 - SourceProvenance    — document lineage / transformation chain
+- SynthesisReport     — Phase 2: AI-synthesized answer to a research question
+- RetractionRecord    — Phase 2: retracted DOI records
 """
+
 from app.core.time_utils import utcnow_naive
 from app.database import db
 
 
 class ResearchBrief(db.Model):
     """Sector-tagged structured brief generated from or linked to a project."""
-    __tablename__ = 'research_briefs'
+
+    __tablename__ = "research_briefs"
 
     id = db.Column(db.Integer, primary_key=True)
     project_id = db.Column(
-        db.Integer, db.ForeignKey('research_projects.id', ondelete='CASCADE'),
-        nullable=False, index=True,
+        db.Integer,
+        db.ForeignKey("research_projects.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
-    created_by = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='SET NULL'))
+    created_by = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="SET NULL"))
 
     # Sector: law | medical | real_estate | education | government | general
-    sector = db.Column(db.String(50), nullable=False, default='general', index=True)
+    sector = db.Column(db.String(50), nullable=False, default="general", index=True)
     title = db.Column(db.String(255), nullable=False)
     summary_text = db.Column(db.Text)
 
@@ -35,7 +41,7 @@ class ResearchBrief(db.Model):
     key_findings = db.Column(db.JSON)
 
     # draft | review | final
-    status = db.Column(db.String(30), default='draft')
+    status = db.Column(db.String(30), default="draft")
     llm_model_used = db.Column(db.String(100))
     generation_metadata = db.Column(db.JSON)
 
@@ -43,36 +49,42 @@ class ResearchBrief(db.Model):
     updated_at = db.Column(db.DateTime, default=utcnow_naive, onupdate=utcnow_naive)
 
     # ── relationships ─────────────────────────────────────────────────
-    project = db.relationship('ResearchProject', backref='briefs')
-    claims = db.relationship('Claim', backref='brief', foreign_keys='Claim.source_brief_id')
+    project = db.relationship("ResearchProject", backref="briefs")
+    claims = db.relationship(
+        "Claim", backref="brief", foreign_keys="Claim.source_brief_id"
+    )
 
     def to_dict(self):
         return {
-            'id': self.id,
-            'project_id': self.project_id,
-            'sector': self.sector,
-            'title': self.title,
-            'summary_text': self.summary_text,
-            'compliance_frameworks': self.compliance_frameworks or [],
-            'key_findings': self.key_findings or {},
-            'status': self.status,
-            'llm_model_used': self.llm_model_used,
-            'created_at': self.created_at.isoformat() if self.created_at else None,
-            'updated_at': self.updated_at.isoformat() if self.updated_at else None,
+            "id": self.id,
+            "project_id": self.project_id,
+            "sector": self.sector,
+            "title": self.title,
+            "summary_text": self.summary_text,
+            "compliance_frameworks": self.compliance_frameworks or [],
+            "key_findings": self.key_findings or {},
+            "status": self.status,
+            "llm_model_used": self.llm_model_used,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
         }
 
 
 class EvidenceItem(db.Model):
     """A single piece of evidence extracted from a source document."""
-    __tablename__ = 'evidence_items'
+
+    __tablename__ = "evidence_items"
 
     id = db.Column(db.Integer, primary_key=True)
     project_id = db.Column(
-        db.Integer, db.ForeignKey('research_projects.id', ondelete='CASCADE'),
-        nullable=False, index=True,
+        db.Integer,
+        db.ForeignKey("research_projects.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
     document_id = db.Column(
-        db.Integer, db.ForeignKey('researcher_documents.id', ondelete='CASCADE'),
+        db.Integer,
+        db.ForeignKey("researcher_documents.id", ondelete="CASCADE"),
         index=True,
     )
 
@@ -80,10 +92,10 @@ class EvidenceItem(db.Model):
     verbatim_quote = db.Column(db.Text)
 
     # GRADE-style: high | moderate | low | very_low
-    strength = db.Column(db.String(20), default='low', index=True)
+    strength = db.Column(db.String(20), default="low", index=True)
 
     # supports | refutes | neutral
-    direction = db.Column(db.String(20), default='neutral')
+    direction = db.Column(db.String(20), default="neutral")
 
     # RCT | case_study | expert_opinion | systematic_review | observational | legislative | other
     evidence_type = db.Column(db.String(50))
@@ -92,125 +104,139 @@ class EvidenceItem(db.Model):
     source_location = db.Column(db.String(100))
 
     # manual | llm
-    extraction_method = db.Column(db.String(30), default='manual')
+    extraction_method = db.Column(db.String(30), default="manual")
     confidence_score = db.Column(db.Float)
     tags = db.Column(db.JSON)
 
     created_at = db.Column(db.DateTime, default=utcnow_naive)
 
     # ── relationships ─────────────────────────────────────────────────
-    project = db.relationship('ResearchProject', backref='evidence_items')
-    document = db.relationship('ResearcherDocument', backref='evidence_items')
+    project = db.relationship("ResearchProject", backref="evidence_items")
+    document = db.relationship("ResearcherDocument", backref="evidence_items")
 
     def to_dict(self):
         return {
-            'id': self.id,
-            'project_id': self.project_id,
-            'document_id': self.document_id,
-            'claim_text': self.claim_text,
-            'verbatim_quote': self.verbatim_quote,
-            'strength': self.strength,
-            'direction': self.direction,
-            'evidence_type': self.evidence_type,
-            'source_location': self.source_location,
-            'extraction_method': self.extraction_method,
-            'confidence_score': self.confidence_score,
-            'tags': self.tags or [],
-            'created_at': self.created_at.isoformat() if self.created_at else None,
+            "id": self.id,
+            "project_id": self.project_id,
+            "document_id": self.document_id,
+            "claim_text": self.claim_text,
+            "verbatim_quote": self.verbatim_quote,
+            "strength": self.strength,
+            "direction": self.direction,
+            "evidence_type": self.evidence_type,
+            "source_location": self.source_location,
+            "extraction_method": self.extraction_method,
+            "confidence_score": self.confidence_score,
+            "tags": self.tags or [],
+            "created_at": self.created_at.isoformat() if self.created_at else None,
         }
 
 
 class Claim(db.Model):
     """A high-level argumentative claim supported or refuted by EvidenceItems."""
-    __tablename__ = 'claims'
+
+    __tablename__ = "claims"
 
     id = db.Column(db.Integer, primary_key=True)
     project_id = db.Column(
-        db.Integer, db.ForeignKey('research_projects.id', ondelete='CASCADE'),
-        nullable=False, index=True,
+        db.Integer,
+        db.ForeignKey("research_projects.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
 
     claim_text = db.Column(db.Text, nullable=False)
 
     # factual | normative | predictive | policy
-    claim_type = db.Column(db.String(50), default='factual')
+    claim_type = db.Column(db.String(50), default="factual")
     sector = db.Column(db.String(50))
 
     # supported | contested | refuted | unclear
-    verdict = db.Column(db.String(30), default='unclear', index=True)
+    verdict = db.Column(db.String(30), default="unclear", index=True)
     confidence_score = db.Column(db.Float)
 
     source_brief_id = db.Column(
-        db.Integer, db.ForeignKey('research_briefs.id', ondelete='SET NULL'),
+        db.Integer,
+        db.ForeignKey("research_briefs.id", ondelete="SET NULL"),
     )
-    created_by = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='SET NULL'))
+    created_by = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="SET NULL"))
     created_at = db.Column(db.DateTime, default=utcnow_naive)
     updated_at = db.Column(db.DateTime, default=utcnow_naive, onupdate=utcnow_naive)
 
     # ── relationships ─────────────────────────────────────────────────
-    project = db.relationship('ResearchProject', backref='claims')
-    claim_evidence = db.relationship('ClaimEvidence', backref='claim',
-                                     cascade='all, delete-orphan')
+    project = db.relationship("ResearchProject", backref="claims")
+    claim_evidence = db.relationship(
+        "ClaimEvidence", backref="claim", cascade="all, delete-orphan"
+    )
 
     def to_dict(self):
         return {
-            'id': self.id,
-            'project_id': self.project_id,
-            'claim_text': self.claim_text,
-            'claim_type': self.claim_type,
-            'sector': self.sector,
-            'verdict': self.verdict,
-            'confidence_score': self.confidence_score,
-            'source_brief_id': self.source_brief_id,
-            'created_at': self.created_at.isoformat() if self.created_at else None,
+            "id": self.id,
+            "project_id": self.project_id,
+            "claim_text": self.claim_text,
+            "claim_type": self.claim_type,
+            "sector": self.sector,
+            "verdict": self.verdict,
+            "confidence_score": self.confidence_score,
+            "source_brief_id": self.source_brief_id,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
         }
 
 
 class ClaimEvidence(db.Model):
     """Join table: many Claim ↔ many EvidenceItem, with a role annotation."""
-    __tablename__ = 'claim_evidence'
+
+    __tablename__ = "claim_evidence"
     __table_args__ = (
-        db.UniqueConstraint('claim_id', 'evidence_id', name='uq_claim_evidence'),
+        db.UniqueConstraint("claim_id", "evidence_id", name="uq_claim_evidence"),
     )
 
     id = db.Column(db.Integer, primary_key=True)
     claim_id = db.Column(
-        db.Integer, db.ForeignKey('claims.id', ondelete='CASCADE'),
-        nullable=False, index=True,
+        db.Integer,
+        db.ForeignKey("claims.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
     evidence_id = db.Column(
-        db.Integer, db.ForeignKey('evidence_items.id', ondelete='CASCADE'),
-        nullable=False, index=True,
+        db.Integer,
+        db.ForeignKey("evidence_items.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
 
     # supporting | refuting | neutral
-    role = db.Column(db.String(20), default='supporting')
-    added_by = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='SET NULL'))
+    role = db.Column(db.String(20), default="supporting")
+    added_by = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="SET NULL"))
     added_at = db.Column(db.DateTime, default=utcnow_naive)
 
-    evidence = db.relationship('EvidenceItem', backref='claim_links')
+    evidence = db.relationship("EvidenceItem", backref="claim_links")
 
     def to_dict(self):
         return {
-            'id': self.id,
-            'claim_id': self.claim_id,
-            'evidence_id': self.evidence_id,
-            'role': self.role,
-            'added_at': self.added_at.isoformat() if self.added_at else None,
+            "id": self.id,
+            "claim_id": self.claim_id,
+            "evidence_id": self.evidence_id,
+            "role": self.role,
+            "added_at": self.added_at.isoformat() if self.added_at else None,
         }
 
 
 class ReviewStep(db.Model):
     """PRISMA audit log: one decision per document at one review stage."""
-    __tablename__ = 'review_steps'
+
+    __tablename__ = "review_steps"
 
     id = db.Column(db.Integer, primary_key=True)
     project_id = db.Column(
-        db.Integer, db.ForeignKey('research_projects.id', ondelete='CASCADE'),
-        nullable=False, index=True,
+        db.Integer,
+        db.ForeignKey("research_projects.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
     document_id = db.Column(
-        db.Integer, db.ForeignKey('researcher_documents.id', ondelete='CASCADE'),
+        db.Integer,
+        db.ForeignKey("researcher_documents.id", ondelete="CASCADE"),
         index=True,
     )
 
@@ -218,49 +244,54 @@ class ReviewStep(db.Model):
     stage = db.Column(db.String(30), nullable=False, index=True)
 
     # pass | exclude | uncertain
-    decision = db.Column(db.String(20), nullable=False, default='uncertain', index=True)
+    decision = db.Column(db.String(20), nullable=False, default="uncertain", index=True)
 
     # short code for why excluded e.g. "irrelevant_population", "duplicate"
     exclusion_reason = db.Column(db.String(100))
     notes = db.Column(db.Text)
 
-    performed_by = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='SET NULL'))
+    performed_by = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="SET NULL"))
     is_automated = db.Column(db.Boolean, default=False)
     automation_confidence = db.Column(db.Float)
 
     created_at = db.Column(db.DateTime, default=utcnow_naive)
 
     # ── relationships ─────────────────────────────────────────────────
-    project = db.relationship('ResearchProject', backref='review_steps')
-    document = db.relationship('ResearcherDocument', backref='review_steps')
+    project = db.relationship("ResearchProject", backref="review_steps")
+    document = db.relationship("ResearcherDocument", backref="review_steps")
 
     def to_dict(self):
         return {
-            'id': self.id,
-            'project_id': self.project_id,
-            'document_id': self.document_id,
-            'stage': self.stage,
-            'decision': self.decision,
-            'exclusion_reason': self.exclusion_reason,
-            'notes': self.notes,
-            'is_automated': self.is_automated,
-            'automation_confidence': self.automation_confidence,
-            'created_at': self.created_at.isoformat() if self.created_at else None,
+            "id": self.id,
+            "project_id": self.project_id,
+            "document_id": self.document_id,
+            "stage": self.stage,
+            "decision": self.decision,
+            "exclusion_reason": self.exclusion_reason,
+            "notes": self.notes,
+            "is_automated": self.is_automated,
+            "automation_confidence": self.automation_confidence,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
         }
 
 
 class SourceProvenance(db.Model):
     """Lineage record for a document: tracks every import, transform, redaction, etc."""
-    __tablename__ = 'source_provenance'
+
+    __tablename__ = "source_provenance"
 
     id = db.Column(db.Integer, primary_key=True)
     document_id = db.Column(
-        db.Integer, db.ForeignKey('researcher_documents.id', ondelete='CASCADE'),
-        nullable=False, index=True,
+        db.Integer,
+        db.ForeignKey("researcher_documents.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
     project_id = db.Column(
-        db.Integer, db.ForeignKey('research_projects.id', ondelete='CASCADE'),
-        nullable=False, index=True,
+        db.Integer,
+        db.ForeignKey("research_projects.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
 
     # imported | transformed | chunked | extracted | redacted | exported
@@ -274,30 +305,114 @@ class SourceProvenance(db.Model):
 
     # If derived from another document (e.g. redacted copy of original)
     parent_document_id = db.Column(
-        db.Integer, db.ForeignKey('researcher_documents.id', ondelete='SET NULL'),
+        db.Integer,
+        db.ForeignKey("researcher_documents.id", ondelete="SET NULL"),
     )
 
-    performed_by = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='SET NULL'))
+    performed_by = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="SET NULL"))
     tool_name = db.Column(db.String(100))
     tool_version = db.Column(db.String(30))
 
     created_at = db.Column(db.DateTime, default=utcnow_naive)
 
     # ── relationships ─────────────────────────────────────────────────
-    document = db.relationship('ResearcherDocument', foreign_keys=[document_id],
-                               backref='provenance_records')
-    parent_document = db.relationship('ResearcherDocument', foreign_keys=[parent_document_id])
+    document = db.relationship(
+        "ResearcherDocument", foreign_keys=[document_id], backref="provenance_records"
+    )
+    parent_document = db.relationship(
+        "ResearcherDocument", foreign_keys=[parent_document_id]
+    )
 
     def to_dict(self):
         return {
-            'id': self.id,
-            'document_id': self.document_id,
-            'project_id': self.project_id,
-            'event_type': self.event_type,
-            'event_detail': self.event_detail or {},
-            'content_hash': self.content_hash,
-            'parent_document_id': self.parent_document_id,
-            'tool_name': self.tool_name,
-            'tool_version': self.tool_version,
-            'created_at': self.created_at.isoformat() if self.created_at else None,
+            "id": self.id,
+            "document_id": self.document_id,
+            "project_id": self.project_id,
+            "event_type": self.event_type,
+            "event_detail": self.event_detail or {},
+            "content_hash": self.content_hash,
+            "parent_document_id": self.parent_document_id,
+            "tool_name": self.tool_name,
+            "tool_version": self.tool_version,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+        }
+
+
+class SynthesisReport(db.Model):
+    """Phase 2: AI-synthesized answer to a research question with evidence table."""
+
+    __tablename__ = "synthesis_reports"
+
+    id = db.Column(db.Integer, primary_key=True)
+    project_id = db.Column(
+        db.Integer,
+        db.ForeignKey("research_projects.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    created_by = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="SET NULL"))
+
+    # The original research question
+    question = db.Column(db.Text, nullable=False)
+
+    # The synthesized answer (grounded in evidence)
+    answer_text = db.Column(db.Text)
+
+    # Evidence rows: [{snippet, polarity, source_doc_id, doi, quote, score}]
+    evidence_json = db.Column(db.JSON)
+
+    # supporting | contradicting | mixed
+    confidence = db.Column(db.String(20), default="mixed")
+
+    # Number of evidence snippets supporting the answer
+    supporting_count = db.Column(db.Integer, default=0)
+    contradicting_count = db.Column(db.Integer, default=0)
+    mentioning_count = db.Column(db.Integer, default=0)
+
+    # pending | processing | complete | failed
+    status = db.Column(db.String(20), default="pending", index=True)
+
+    llm_model_used = db.Column(db.String(100))
+    created_at = db.Column(db.DateTime, default=utcnow_naive)
+
+    project = db.relationship("ResearchProject", backref="synthesis_reports")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "project_id": self.project_id,
+            "question": self.question,
+            "answer_text": self.answer_text,
+            "evidence": self.evidence_json or [],
+            "confidence": self.confidence,
+            "supporting_count": self.supporting_count,
+            "contradicting_count": self.contradicting_count,
+            "mentioning_count": self.mentioning_count,
+            "status": self.status,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+        }
+
+
+class RetractionRecord(db.Model):
+    """Phase 2: record of a retracted publication."""
+
+    __tablename__ = "retraction_records"
+
+    id = db.Column(db.Integer, primary_key=True)
+    doi = db.Column(db.String(255), nullable=False, unique=True, index=True)
+    reason = db.Column(db.Text)
+    retraction_date = db.Column(db.DateTime)
+    acknowledged_by_json = db.Column(db.JSON)  # list of user_ids who acknowledged
+    created_at = db.Column(db.DateTime, default=utcnow_naive)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "doi": self.doi,
+            "reason": self.reason,
+            "retraction_date": self.retraction_date.isoformat()
+            if self.retraction_date
+            else None,
+            "acknowledged_by": self.acknowledged_by_json or [],
+            "created_at": self.created_at.isoformat() if self.created_at else None,
         }

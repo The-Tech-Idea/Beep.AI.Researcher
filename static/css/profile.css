@@ -1,19 +1,19 @@
 .profile-email-status--warning {
-    color: var(--color-warning-strong);
+    color: var(--color-warning);
 }
 
 .profile-email-status--success {
-    color: var(--color-success-strong);
+    color: var(--color-success);
 }
 
 .profile-status-badge--enabled {
-    color: var(--color-accent-strong);
-    background: color-mix(in srgb, var(--color-accent-strong) 12%, var(--surface-primary));
-    border: 1px solid color-mix(in srgb, var(--color-accent-strong) 24%, var(--surface-primary));
+    color: var(--color-success);
+    background: color-mix(in srgb, var(--color-success) 12%, var(--bg-surface));
+    border: 1px solid color-mix(in srgb, var(--color-success) 24%, var(--bg-surface));
 }
 
 .profile-status-badge--disabled {
     color: var(--text-muted);
-    background: color-mix(in srgb, var(--text-muted) 10%, var(--surface-primary));
-    border: 1px solid color-mix(in srgb, var(--text-muted) 20%, var(--surface-primary));
+    background: color-mix(in srgb, var(--text-muted) 10%, var(--bg-surface));
+    border: 1px solid color-mix(in srgb, var(--text-muted) 20%, var(--bg-surface));
 }

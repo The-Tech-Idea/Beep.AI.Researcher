@@ -5,13 +5,18 @@ auto_suggest_codes: Bulk-propose codes for all chunks of a document.
 
 Falls back to frequency-ranking of existing codes when not configured.
 """
+
 import json
 import logging
 import re
 from flask import Blueprint, request, jsonify
+from flask_login import login_required
 
 from app.models.researcher import ResearchProject
-from app.routes.project_api_guard import guard_project_blueprint, get_guarded_project_or_404
+from app.routes.project_api_guard import (
+    guard_project_blueprint,
+    get_guarded_project_or_404 as get_project_or_404,
+)
 from app.services import beep_ai_client
 from app.services import ai_coding_service
 from app.services.project_grounded_context_service import build_project_grounded_context
@@ -22,7 +27,7 @@ from app.services.project_grounded_prompt_service import (
 
 logger = logging.getLogger(__name__)
 
-ai_coding_bp = Blueprint('ai_coding', __name__)
+ai_coding_bp = Blueprint("ai_coding", __name__)
 
 # Max characters per chunk for auto-suggest batch processing
 _CHUNK_SIZE = 300
@@ -30,13 +35,10 @@ _CHUNK_SIZE = 300
 _MAX_CHUNKS = 20
 
 
-def _get_project_or_404(project_id):
-    return get_guarded_project_or_404(project_id)
-
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def _codebook_summary(codes) -> str:
     """Build a compact codebook string for the LLM prompt."""
@@ -52,7 +54,9 @@ def _chunk_text_with_offsets(text: str, size: int = _CHUNK_SIZE):
 # Routes
 # ---------------------------------------------------------------------------
 
-@ai_coding_bp.route('/<int:project_id>/codes/suggest', methods=['POST'])
+
+@ai_coding_bp.route("/<int:project_id>/codes/suggest", methods=["POST"])
+@login_required
 def suggest_codes(project_id):
     """Suggest qualitative codes for a selected text passage.
 
@@ -71,7 +75,7 @@ def suggest_codes(project_id):
             "method": "llm|fallback"
         }
     """
-    project = _get_project_or_404(project_id)
+    project = get_project_or_404(project_id)
     # build_project_grounded_context(...) remains the grounded entry point; the service receives it via injection.
     payload, status_code = ai_coding_service.suggest_codes(
         project,
@@ -84,7 +88,8 @@ def suggest_codes(project_id):
     return jsonify(payload), status_code
 
 
-@ai_coding_bp.route('/<int:project_id>/codes/auto-suggest', methods=['POST'])
+@ai_coding_bp.route("/<int:project_id>/codes/auto-suggest", methods=["POST"])
+@login_required
 def auto_suggest_codes(project_id):
     """Bulk AI-suggested codes for all chunks of a document.
 
@@ -105,7 +110,7 @@ def auto_suggest_codes(project_id):
             "method": "llm|unavailable"
         }
     """
-    project = _get_project_or_404(project_id)
+    project = get_project_or_404(project_id)
     # build_project_grounded_context(...) remains the grounded entry point; the service receives it via injection.
     payload, status_code = ai_coding_service.auto_suggest_codes(
         project,
@@ -119,4 +124,3 @@ def auto_suggest_codes(project_id):
 
 
 guard_project_blueprint(ai_coding_bp)
-

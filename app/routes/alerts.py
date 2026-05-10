@@ -1,4 +1,5 @@
 """Phase 1 AI Discovery – paper alert routes."""
+
 from __future__ import annotations
 
 import logging
@@ -7,6 +8,7 @@ from flask import Blueprint, abort, jsonify, render_template, request
 from flask_login import current_user, login_required
 
 from app.config_manager import is_feature_enabled
+from app.routes.route_entity_lookup import _base_template
 from app.services.ai_discovery_payloads import paper_alert_to_payload
 
 alerts_bp = Blueprint("alerts", __name__, url_prefix="/alerts")
@@ -16,15 +18,6 @@ logger = logging.getLogger(__name__)
 def _require_feature():
     if not is_feature_enabled("ai_discovery_enabled"):
         abort(404)
-
-
-def _is_partial() -> bool:
-    partial_flag = (request.args.get("partial") or "").strip().lower()
-    return partial_flag in {"1", "true"} or request.headers.get("X-Requested-With") == "SPA"
-
-
-def _base_template() -> str:
-    return "base_embed.html" if _is_partial() else "base.html"
 
 
 @alerts_bp.route("", methods=["GET"])

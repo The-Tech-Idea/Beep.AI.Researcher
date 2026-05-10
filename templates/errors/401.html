@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}401 — Unauthorized{% endblock %}
+{% block content %}
+<div class="container text-center py-5">
+    <h1 class="display-1 text-muted">401</h1>
+    <p class="lead">{{ t('errors.unauthorized', 'Please log in to continue') }}</p>
+    <a href="{{ url_for('auth.login') }}" class="btn btn-primary mt-3">{{ t('errors.login', 'Log In') }}</a>
+</div>
+{% endblock %}

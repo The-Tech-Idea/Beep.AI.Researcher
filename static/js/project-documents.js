@@ -144,6 +144,58 @@
         }
     }
 
+    function selectedDocumentIds() {
+        return Array.from(document.querySelectorAll('.doc-checkbox:checked'))
+            .map((checkbox) => checkbox.closest('tr')?.dataset.docId)
+            .filter(Boolean);
+    }
+
+    async function runBulkDocumentAction(action) {
+        const ids = selectedDocumentIds();
+        const projectId = window.DOCUMENTS_I18N?.projectId;
+        if (!projectId || ids.length === 0) {
+            showMessage('Select at least one document.', 'warning');
+            return;
+        }
+        const verb = action === 'repair' ? 'repair' : 'delete';
+        if (!confirm(`${verb.charAt(0).toUpperCase() + verb.slice(1)} ${ids.length} selected document(s)?`)) {
+            return;
+        }
+        let failed = 0;
+        for (const id of ids) {
+            const endpoint = action === 'repair'
+                ? `/projects/${projectId}/documents/${id}/repair`
+                : `/projects/${projectId}/documents/${id}`;
+            const method = action === 'repair' ? 'POST' : 'DELETE';
+            try {
+                const response = await fetch(endpoint, {
+                    method,
+                    headers: { 'X-Requested-With': 'SPA' }
+                });
+                if (!response.ok) failed += 1;
+            } catch (error) {
+                failed += 1;
+            }
+        }
+        if (failed > 0) {
+            showMessage(`${ids.length - failed} succeeded, ${failed} failed.`, 'warning');
+        } else {
+            showMessage(`${ids.length} document(s) ${action === 'repair' ? 'repaired' : 'deleted'}.`, 'success');
+        }
+        if (window.BeepSPA) {
+            window.BeepSPA.navigateTo('project-documents');
+        } else {
+            window.location.reload();
+        }
+    }
+
+    document.querySelector('.bulk-repair-docs-btn')?.addEventListener('click', () => {
+        runBulkDocumentAction('repair');
+    });
+    document.querySelector('.bulk-delete-docs-btn')?.addEventListener('click', () => {
+        runBulkDocumentAction('delete');
+    });
+
     // Global event delegation (only bind once to prevent duplicate triggers in SPA)
     if (!window.DOCUMENTS_EVENTS_BOUND) {
         window.DOCUMENTS_EVENTS_BOUND = true;
@@ -157,12 +209,73 @@
                 return;
             }
 
+            const syncRagBtn = e.target.closest('.sync-rag-doc-btn');
+            if (syncRagBtn) {
+                e.stopPropagation();
+                const id = syncRagBtn.dataset.docId;
+                const projectId = window.DOCUMENTS_I18N?.projectId;
+                if (!projectId || !id) return;
+                syncRagBtn.disabled = true;
+                fetch(`/projects/${projectId}/documents/${id}/sync-rag`, {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'SPA' }
+                }).then(async r => {
+                    const payload = await r.json().catch(() => ({}));
+                    if (r.ok) {
+                        showMessage(payload.message || 'Document indexed for AI search.', 'success');
+                        if (window.BeepSPA) {
+                            window.BeepSPA.navigateTo('project-documents');
+                        } else {
+                            window.location.reload();
+                        }
+                    } else {
+                        showMessage(payload.error || 'Failed to index document for AI search.', 'error');
+                        syncRagBtn.disabled = false;
+                    }
+                }).catch(() => {
+                    showMessage('Failed to index document for AI search.', 'error');
+                    syncRagBtn.disabled = false;
+                });
+                return;
+            }
+
             const downloadBtn = e.target.closest('.download-doc-btn');
             if (downloadBtn) {
                 e.stopPropagation();
                 const id = downloadBtn.dataset.docId;
                 const projectId = window.DOCUMENTS_I18N?.projectId;
                 if (projectId && id) window.location.href = `/researcher/projects/${projectId}/documents/${id}/download`;
+                return;
+            }
+
+            const repairBtn = e.target.closest('.repair-doc-btn');
+            if (repairBtn) {
+                e.stopPropagation();
+                const id = repairBtn.dataset.docId;
+                const projectId = window.DOCUMENTS_I18N?.projectId;
+                if (!projectId || !id) return;
+                if (!confirm('Reload this document from storage, rerun extraction, and retry AI indexing?')) return;
+                repairBtn.disabled = true;
+                fetch(`/projects/${projectId}/documents/${id}/repair`, {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'SPA' }
+                }).then(async r => {
+                    const payload = await r.json().catch(() => ({}));
+                    if (r.ok) {
+                        showMessage(payload.message || 'Document repaired.', 'success');
+                        if (window.BeepSPA) {
+                            window.BeepSPA.navigateTo('project-documents');
+                        } else {
+                            window.location.reload();
+                        }
+                    } else {
+                        showMessage(payload.error || 'Failed to repair document.', 'error');
+                        repairBtn.disabled = false;
+                    }
+                }).catch(() => {
+                    showMessage('Failed to repair document.', 'error');
+                    repairBtn.disabled = false;
+                });
                 return;
             }
 
@@ -186,6 +299,8 @@
                             } else {
                                 showMessage('Failed to delete document.', 'error');
                             }
+                        }).catch(() => {
+                            showMessage('Failed to delete document.', 'error');
                         });
                     }
                 }

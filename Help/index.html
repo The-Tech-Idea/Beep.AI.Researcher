@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beep.AI.Researcher Help</title>
+    <link rel="stylesheet" href="sphinx-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+</head>
+<body>
+    <button class="mobile-menu-toggle" onclick="toggleSidebar()" aria-label="Toggle menu"><i class="bi bi-list"></i></button>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"><i class="bi bi-moon"></i></button>
+
+    <div class="container">
+        <aside class="sidebar" id="sidebar"></aside>
+
+        <main class="content">
+            <div class="content-wrapper">
+                <div class="page-header">
+                    <h1>Beep.AI.Researcher</h1>
+                    <p class="page-subtitle">AI-powered research document management, qualitative analysis, and evidence synthesis platform</p>
+                </div>
+
+                <div class="quick-start">
+                    <h2>Welcome to Beep.AI.Researcher</h2>
+                    <p>Your complete research workspace — upload documents, chat with AI, code qualitative data, extract insights, write reports, and synthesize evidence. All powered by AI, all within your infrastructure.</p>
+                    <div class="quick-start-buttons">
+                        <a href="getting-started.html" class="btn-beep"><i class="bi bi-rocket"></i> Get Started</a>
+                        <a href="projects.html" class="btn-beep btn-beep-outline"><i class="bi bi-folder"></i> Create a Project</a>
+                    </div>
+                </div>
+
+                <section class="section">
+                    <h2>Platform Overview</h2>
+                    <p>Beep.AI.Researcher is an advanced research platform that combines document management, AI-assisted analysis, and collaborative writing tools. It is designed for researchers, analysts, and teams who need to work with large volumes of documents and extract meaningful insights.</p>
+
+                    <div class="feature-grid">
+                        <a href="documents.html" class="feature-card" style="text-decoration:none">
+                            <div class="feature-card-icon"><i class="bi bi-file-earmark-text"></i></div>
+                            <h3>Documents</h3>
+                            <p>Upload, organize, and view PDFs, Word docs, and text files with AI-powered search.</p>
+                        </a>
+                        <a href="codes.html" class="feature-card" style="text-decoration:none">
+                            <div class="feature-card-icon"><i class="bi bi-tags"></i></div>
+                            <h3>Codes & Themes</h3>
+                            <p>Hierarchical qualitative coding with AI-suggested codes and reference tracking.</p>
+                        </a>
+                        <a href="chat.html" class="feature-card" style="text-decoration:none">
+                            <div class="feature-card-icon"><i class="bi bi-chat-dots"></i></div>
+                            <h3>AI Chat</h3>
+                            <p>RAG-powered chat grounded in your project documents with quality modes.</p>
+                        </a>
+                        <a href="extraction.html" class="feature-card" style="text-decoration:none">
+                            <div class="feature-card-icon"><i class="bi bi-table"></i></div>
+                            <h3>Extraction</h3>
+                            <p>Define schemas and extract structured data from documents automatically.</p>
+                        </a>
+                        <a href="report-builder.html" class="feature-card" style="text-decoration:none">
+                            <div class="feature-card-icon"><i class="bi bi-journal-text"></i></div>
+                            <h3>Reports & Writing</h3>
+                            <p>Write reports with AI assistance, grammar checking, and citation management.</p>
+                        </a>
+                        <a href="references.html" class="feature-card" style="text-decoration:none">
+                            <div class="feature-card-icon"><i class="bi bi-bookmark"></i></div>
+                            <h3>References</h3>
+                            <p>Manage citation libraries with Zotero sync and DOI validation.</p>
+                        </a>
+                        <a href="data-upload.html" class="feature-card" style="text-decoration:none">
+                            <div class="feature-card-icon"><i class="bi bi-bar-chart"></i></div>
+                            <h3>Data & Charts</h3>
+                            <p>Upload CSV/XLSX data, chat with datasets, and generate visualizations.</p>
+                        </a>
+                        <a href="synthesis.html" class="feature-card" style="text-decoration:none">
+                            <div class="feature-card-icon"><i class="bi bi-diagram-3"></i></div>
+                            <h3>Evidence Synthesis</h3>
+                            <p>AI-generated synthesis reports with evidence tables and contradiction analysis.</p>
+                        </a>
+                        <a href="flashcards.html" class="feature-card" style="text-decoration:none">
+                            <div class="feature-card-icon"><i class="bi bi-lightbulb"></i></div>
+                            <h3>Training</h3>
+                            <p>AI-generated flashcards and quizzes from your project documents.</p>
+                        </a>
+                        <a href="tasks.html" class="feature-card" style="text-decoration:none">
+                            <div class="feature-card-icon"><i class="bi bi-kanban"></i></div>
+                            <h3>Tasks</h3>
+                            <p>Kanban-style task management with AI-suggested research tasks.</p>
+                        </a>
+                        <a href="feed.html" class="feature-card" style="text-decoration:none">
+                            <div class="feature-card-icon"><i class="bi bi-stars"></i></div>
+                            <h3>AI Discovery</h3>
+                            <p>Personalized research feed with paper recommendations and reading lists.</p>
+                        </a>
+                        <a href="export.html" class="feature-card" style="text-decoration:none">
+                            <div class="feature-card-icon"><i class="bi bi-download"></i></div>
+                            <h3>Export</h3>
+                            <p>Export data in JSON, CSV, Excel, SPSS, and compliance bundle formats.</p>
+                        </a>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>Key Features</h2>
+                    <ul>
+                        <li><strong>RAG-Powered AI</strong> — All AI responses are grounded in your uploaded documents</li>
+                        <li><strong>Qualitative Analysis</strong> — NVivo-style hierarchical coding with AI suggestions</li>
+                        <li><strong>Multi-Language</strong> — Full support for English, Arabic, French, and Spanish</li>
+                        <li><strong>Collaboration</strong> — Project members, comments, and shared workspaces</li>
+                        <li><strong>Multi-Tenant</strong> — Organization-level isolation with role-based access</li>
+                        <li><strong>Self-Hosted</strong> — All data stays within your infrastructure</li>
+                        <li><strong>MFA & SSO</strong> — Enterprise-grade authentication security</li>
+                    </ul>
+                </section>
+
+                <section class="section">
+                    <h2>Getting Help</h2>
+                    <p>Browse the documentation using the sidebar navigation. Each section covers a specific feature area with detailed instructions, tips, and examples.</p>
+                    <div class="tip"><strong>Tip:</strong> Use the search box in the sidebar to quickly find specific topics.</div>
+                </section>
+
+                <footer class="documentation-footer">
+                    <div class="footer-content">
+                        <div><p>&copy; 2026 The Tech Idea — Beep.AI.Researcher Help</p></div>
+                        <div class="footer-links">
+                            <a href="https://github.com/The-Tech-Idea/Beep.AI.Researcher">GitHub</a>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+    <script src="navigation.js"></script>
+</body>
+</html>
